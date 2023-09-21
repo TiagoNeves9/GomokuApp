@@ -26,6 +26,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.LightBlue
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
 
+
 @Composable
 fun AuthorsScreen() {
     Pdm2324i_gomoku_g37Theme {
@@ -45,14 +46,13 @@ fun AuthorsScreen() {
                 Text(
                     text = "Group 37",
                     fontSize = 35.sp,
-                    modifier = Modifier.
-                    padding(bottom = 15.dp)
+                    modifier = Modifier.padding(bottom = 15.dp)
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = { println("Prev pressed") }, //TODO
                         shape = RoundedCornerShape(4.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = SoftRed,
@@ -83,7 +83,7 @@ fun AuthorsScreen() {
                     }
 
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = { println("Next pressed") }, //TODO
                         shape = RoundedCornerShape(4.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = SoftRed,
@@ -105,7 +105,7 @@ fun AuthorsScreen() {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun JokeScreenPreview() {
+fun AuthorsScreenPreview() {
     AuthorsScreen()
 }
 
