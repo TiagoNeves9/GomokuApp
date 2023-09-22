@@ -1,7 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens
 
 import android.content.Context
-import android.content.res.Resources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,12 +36,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.authors
 import com.example.pdm2324i_gomoku_g37.ui.theme.LightBlue
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
+
 
 @Composable
 fun AuthorsScreen() {
@@ -56,8 +55,7 @@ fun AuthorsScreen() {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
             ) {
                 Text(
                     text = "Group 37",
@@ -73,8 +71,7 @@ fun AuthorsScreen() {
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 4.dp
                     ),
-                    modifier = Modifier
-                        .padding(25.dp)
+                    modifier = Modifier.padding(25.dp)
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -84,15 +81,15 @@ fun AuthorsScreen() {
                     ) {
                         LoadImageByName(LocalContext.current, authors[index].img)
                     }
+
                     AuthorDisplay(authors[index])
-                    NavigationButtons(index) { newIndex ->
-                        index = newIndex
-                    }
+                    NavigationButtons(index) { newIndex -> index = newIndex }
                 }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -107,10 +104,10 @@ private fun AuthorDisplay(author: Author) {
                 "\t${author.desc}\n",
         textAlign = TextAlign.Center,
         fontSize = 20.sp,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     )
 }
+
 @Composable
 fun NavigationButtons(currentIndex: Int, onNextClick: (Int) -> Unit) {
     Row(
@@ -130,8 +127,7 @@ fun NavigationButtons(currentIndex: Int, onNextClick: (Int) -> Unit) {
                 contentColor = Color.White
             ),
             contentPadding = PaddingValues(10.dp),
-            modifier = Modifier
-                .padding(5.dp)
+            modifier = Modifier.padding(5.dp)
         ) {
             Text(
                 text = "Prev",
@@ -150,8 +146,7 @@ fun NavigationButtons(currentIndex: Int, onNextClick: (Int) -> Unit) {
                 contentColor = Color.White
             ),
             contentPadding = PaddingValues(10.dp),
-            modifier = Modifier
-                .padding(5.dp)
+            modifier = Modifier.padding(5.dp)
         ) {
             Text(
                 text = "Next",
@@ -174,11 +169,8 @@ fun LoadImageByName(
         context.packageName // The package name of your app
     )
 
-    val painter: Painter? = if (resourceId != 0) {
-        painterResource(id = resourceId)
-    } else {
-        null
-    }
+    val painter: Painter? =
+        if (resourceId != 0) painterResource(id = resourceId) else null
 
     painter?.let {
         Image(
