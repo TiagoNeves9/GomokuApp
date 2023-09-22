@@ -1,12 +1,17 @@
 package com.example.pdm2324i_gomoku_g37.screens
 
+import android.content.Context
+import android.content.res.Resources
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -16,16 +21,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.Author
+import com.example.pdm2324i_gomoku_g37.domain.authors
 import com.example.pdm2324i_gomoku_g37.ui.theme.LightBlue
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
-
 
 @Composable
 fun AuthorsScreen() {
@@ -34,68 +51,42 @@ fun AuthorsScreen() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            //Greeting("Group 37")
-            //AuthorsDisplay()
+            var index by remember { mutableStateOf(0) }
+
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(6.dp),
+                    .fillMaxSize(),
             ) {
                 Text(
                     text = "Group 37",
                     fontSize = 35.sp,
                     modifier = Modifier.padding(bottom = 15.dp)
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+
+                ElevatedCard(
+                    colors = CardDefaults.cardColors(
+                        containerColor = LightBlue,
+                    ),
+                    shape = RoundedCornerShape(5.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 4.dp
+                    ),
+                    modifier = Modifier
+                        .padding(25.dp)
                 ) {
-                    Button(
-                        onClick = { println("Prev pressed") }, //TODO
-                        shape = RoundedCornerShape(4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = SoftRed,
-                            contentColor = Color.White
-                        ),
-                        contentPadding = PaddingValues(15.dp),
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(25.dp)
                     ) {
-                        Text(
-                            text = "Prev",
-                            fontSize = 10.sp,
-                        )
+                        LoadImageByName(LocalContext.current, authors[index].img)
                     }
-
-                    ElevatedCard(
-                        colors = CardDefaults.cardColors(
-                            containerColor = LightBlue,
-                        ),
-                        shape = RoundedCornerShape(5.dp),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 4.dp
-                        ),
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .size(width = 200.dp, height = 300.dp)
-                    ) {
-                        AuthorsDisplay()
-                    }
-
-                    Button(
-                        onClick = { println("Next pressed") }, //TODO
-                        shape = RoundedCornerShape(4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = SoftRed,
-                            contentColor = Color.White
-                        ),
-                        contentPadding = PaddingValues(15.dp),
-                        modifier = Modifier
-                    ) {
-                        Text(
-                            text = "Next",
-                            fontSize = 10.sp,
-                        )
+                    AuthorDisplay(authors[index])
+                    NavigationButtons(index) { newIndex ->
+                        index = newIndex
                     }
                 }
             }
@@ -110,12 +101,100 @@ fun AuthorsScreenPreview() {
 }
 
 @Composable
-private fun AuthorsDisplay(modifier: Modifier = Modifier) {
+private fun AuthorDisplay(author: Author) {
     Text(
-        text = "Authors:\n" +
-                "\t48264\t-\tJoão Pereira\n" +
-                "\t48292\t-\tTiago Neves\n" +
-                "\t48333\t-\tTomás Barroso",
-        modifier = modifier
+        text = "\t${author.number}\t-\t${author.name}\n" +
+                "\t${author.desc}\n",
+        textAlign = TextAlign.Center,
+        fontSize = 20.sp,
+        modifier = Modifier
+            .fillMaxWidth()
     )
 }
+@Composable
+fun NavigationButtons(currentIndex: Int, onNextClick: (Int) -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 25.dp)
+    ) {
+        Button(
+            onClick = {
+                val newIndex = prevIndex(currentIndex)
+                onNextClick(newIndex)
+            },
+            shape = RoundedCornerShape(4.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = SoftRed,
+                contentColor = Color.White
+            ),
+            contentPadding = PaddingValues(10.dp),
+            modifier = Modifier
+                .padding(5.dp)
+        ) {
+            Text(
+                text = "Prev",
+                fontSize = 10.sp,
+            )
+        }
+
+        Button(
+            onClick = {
+                val newIndex = nextIndex(currentIndex)
+                onNextClick(newIndex)
+            },
+            shape = RoundedCornerShape(4.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = SoftRed,
+                contentColor = Color.White
+            ),
+            contentPadding = PaddingValues(10.dp),
+            modifier = Modifier
+                .padding(5.dp)
+        ) {
+            Text(
+                text = "Next",
+                fontSize = 10.sp,
+            )
+        }
+    }
+}
+
+@Composable
+fun LoadImageByName(
+    context: Context,
+    imageName: String,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null
+) {
+    val resourceId = context.resources.getIdentifier(
+        imageName, // Name of the image (e.g., "img1")
+        "drawable", // The resource type (drawable in this case)
+        context.packageName // The package name of your app
+    )
+
+    val painter: Painter? = if (resourceId != 0) {
+        painterResource(id = resourceId)
+    } else {
+        null
+    }
+
+    painter?.let {
+        Image(
+            painter = it,
+            contentDescription = null,
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(200.dp),
+        )
+    }
+}
+
+private fun nextIndex(index: Int): Int =
+    if (index == authors.size - 1) 0 else index + 1
+
+private fun prevIndex(index: Int): Int =
+    if (index == 0) authors.size - 1 else index - 1
