@@ -1,6 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens
 
-import android.content.Context
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.authors
+import com.example.pdm2324i_gomoku_g37.resourceMap
 import com.example.pdm2324i_gomoku_g37.ui.theme.LightBlue
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
@@ -57,20 +57,12 @@ fun AuthorsScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize(),
             ) {
-                Text(
-                    text = "Group 37",
-                    fontSize = 35.sp,
-                    modifier = Modifier.padding(bottom = 15.dp)
-                )
+                Title("Group 37")
 
                 ElevatedCard(
-                    colors = CardDefaults.cardColors(
-                        containerColor = LightBlue,
-                    ),
+                    colors = CardDefaults.cardColors(containerColor = LightBlue),
                     shape = RoundedCornerShape(5.dp),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 4.dp
-                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                     modifier = Modifier.padding(25.dp)
                 ) {
                     Row(
@@ -79,7 +71,7 @@ fun AuthorsScreen() {
                             .fillMaxWidth()
                             .padding(25.dp)
                     ) {
-                        LoadImageByName(LocalContext.current, authors[index].img)
+                        LoadImageByName(authors[index].img)
                     }
 
                     AuthorDisplay(authors[index])
@@ -98,7 +90,15 @@ fun AuthorsScreenPreview() {
 }
 
 @Composable
-private fun AuthorDisplay(author: Author) {
+private fun Title(text: String) =
+    Text(
+        text = text,
+        fontSize = 35.sp,
+        modifier = Modifier.padding(bottom = 15.dp)
+    )
+
+@Composable
+private fun AuthorDisplay(author: Author) =
     Text(
         text = "\t${author.number}\t-\t${author.name}\n" +
                 "\t${author.desc}\n",
@@ -106,75 +106,54 @@ private fun AuthorDisplay(author: Author) {
         fontSize = 20.sp,
         modifier = Modifier.fillMaxWidth()
     )
-}
 
 @Composable
-fun NavigationButtons(currentIndex: Int, onNextClick: (Int) -> Unit) {
+fun NavigationButtons(currentIndex: Int, onNextClick: (Int) -> Unit) =
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 25.dp)
     ) {
-        Button(
-            onClick = {
-                val newIndex = prevIndex(currentIndex)
-                onNextClick(newIndex)
-            },
-            shape = RoundedCornerShape(4.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = SoftRed,
-                contentColor = Color.White
-            ),
-            contentPadding = PaddingValues(10.dp),
-            modifier = Modifier.padding(5.dp)
-        ) {
-            Text(
-                text = "Prev",
-                fontSize = 10.sp,
-            )
+        AuthorNavigationButton("Prev") {
+            val newIndex = prevIndex(currentIndex)
+            onNextClick(newIndex)
         }
 
-        Button(
-            onClick = {
-                val newIndex = nextIndex(currentIndex)
-                onNextClick(newIndex)
-            },
-            shape = RoundedCornerShape(4.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = SoftRed,
-                contentColor = Color.White
-            ),
-            contentPadding = PaddingValues(10.dp),
-            modifier = Modifier.padding(5.dp)
-        ) {
-            Text(
-                text = "Next",
-                fontSize = 10.sp,
-            )
+        AuthorNavigationButton("Next") {
+            val newIndex = nextIndex(currentIndex)
+            onNextClick(newIndex)
         }
     }
-}
 
 @Composable
-fun LoadImageByName(
-    context: Context,
-    imageName: String,
-    modifier: Modifier = Modifier,
-    contentDescription: String? = null
-) {
-    val resourceId = context.resources.getIdentifier(
-        imageName, // Name of the image (e.g., "img1")
-        "drawable", // The resource type (drawable in this case)
-        context.packageName // The package name of your app
-    )
+private fun AuthorNavigationButton(text: String, onClick: () -> Unit) =
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(4.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = SoftRed,
+            contentColor = Color.White
+        ),
+        contentPadding = PaddingValues(10.dp),
+        modifier = Modifier.padding(5.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 10.sp,
+        )
+    }
 
-    val painter: Painter? =
-        if (resourceId != 0) painterResource(id = resourceId) else null
+@Composable
+private fun LoadImageByName(imageName: String) {
 
-    painter?.let {
+    val resourceId = resourceMap[imageName]
+
+    resourceId?.let { id ->
+        val painter: Painter = painterResource(id = id)
+
         Image(
-            painter = it,
+            painter = painter,
             contentDescription = null,
             alignment = Alignment.Center,
             contentScale = ContentScale.Crop,
@@ -183,6 +162,7 @@ fun LoadImageByName(
                 .size(200.dp),
         )
     }
+
 }
 
 private fun nextIndex(index: Int): Int =
