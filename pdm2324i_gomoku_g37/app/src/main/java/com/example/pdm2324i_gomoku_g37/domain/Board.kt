@@ -7,7 +7,18 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 const val BOARD_DIM = 15
 const val BOARD_CELL_SIZE = 20
 
-sealed class Board(val positions: Map<Cell, Piece>)
+sealed class Board(private val positions: Map<Cell, Piece>) {
+    fun addPiece(cell: Cell): Board {
+        check(this is BoardRun) { "Game finished." }
+
+        return if (this.positions[cell] != null)
+            throw IllegalArgumentException("Square already occupied!")
+        else {
+            val newMap: Map<Cell, Piece> = this.positions + mapOf(cell to this.turn.piece())
+            BoardRun(newMap, this.turn)
+        }
+    }
+}
 
 class BoardRun(positions: Map<Cell, Piece>, val turn: Player) : Board(positions)
 

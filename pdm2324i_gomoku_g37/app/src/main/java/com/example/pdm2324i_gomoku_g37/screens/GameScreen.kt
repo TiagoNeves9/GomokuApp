@@ -11,17 +11,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_CELL_SIZE
+import com.example.pdm2324i_gomoku_g37.domain.Board
+import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.board.Piece
+import com.example.pdm2324i_gomoku_g37.domain.createBoard
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
 
 @Composable
-fun GameScreen() {
+fun GameScreen(board: Board) {
     Pdm2324i_gomoku_g37Theme {
         Surface(
             color = MaterialTheme.colorScheme.background
@@ -39,7 +46,7 @@ fun GameScreen() {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     NumberAxisView()
-                    PiecesView()
+                    CellsView(board)
                     NumberAxisView()
                 }
                 SymbolAxisView()
@@ -58,5 +65,7 @@ fun GameScreen() {
 @Preview
 @Composable
 fun GameScreenPreview() {
-    GameScreen()
+    val playerPreview = Player("BlackPlayer", Piece.BLACK_PIECE)
+    val initialBoardPreview by remember { mutableStateOf(createBoard(playerPreview)) }
+    GameScreen(initialBoardPreview)
 }

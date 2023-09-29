@@ -21,11 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
+import com.example.pdm2324i_gomoku_g37.domain.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
-import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
-import com.example.pdm2324i_gomoku_g37.domain.exampleMap
 
 
 @Composable
@@ -85,13 +84,13 @@ fun NumberAxisView() {
 
 
 @Composable
-fun PiecesView() {
+fun CellsView(board: Board) {
     Column {
         for (line in 0 until BOARD_DIM) {
             Row {
                 repeat(BOARD_DIM) { col ->
                     val cell = Cell(line, col)
-                    DrawPiece(exampleMap[cell])
+                    CellsSquares(board, cell)
                 }
             }
         }
@@ -99,7 +98,7 @@ fun PiecesView() {
 }
 
 @Composable
-fun DrawPiece(piece: Piece?) {
+fun CellsSquares(board: Board, cell: Cell) {
     val padding = (BOARD_CELL_SIZE / 2).dp
 
     Box(
@@ -107,7 +106,8 @@ fun DrawPiece(piece: Piece?) {
         modifier = Modifier
             .size(BOARD_CELL_SIZE.dp)
             .background(color = Color.White)
-            .clickable(onClick = { println("TODO") }) //TODO mudar o clickable
+            .clickable(onClick = { board.addPiece(cell) }) //TODO mudar o clickable
+        //TODO redesenhar a board após o onClick (com a nova peça colocada)
     ) {
         Canvas(
             modifier = Modifier
@@ -128,11 +128,13 @@ fun DrawPiece(piece: Piece?) {
             )
         }
 
+        /*
         when (piece) {
             //TODO alterar este padding horizontal, está hard-coded
             Piece.BLACK_PIECE -> Text("B", Modifier.padding(horizontal = padding / 2))
             Piece.WHITE_PIECE -> Text("W", Modifier.padding(horizontal = padding / 2))
             else -> Text(" ", Modifier.padding(horizontal = padding / 2))
         }
+        */
     }
 }
