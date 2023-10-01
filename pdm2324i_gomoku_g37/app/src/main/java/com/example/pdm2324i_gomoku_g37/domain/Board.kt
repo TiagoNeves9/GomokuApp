@@ -14,17 +14,17 @@ sealed class Board(val positions: Map<Cell, Piece>) {
         return if (this.positions[cell] != null)
             throw IllegalArgumentException("Square already occupied!")
         else {
-            val newMap: Map<Cell, Piece> = this.positions + mapOf(cell to this.turn.piece())
-            BoardRun(newMap, this.turn)
+            val newMap: Map<Cell, Piece> = this.positions + mapOf(cell to this.turn)
+            BoardRun(newMap, this.turn.other())
         }
     }
 }
 
-class BoardRun(positions: Map<Cell, Piece>, val turn: Player) : Board(positions)
+class BoardRun(positions: Map<Cell, Piece>, val turn: Piece) : Board(positions)
 
 class BoardEnd(positions: Map<Cell, Piece>) : Board(positions)
 
-fun createBoard(firstTurn: Player) = BoardRun(mapOf(), firstTurn)
+fun createBoard(firstTurn: Piece) = BoardRun(mapOf(), firstTurn)
 
 //TODO fun Board.getWinner(): Player? {}
 

@@ -1,6 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,10 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.Board
@@ -44,7 +47,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 fun GameScreen() {
     Pdm2324i_gomoku_g37Theme {
         val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
-        var board by remember { mutableStateOf(createBoard(playerBlack)) }
+        var board by remember { mutableStateOf(createBoard(playerBlack.color)) }
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
@@ -189,8 +192,12 @@ fun CellsSquares(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
 
         when (piece) {
             //TODO alterar este padding horizontal, está hard-coded
-            Piece.BLACK_PIECE -> Text("B", Modifier.padding(horizontal = padding / 2))
-            Piece.WHITE_PIECE -> Text("W", Modifier.padding(horizontal = padding / 2))
+            Piece.BLACK_PIECE -> {
+                Image(painter = painterResource(R.drawable.b), contentDescription = null )
+            }
+            Piece.WHITE_PIECE -> {
+                Image(painterResource(id = R.drawable.w), contentDescription = null)
+            }
             else -> Text(" ", Modifier.padding(horizontal = padding / 2))
         }
     }
