@@ -66,7 +66,8 @@ fun GameScreen() {
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text("Group 37 - XPTO")
+                    Text("Group 37 - Gomoku", color = Color.Blue)
+                    Text("${board.turn}", color = Color.Red)
                 }
             }
         }
