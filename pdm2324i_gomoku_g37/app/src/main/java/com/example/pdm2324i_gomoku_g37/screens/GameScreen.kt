@@ -185,14 +185,14 @@ fun CellsSquares(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
             )
         }
 
-        //val piece: Piece = board
+        val piece: Piece? = board.positions[cell]
 
-        /*when (piece) {
+        when (piece) {
             //TODO alterar este padding horizontal, está hard-coded
             Piece.BLACK_PIECE -> Text("B", Modifier.padding(horizontal = padding / 2))
             Piece.WHITE_PIECE -> Text("W", Modifier.padding(horizontal = padding / 2))
             else -> Text(" ", Modifier.padding(horizontal = padding / 2))
-        }*/
+        }
     }
 }
 
