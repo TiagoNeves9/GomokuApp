@@ -2,7 +2,6 @@ package com.example.pdm2324i_gomoku_g37.domain.board
 
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
 
-
 class Cell private constructor(val row: Row, val col: Column) {
     val rowIndex: Int = row.index
     val colIndex: Int = col.index
@@ -17,18 +16,14 @@ class Cell private constructor(val row: Row, val col: Column) {
             }
         val INVALID = Cell(-1, -1)
 
-        operator fun invoke(rowIndex: Int, colIndex: Int): Cell {
-            return if (rowIndex in 0 until BOARD_DIM && colIndex in 0 until BOARD_DIM)
+        operator fun invoke(rowIndex: Int, colIndex: Int): Cell =
+            if (rowIndex in 0 until BOARD_DIM && colIndex in 0 until BOARD_DIM)
                 values[rowIndex * BOARD_DIM + colIndex]
             else INVALID
-        }
 
         operator fun invoke(row: Row, col: Column): Cell = Cell(row.index, col.index)
     }
 }
-
-operator fun Cell.plus(dir: Direction): Cell =
-    Cell(row.index + dir.difRow, col.index + dir.difCol)
 
 fun String.toCellOrNull(): Cell? {
     if (this.length != 2) return null
@@ -36,6 +31,10 @@ fun String.toCellOrNull(): Cell? {
     val col = this[1].toColumnOrNull()
     return Cell.values.find { it.row == row && it.col == col }
 }
+
+operator fun Cell.plus(dir: Direction): Cell =
+    Cell(row.index + dir.difRow, col.index + dir.difCol)
+
 
 fun String.toCell(): Cell =
     this.toCellOrNull() ?: throw IllegalArgumentException(this.getFailReason())

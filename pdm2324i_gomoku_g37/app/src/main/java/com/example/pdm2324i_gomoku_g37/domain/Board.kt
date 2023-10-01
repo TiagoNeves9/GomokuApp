@@ -8,7 +8,7 @@ const val BOARD_DIM = 15
 const val BOARD_CELL_SIZE = 20
 
 sealed class Board(private val positions: Map<Cell, Piece>) {
-    fun addPiece(cell: Cell): Board {
+    fun addPiece(cell: Cell): BoardRun {
         check(this is BoardRun) { "Game finished." }
 
         return if (this.positions[cell] != null)
