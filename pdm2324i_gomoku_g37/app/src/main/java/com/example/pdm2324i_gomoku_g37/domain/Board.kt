@@ -12,6 +12,7 @@ sealed class Board(val positions: Map<Cell, Piece>) {
         check(this is BoardRun) { "Game finished." }
 
         return if (this.positions[cell] != null)
+            //TODO: Catch do error em vez de throw
             throw IllegalArgumentException("Square already occupied!")
         else {
             val newMap: Map<Cell, Piece> = this.positions + mapOf(cell to this.turn)

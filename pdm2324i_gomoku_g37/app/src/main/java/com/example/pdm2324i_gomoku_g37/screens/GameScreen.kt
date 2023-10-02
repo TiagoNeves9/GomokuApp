@@ -34,20 +34,30 @@ import com.example.pdm2324i_gomoku_g37.domain.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.Board
 import com.example.pdm2324i_gomoku_g37.domain.BoardRun
+import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
 import com.example.pdm2324i_gomoku_g37.domain.createBoard
+import com.example.pdm2324i_gomoku_g37.image
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
 
 @Composable
-fun GameScreen() {
+fun GameScreen(argGame: Game? = null) {
+    val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
+    val playerWhite = Player("WhitePlayer", Piece.WHITE_PIECE)
+    val board = createBoard(playerBlack.color)
+    var game by remember {
+        mutableStateOf(argGame ?: Game(Pair(playerBlack, playerWhite), board))
+    }
+    var pieceToDraw by remember {
+        mutableStateOf(board.turn.image())
+    }
+
     Pdm2324i_gomoku_g37Theme {
-        val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
-        var board by remember { mutableStateOf(createBoard(playerBlack.color)) }
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
@@ -58,16 +68,25 @@ fun GameScreen() {
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DrawBoard(board = board) { cell ->
-                    board = board.addPiece(cell)
+                DrawBoard(game.board) { cell ->
+                    val newBoard = game.board.addPiece(cell)
+                    game = game.copy(board = newBoard)
+                    pieceToDraw = newBoard.turn.image()
                 }
                 Spacer(modifier = Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
                 Row(
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text("Group 37 - Gomoku", color = Color.Blue)
-                    Text("${board.turn}", color = Color.Red)
+                    //TODO mudar o tamanho da imagem ou do texto
+                    Text("Turn: ", color = Color.Red)
+                    Image(painter = painterResource(id = pieceToDraw), contentDescription = null)
+                }
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text("Group 37 - Gomoku ", color = Color.Blue)
                 }
             }
         }
@@ -151,7 +170,7 @@ fun CellsView(board: Board, onClick: (Cell) -> Unit) {
             Row {
                 repeat(BOARD_DIM) { col ->
                     val cell = Cell(line, col)
-                    CellsSquares(board, onClick, cell)
+                    DrawCells(board, onClick, cell)
                 }
             }
         }
@@ -159,7 +178,7 @@ fun CellsView(board: Board, onClick: (Cell) -> Unit) {
 }
 
 @Composable
-fun CellsSquares(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
+fun DrawCells(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
     val padding = (BOARD_CELL_SIZE / 2).dp
 
     Box(
@@ -189,16 +208,16 @@ fun CellsSquares(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
             )
         }
 
-        val piece: Piece? = board.positions[cell]
-
-        when (piece) {
+        when (board.positions[cell]) {
             //TODO alterar este padding horizontal, está hard-coded
             Piece.BLACK_PIECE -> {
-                Image(painter = painterResource(R.drawable.b), contentDescription = null )
+                Image(painter = painterResource(R.drawable.b), contentDescription = null)
             }
+
             Piece.WHITE_PIECE -> {
                 Image(painterResource(id = R.drawable.w), contentDescription = null)
             }
+
             else -> Text(" ", Modifier.padding(horizontal = padding / 2))
         }
     }
