@@ -11,6 +11,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.createBoard
+import com.example.pdm2324i_gomoku_g37.screens.AuthorsScreen
 import com.example.pdm2324i_gomoku_g37.screens.GameScreen
 
 
@@ -18,7 +19,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GameScreen()
+            //GameScreen()
+            AuthorsScreen()
         }
     }
 }

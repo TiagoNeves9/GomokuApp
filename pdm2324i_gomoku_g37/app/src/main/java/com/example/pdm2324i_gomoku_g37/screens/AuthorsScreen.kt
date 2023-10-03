@@ -45,13 +45,13 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
 
 @Composable
 fun AuthorsScreen() {
+    var index by remember { mutableStateOf(0) }
+
     Pdm2324i_gomoku_g37Theme {
         // A surface container using the 'background' color from the theme
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            var index by remember { mutableStateOf(0) }
-
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,18 +75,14 @@ fun AuthorsScreen() {
                     }
 
                     AuthorDisplay(authors[index])
-                    NavigationButtons(index) { newIndex -> index = newIndex }
+                    NavigationButtons(
+                        { index = nextIndex(index) },
+                        { index = prevIndex(index) }
+                    )
                 }
             }
         }
     }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun AuthorsScreenPreview() {
-    AuthorsScreen()
 }
 
 @Composable
@@ -108,22 +104,15 @@ private fun AuthorDisplay(author: Author) =
     )
 
 @Composable
-fun NavigationButtons(currentIndex: Int, onNextClick: (Int) -> Unit) =
+fun NavigationButtons(onNextClick: () -> Unit, onPrevClick: () -> Unit) =
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 25.dp)
     ) {
-        AuthorNavigationButton("Prev") {
-            val newIndex = prevIndex(currentIndex)
-            onNextClick(newIndex)
-        }
-
-        AuthorNavigationButton("Next") {
-            val newIndex = nextIndex(currentIndex)
-            onNextClick(newIndex)
-        }
+        AuthorNavigationButton("Prev", onPrevClick)
+        AuthorNavigationButton("Next", onNextClick)
     }
 
 @Composable
@@ -163,6 +152,12 @@ private fun LoadImageByName(imageName: String) {
         )
     }
 
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun AuthorsScreenPreview() {
+    AuthorsScreen()
 }
 
 private fun nextIndex(index: Int): Int =
