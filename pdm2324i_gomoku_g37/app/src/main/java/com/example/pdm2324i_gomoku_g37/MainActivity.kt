@@ -13,6 +13,7 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.createBoard
 import com.example.pdm2324i_gomoku_g37.screens.AuthorsScreen
 import com.example.pdm2324i_gomoku_g37.screens.GameScreen
+import com.example.pdm2324i_gomoku_g37.screens.HomeScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -20,7 +21,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             //GameScreen()
-            AuthorsScreen()
+            //AuthorsScreen()
+            HomeScreen()
         }
     }
 }

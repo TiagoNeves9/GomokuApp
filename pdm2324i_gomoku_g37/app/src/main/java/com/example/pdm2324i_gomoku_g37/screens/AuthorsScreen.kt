@@ -86,7 +86,7 @@ fun AuthorsScreen() {
 }
 
 @Composable
-private fun Title(text: String) =
+fun Title(text: String) =
     Text(
         text = text,
         fontSize = 35.sp,
