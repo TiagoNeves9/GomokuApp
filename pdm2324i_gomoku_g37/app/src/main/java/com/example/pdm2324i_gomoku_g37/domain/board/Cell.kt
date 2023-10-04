@@ -51,7 +51,7 @@ private fun String.getFailReason(): String {
     else ""
 }
 
-fun cellsInDirection(from: Cell, dir: Direction): List<Cell> {
+fun cellsInDir(from: Cell, dir: Direction): List<Cell> {
     val line = mutableListOf<Cell>()
     var currentCell = from + dir
     while (currentCell != Cell.INVALID) {

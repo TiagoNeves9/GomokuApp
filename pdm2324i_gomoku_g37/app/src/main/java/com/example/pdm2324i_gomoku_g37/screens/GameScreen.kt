@@ -33,6 +33,7 @@ import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.Board
+import com.example.pdm2324i_gomoku_g37.domain.BoardEnd
 import com.example.pdm2324i_gomoku_g37.domain.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Player
@@ -50,12 +51,11 @@ fun GameScreen(argGame: Game? = null) {
     val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
     val playerWhite = Player("WhitePlayer", Piece.WHITE_PIECE)
     val board = createBoard(playerBlack.color)
+
     var game by remember {
         mutableStateOf(argGame ?: Game(Pair(playerBlack, playerWhite), board))
     }
-    var pieceToDraw by remember {
-        mutableStateOf(board.turn.image())
-    }
+    var pieceToDraw by remember { mutableStateOf(board.turn.image()) }
 
     Pdm2324i_gomoku_g37Theme {
         Surface(
@@ -71,27 +71,20 @@ fun GameScreen(argGame: Game? = null) {
                 DrawBoard(game.board) { cell ->
                     val newBoard = game.board.addPiece(cell)
                     game = game.copy(board = newBoard)
-                    pieceToDraw = newBoard.turn.image()
+                    //if (newBoard.checkWin(cell)) throw Exception("Game finished.")
+                    if (newBoard.checkWin(cell))
+                        game = game.copy(board = BoardEnd(newBoard.positions))
+                    else pieceToDraw = newBoard.turn.image()
                 }
+
                 Spacer(modifier = Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    //TODO mudar o tamanho da imagem ou do texto
-                    Text("Turn: ", color = Color.Red)
-                    Image(painter = painterResource(id = pieceToDraw), contentDescription = null)
-                }
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text("Group 37 - Gomoku ", color = Color.Blue)
-                }
+
+                StatusBar(game.board, pieceToDraw)
             }
         }
     }
 }
+
 
 @Composable
 fun DrawBoard(board: Board, onClick: (Cell) -> Unit) {
@@ -141,7 +134,6 @@ fun SymbolAxisView() {
     }
 }
 
-
 @Composable
 fun NumberAxisView() {
     Column(
@@ -161,7 +153,6 @@ fun NumberAxisView() {
         }
     }
 }
-
 
 @Composable
 fun CellsView(board: Board, onClick: (Cell) -> Unit) {
@@ -209,7 +200,6 @@ fun DrawCells(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
         }
 
         when (board.positions[cell]) {
-            //TODO alterar este padding horizontal, está hard-coded
             Piece.BLACK_PIECE -> {
                 Image(painter = painterResource(R.drawable.b), contentDescription = null)
             }
@@ -218,10 +208,37 @@ fun DrawCells(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
                 Image(painterResource(id = R.drawable.w), contentDescription = null)
             }
 
-            else -> Text(" ", Modifier.padding(horizontal = padding / 2))
+            else -> Text(" ")
         }
     }
 }
+
+
+@Composable
+fun StatusBar(board: Board, pieceToDraw: Int) {
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        //TODO mudar o tamanho da imagem ou do texto
+        if (board is BoardEnd)
+            Text("Game finished!", color = Color.Red)
+        else {
+            Text("Turn: ", color = Color.Red)
+            Image(
+                painter = painterResource(id = pieceToDraw),
+                contentDescription = null
+            )
+        }
+    }
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text("Group 37 - Gomoku ", color = Color.Blue)
+    }
+}
+
 
 @Preview
 @Composable

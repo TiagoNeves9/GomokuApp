@@ -88,10 +88,10 @@ class CellTests {
     fun `Get line of cells from a cell and a direction`() {
         val from = Cell(3, 2)
         val dir = Direction.LEFT
-        val line1 = cellsInDirection(from, dir)
+        val line1 = cellsInDir(from, dir)
         assertEquals(listOf(from + dir, from + dir + dir), line1)
 
-        val line2 = cellsInDirection(from, Direction.DOWN_RIGHT)
+        val line2 = cellsInDir(from, Direction.DOWN_RIGHT)
         assertEquals(List(BOARD_DIM - 4) { Cell(3 + it + 1, 2 + it + 1) }, line2)
     }
 }
