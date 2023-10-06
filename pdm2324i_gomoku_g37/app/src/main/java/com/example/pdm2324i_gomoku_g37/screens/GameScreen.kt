@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -90,6 +91,7 @@ fun GameScreen(argGame: Game? = null) {
 fun DrawBoard(board: Board, onClick: (Cell) -> Unit) {
     SymbolAxisView()
     Row(
+        modifier = Modifier.testTag("boardTest"),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -175,6 +177,7 @@ fun DrawCells(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
+            .testTag("clickableCell")
             .size(BOARD_CELL_SIZE.dp)
             .background(color = Color.White)
             .clickable(onClick = { onClick(cell) }) //TODO mudar o clickable
