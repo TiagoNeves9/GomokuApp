@@ -20,7 +20,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GameScreen()
+            val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
+            val playerWhite = Player("WhitePlayer", Piece.WHITE_PIECE)
+            val board = createBoard(playerBlack.color)
+            val game = Game(Pair(playerBlack, playerWhite), board, playerBlack)
+            GameScreen(game)
             //AuthorsScreen()
             //HomeScreen()
         }

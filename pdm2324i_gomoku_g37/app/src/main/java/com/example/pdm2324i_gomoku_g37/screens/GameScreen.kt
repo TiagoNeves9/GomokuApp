@@ -1,9 +1,9 @@
 package com.example.pdm2324i_gomoku_g37.screens
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,15 +49,8 @@ import com.example.pdm2324i_gomoku_g37.image
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
 @Composable
-fun GameScreen(argGame: Game? = null) {
-    val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
-    val playerWhite = Player("WhitePlayer", Piece.WHITE_PIECE)
-    val board = createBoard(playerBlack.color)
-
-    var game by remember {
-        mutableStateOf(argGame ?: Game(Pair(playerBlack, playerWhite), board))
-    }
-    var pieceToDraw by remember { mutableStateOf(board.turn.image()) }
+fun GameScreen(game: Game) {
+    var currentGame by remember { mutableStateOf(game) }
 
     val modifier: Modifier = Modifier
         .background(Color.DarkGray)
@@ -70,22 +63,27 @@ fun GameScreen(argGame: Game? = null) {
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DrawBoard(game.board) { cell ->
-                    val newBoard = game.board.addPiece(cell)
-                    game = game.copy(board = newBoard)
-                    //if (newBoard.checkWin(cell)) throw Exception("Game finished.")
-                    if (newBoard.checkWin(cell))
-                        game = game.copy(board = BoardEnd(newBoard.positions))
-                    else pieceToDraw = newBoard.turn.image()
+                if (currentGame.board is BoardEnd) {
+                    DrawBoard(currentGame.board)
+                } else {
+                    DrawBoard(currentGame.board) { cell ->
+                        currentGame = currentGame.computeNewGame(cell)
+                    }
                 }
+
+                /*DrawBoard(currentGame.board) { cell ->
+                    currentGame = currentGame.computeNewGame(cell)
+                }*/
 
                 Spacer(modifier = Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
 
                 StatusBar {
                     //TODO mudar o tamanho da imagem ou do texto
-                    if (game.board is BoardEnd)
+                    if (currentGame.board is BoardEnd)
                         Text("Game finished!", color = Color.Red)
                     else {
+                        val pieceToDraw = if (currentGame.currentPlayer.color == Piece.BLACK_PIECE) R.drawable.b
+                                            else R.drawable.w
                         Text("Turn: ", color = Color.Red)
                         Image(
                             painter = painterResource(id = pieceToDraw),
@@ -115,7 +113,10 @@ fun DrawBoard(board: Board, onClick: (Cell) -> Unit = {}) {
 
 @Composable
 fun SymbolAxisView() {
-    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
+    ) {
         Box(modifier = Modifier.size(BOARD_CELL_SIZE.dp)) {
             AxisText(" ")
         }
@@ -136,12 +137,16 @@ fun SymbolAxisView() {
 
 @Composable
 fun NumberAxisView() {
-    Column(horizontalAlignment = Alignment.Start) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+    ) {
         repeat(BOARD_DIM) {
             val number = it.indexToRow().number.toString()
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.size(BOARD_CELL_SIZE.dp)
+                modifier = Modifier
+                    .size(BOARD_CELL_SIZE.dp)
             ) {
                 AxisText(number)
             }
@@ -152,8 +157,10 @@ fun NumberAxisView() {
 @Composable
 fun AxisText(text: String) {
     Text(
-        textAlign = TextAlign.Center, text = text,
-        fontWeight = FontWeight.Bold, color = Color.Blue
+        textAlign = TextAlign.Center,
+        text = text,
+        fontWeight = FontWeight.Bold,
+        color = Color.Blue
     )
 }
 
@@ -174,7 +181,10 @@ fun CellsView(board: Board, onClick: (Cell) -> Unit) {
                                 Image(painterResource(id = R.drawable.w), contentDescription = null)
                             }
 
-                            else -> TextButton(onClick = { onClick(cell) }) {}
+                            else -> TextButton(
+                                onClick = { onClick(cell) },
+                                enabled = board is BoardRun
+                            ) {}
                         }
                     }
                 }
@@ -237,5 +247,9 @@ fun StatusBar(content: @Composable () -> Unit = {}) {
 @Preview
 @Composable
 fun GameScreenPreview() {
-    GameScreen()
+    val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
+    val playerWhite = Player("WhitePlayer", Piece.WHITE_PIECE)
+    val board = createBoard(playerBlack.color)
+    val game = Game(Pair(playerBlack, playerWhite), board, playerBlack)
+    GameScreen(game)
 }
