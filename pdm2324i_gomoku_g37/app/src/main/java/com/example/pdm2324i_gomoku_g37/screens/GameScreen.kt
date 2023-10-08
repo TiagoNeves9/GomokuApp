@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.BOARD_CELL_SIZE
@@ -46,7 +48,6 @@ import com.example.pdm2324i_gomoku_g37.domain.createBoard
 import com.example.pdm2324i_gomoku_g37.image
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
-
 @Composable
 fun GameScreen(argGame: Game? = null) {
     val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
@@ -58,14 +59,14 @@ fun GameScreen(argGame: Game? = null) {
     }
     var pieceToDraw by remember { mutableStateOf(board.turn.image()) }
 
+    val modifier: Modifier = Modifier
+        .background(Color.DarkGray)
+        .fillMaxSize()
+
     Pdm2324i_gomoku_g37Theme {
-        Surface(
-            color = MaterialTheme.colorScheme.background
-        ) {
+        Surface(color = MaterialTheme.colorScheme.background) {
             Column(
-                modifier = Modifier
-                    .background(Color.DarkGray)
-                    .fillMaxSize(),
+                modifier = modifier,
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -80,15 +81,25 @@ fun GameScreen(argGame: Game? = null) {
 
                 Spacer(modifier = Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
 
-                StatusBar(game.board, pieceToDraw)
+                StatusBar {
+                    //TODO mudar o tamanho da imagem ou do texto
+                    if (game.board is BoardEnd)
+                        Text("Game finished!", color = Color.Red)
+                    else {
+                        Text("Turn: ", color = Color.Red)
+                        Image(
+                            painter = painterResource(id = pieceToDraw),
+                            contentDescription = null
+                        )
+                    }
+                }
             }
         }
     }
 }
 
-
 @Composable
-fun DrawBoard(board: Board, onClick: (Cell) -> Unit) {
+fun DrawBoard(board: Board, onClick: (Cell) -> Unit = {}) {
     SymbolAxisView()
     Row(
         modifier = Modifier.testTag("boardTest"),
@@ -104,15 +115,9 @@ fun DrawBoard(board: Board, onClick: (Cell) -> Unit) {
 
 @Composable
 fun SymbolAxisView() {
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
+    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
         Box(modifier = Modifier.size(BOARD_CELL_SIZE.dp)) {
-            Text(
-                //To align the symbols
-                textAlign = TextAlign.Center, text = " ",
-                fontWeight = FontWeight.Bold, color = Color.Green
-            )
+            AxisText(" ")
         }
         repeat(BOARD_DIM) {
             val letter = it.indexToColumn().symbol.toString()
@@ -120,50 +125,58 @@ fun SymbolAxisView() {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.size(BOARD_CELL_SIZE.dp)
             ) {
-                Text(
-                    textAlign = TextAlign.Center, text = letter,
-                    fontWeight = FontWeight.Bold, color = Color.Blue
-                )
+                AxisText(letter)
             }
         }
         Box(modifier = Modifier.size(BOARD_CELL_SIZE.dp)) {
-            Text(
-                //To align the symbols
-                textAlign = TextAlign.Center, text = " ",
-                fontWeight = FontWeight.Bold, color = Color.Green
-            )
+            AxisText(" ")
         }
     }
 }
 
 @Composable
 fun NumberAxisView() {
-    Column(
-        horizontalAlignment = Alignment.Start
-    ) {
+    Column(horizontalAlignment = Alignment.Start) {
         repeat(BOARD_DIM) {
             val number = it.indexToRow().number.toString()
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.size(BOARD_CELL_SIZE.dp)
             ) {
-                Text(
-                    textAlign = TextAlign.Center, text = number,
-                    fontWeight = FontWeight.Bold, color = Color.Blue
-                )
+                AxisText(number)
             }
         }
     }
 }
 
 @Composable
+fun AxisText(text: String) {
+    Text(
+        textAlign = TextAlign.Center, text = text,
+        fontWeight = FontWeight.Bold, color = Color.Blue
+    )
+}
+
+@Composable
 fun CellsView(board: Board, onClick: (Cell) -> Unit) {
     Column {
-        for (line in 0 until BOARD_DIM) {
+        repeat (BOARD_DIM) { line ->
             Row {
                 repeat(BOARD_DIM) { col ->
                     val cell = Cell(line, col)
-                    DrawCells(board, onClick, cell)
+                    DrawCells {
+                        when (board.positions[cell]) {
+                            Piece.BLACK_PIECE -> {
+                                Image(painter = painterResource(R.drawable.b), contentDescription = null)
+                            }
+
+                            Piece.WHITE_PIECE -> {
+                                Image(painterResource(id = R.drawable.w), contentDescription = null)
+                            }
+
+                            else -> TextButton(onClick = { onClick(cell) }) {}
+                        }
+                    }
                 }
             }
         }
@@ -171,77 +184,55 @@ fun CellsView(board: Board, onClick: (Cell) -> Unit) {
 }
 
 @Composable
-fun DrawCells(board: Board, onClick: (Cell) -> Unit, cell: Cell) {
+fun DrawCells(content: @Composable () -> Unit = {}) {
     val padding = (BOARD_CELL_SIZE / 2).dp
+    val modifier = Modifier
+        .testTag("clickableCell")
+        .size(BOARD_CELL_SIZE.dp)
+        .background(color = Color.White)
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .testTag("clickableCell")
-            .size(BOARD_CELL_SIZE.dp)
-            .background(color = Color.White)
-            .clickable(onClick = { onClick(cell) }) //TODO mudar o clickable
-        //TODO redesenhar a board após o onClick (com a nova peça colocada)
+        modifier = modifier
     ) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            drawLine(
-                start = Offset(0.5F, 0F),
-                end = Offset(0.5F, 1F),
-                color = Color.LightGray,
-                strokeWidth = 60F   //TODO 60F é hard-coded
-            )
-            drawLine(
-                start = Offset(0F, 0.5F),
-                end = Offset(1F, 0.5F),
-                color = Color.LightGray,
-                strokeWidth = 60F   //TODO 60F é hard-coded
-            )
-        }
-
-        when (board.positions[cell]) {
-            Piece.BLACK_PIECE -> {
-                Image(painter = painterResource(R.drawable.b), contentDescription = null)
-            }
-
-            Piece.WHITE_PIECE -> {
-                Image(painterResource(id = R.drawable.w), contentDescription = null)
-            }
-
-            else -> Text(" ")
-        }
+        DrawPlusSymbol(padding)
+        content()
     }
 }
-
 
 @Composable
-fun StatusBar(board: Board, pieceToDraw: Int) {
-    Row(
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.Center
+fun DrawPlusSymbol(padding: Dp) {
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
     ) {
-        //TODO mudar o tamanho da imagem ou do texto
-        if (board is BoardEnd)
-            Text("Game finished!", color = Color.Red)
-        else {
-            Text("Turn: ", color = Color.Red)
-            Image(
-                painter = painterResource(id = pieceToDraw),
-                contentDescription = null
-            )
-        }
-    }
-    Row(
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text("Group 37 - Gomoku ", color = Color.Blue)
+        drawLine(
+            start = Offset(0.5F, 0F),
+            end = Offset(0.5F, 1F),
+            color = Color.LightGray,
+            strokeWidth = 60F   //TODO 60F é hard-coded
+        )
+        drawLine(
+            start = Offset(0F, 0.5F),
+            end = Offset(1F, 0.5F),
+            color = Color.LightGray,
+            strokeWidth = 60F   //TODO 60F é hard-coded
+        )
     }
 }
 
+@Composable
+fun StatusBar(content: @Composable () -> Unit = {}) {
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        content()
+    }
+
+    Text("Group 37 - Gomoku ", color = Color.Blue)
+}
 
 @Preview
 @Composable
