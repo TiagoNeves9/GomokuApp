@@ -27,15 +27,19 @@ sealed class Board(val positions: Map<Cell, Piece>) {
 class BoardRun(positions: Map<Cell, Piece>, val turn: Piece) : Board(positions) {
     fun checkWin(lastMove: Cell): Boolean =
         positions.size >= 2 * N_ON_ROW - 1 && (
-                checkWinInDirection(lastMove, Direction.UP, Direction.DOWN) ||
-                        checkWinInDirection(lastMove, Direction.LEFT, Direction.RIGHT) ||
-                        checkWinInDirection(lastMove, Direction.UP_LEFT, Direction.DOWN_RIGHT) ||
-                        checkWinInDirection(lastMove, Direction.UP_RIGHT, Direction.DOWN_LEFT)
+                checkWinInDir(lastMove, Direction.UP, Direction.DOWN) ||
+                        checkWinInDir(lastMove, Direction.LEFT, Direction.RIGHT) ||
+                        checkWinInDir(lastMove, Direction.UP_LEFT, Direction.DOWN_RIGHT) ||
+                        checkWinInDir(lastMove, Direction.UP_RIGHT, Direction.DOWN_LEFT)
                 )
 
-    private fun checkWinInDirection(lastMove: Cell, dir1: Direction, dir2: Direction): Boolean {
+    fun checkDraw(): Boolean = positions.size == BOARD_DIM * BOARD_DIM
+
+    private fun checkWinInDir(lastMove: Cell, dir1: Direction, dir2: Direction): Boolean {
         val line =
             cellsInDir(lastMove, dir1).reversed() + lastMove + cellsInDir(lastMove, dir2)
+        // we reverse the first part of the list because we want
+        // to check the line from left/top to right/bottom
         return checkWinInLine(line)
     }
 
@@ -52,13 +56,12 @@ class BoardRun(positions: Map<Cell, Piece>, val turn: Piece) : Board(positions) 
     }
 }
 
+class BoardWin(positions: Map<Cell, Piece>, val winner: Player) : Board(positions)
 
-class BoardEnd(positions: Map<Cell, Piece>) : Board(positions)
+class BoardDraw(positions: Map<Cell, Piece>) : Board(positions)
+
 
 fun createBoard(firstTurn: Piece) = BoardRun(mapOf(), firstTurn)
-
-//TODO fun Board.getWinner(): Player? {}
-
 
 val exampleMap = mapOf(
     Cell(0, 0) to Piece.BLACK_PIECE,

@@ -1,6 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.screens
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -53,23 +52,23 @@ fun AuthorsScreen() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize(),
+                Modifier.fillMaxSize(),
+                Arrangement.Center,
+                Alignment.CenterHorizontally,
             ) {
                 Title("Group 37")
 
                 ElevatedCard(
-                    colors = CardDefaults.cardColors(containerColor = LightBlue),
+                    modifier = Modifier.padding(25.dp),
                     shape = RoundedCornerShape(5.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    modifier = Modifier.padding(25.dp)
+                    colors = CardDefaults.cardColors(containerColor = LightBlue),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
+                        Modifier
                             .fillMaxWidth()
-                            .padding(25.dp)
+                            .padding(25.dp),
+                        Arrangement.Center
                     ) {
                         LoadImageByName(authors[index].img)
                     }
@@ -89,8 +88,8 @@ fun AuthorsScreen() {
 fun Title(text: String) =
     Text(
         text = text,
-        fontSize = 35.sp,
-        modifier = Modifier.padding(bottom = 15.dp)
+        modifier = Modifier.padding(bottom = 15.dp),
+        fontSize = 35.sp
     )
 
 @Composable
@@ -98,18 +97,18 @@ private fun AuthorDisplay(author: Author) =
     Text(
         text = "\t${author.number}\t-\t${author.name}\n" +
                 "\t${author.desc}\n",
-        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth(),
         fontSize = 20.sp,
-        modifier = Modifier.fillMaxWidth()
+        textAlign = TextAlign.Center
     )
 
 @Composable
 fun NavigationButtons(onNextClick: () -> Unit, onPrevClick: () -> Unit) =
     Row(
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier
+        Modifier
             .fillMaxWidth()
-            .padding(bottom = 25.dp)
+            .padding(bottom = 25.dp),
+        Arrangement.Center
     ) {
         AuthorNavigationButton("Prev", onPrevClick)
         AuthorNavigationButton("Next", onNextClick)
@@ -119,13 +118,13 @@ fun NavigationButtons(onNextClick: () -> Unit, onPrevClick: () -> Unit) =
 private fun AuthorNavigationButton(text: String, onClick: () -> Unit) =
     Button(
         onClick = onClick,
+        modifier = Modifier.padding(5.dp),
         shape = RoundedCornerShape(4.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = SoftRed,
             contentColor = Color.White
         ),
-        contentPadding = PaddingValues(10.dp),
-        modifier = Modifier.padding(5.dp)
+        contentPadding = PaddingValues(10.dp)
     ) {
         Text(
             text = text,
@@ -135,7 +134,6 @@ private fun AuthorNavigationButton(text: String, onClick: () -> Unit) =
 
 @Composable
 private fun LoadImageByName(imageName: String) {
-
     val resourceId = resourceMap[imageName]
 
     resourceId?.let { id ->
@@ -144,21 +142,18 @@ private fun LoadImageByName(imageName: String) {
         Image(
             painter = painter,
             contentDescription = null,
-            alignment = Alignment.Center,
-            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clip(CircleShape)
                 .size(200.dp),
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Crop,
         )
     }
-
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun AuthorsScreenPreview() {
-    AuthorsScreen()
-}
+fun AuthorsScreenPreview() = AuthorsScreen()
 
 private fun nextIndex(index: Int): Int =
     if (index == authors.size - 1) 0 else index + 1
