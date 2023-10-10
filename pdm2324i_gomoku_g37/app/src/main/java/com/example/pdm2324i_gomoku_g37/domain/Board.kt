@@ -8,7 +8,7 @@ import com.example.pdm2324i_gomoku_g37.domain.board.cellsInDir
 
 const val BOARD_DIM = 15
 const val N_ON_ROW = 5
-const val BOARD_CELL_SIZE = 20
+const val BOARD_CELL_SIZE = 21
 
 sealed class Board(val positions: Map<Cell, Piece>) {
     fun addPiece(cell: Cell): BoardRun {
