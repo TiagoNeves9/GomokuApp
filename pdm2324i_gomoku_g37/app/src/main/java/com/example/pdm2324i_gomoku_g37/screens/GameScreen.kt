@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,17 +64,10 @@ fun GameScreen(game: Game) {
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (currentGame.board is BoardEnd) {
-                    DrawBoard(currentGame.board)
-                } else {
-                    DrawBoard(currentGame.board) { cell ->
-                        currentGame = currentGame.computeNewGame(cell)
-                    }
-                }
 
-                /*DrawBoard(currentGame.board) { cell ->
+                DrawBoard(currentGame.board) { cell ->
                     currentGame = currentGame.computeNewGame(cell)
-                }*/
+                }
 
                 Spacer(modifier = Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
 
@@ -82,13 +76,9 @@ fun GameScreen(game: Game) {
                     if (currentGame.board is BoardEnd)
                         Text("Game finished!", color = Color.Red)
                     else {
-                        val pieceToDraw = if (currentGame.currentPlayer.color == Piece.BLACK_PIECE) R.drawable.b
-                                            else R.drawable.w
                         Text("Turn: ", color = Color.Red)
-                        Image(
-                            painter = painterResource(id = pieceToDraw),
-                            contentDescription = null
-                        )
+                        if (currentGame.currentPlayer.color == Piece.BLACK_PIECE) DrawBlackPiece()
+                        else DrawWhitePiece()
                     }
                 }
             }
@@ -165,27 +155,22 @@ fun AxisText(text: String) {
 }
 
 @Composable
-fun CellsView(board: Board, onClick: (Cell) -> Unit) {
+fun CellsView(board: Board, onClick: (Cell) -> Unit = {}) {
     Column {
         repeat (BOARD_DIM) { line ->
             Row {
                 repeat(BOARD_DIM) { col ->
                     val cell = Cell(line, col)
-                    DrawCells {
-                        when (board.positions[cell]) {
-                            Piece.BLACK_PIECE -> {
-                                Image(painter = painterResource(R.drawable.b), contentDescription = null)
-                            }
-
-                            Piece.WHITE_PIECE -> {
-                                Image(painterResource(id = R.drawable.w), contentDescription = null)
-                            }
-
-                            else -> TextButton(
-                                onClick = { onClick(cell) },
-                                enabled = board is BoardRun
-                            ) {}
+                    when (board.positions[cell]) {
+                        Piece.BLACK_PIECE -> DrawCells(enabled = false) {
+                                DrawBlackPiece()
                         }
+
+                        Piece.WHITE_PIECE -> DrawCells(enabled = false) {
+                                DrawWhitePiece()
+                        }
+
+                        else -> DrawCells({ onClick(cell) }, enabled = true)
                     }
                 }
             }
@@ -194,12 +179,15 @@ fun CellsView(board: Board, onClick: (Cell) -> Unit) {
 }
 
 @Composable
-fun DrawCells(content: @Composable () -> Unit = {}) {
+fun DrawCells(onClick: () -> Unit = {}, enabled: Boolean, content: @Composable () -> Unit = {}) {
     val padding = (BOARD_CELL_SIZE / 2).dp
     val modifier = Modifier
         .testTag("clickableCell")
         .size(BOARD_CELL_SIZE.dp)
         .background(color = Color.White)
+        .clickable(enabled = enabled) {
+            onClick()
+        }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -230,6 +218,16 @@ fun DrawPlusSymbol(padding: Dp) {
             strokeWidth = 60F   //TODO 60F é hard-coded
         )
     }
+}
+
+@Composable
+fun DrawBlackPiece() {
+    Image(painter = painterResource(id = R.drawable.b), contentDescription = null)
+}
+
+@Composable
+fun DrawWhitePiece() {
+    Image(painter = painterResource(id = R.drawable.w), contentDescription = null)
 }
 
 @Composable
