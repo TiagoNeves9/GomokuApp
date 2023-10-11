@@ -1,4 +1,4 @@
-package com.example.pdm2324i_gomoku_g37.Game
+package com.example.pdm2324i_gomoku_g37.screens.game
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -48,7 +48,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
 
 @Composable
-fun GameScreen(game: Game) {
+fun GameScreen(game: GameActivity) {
     var currentGame by remember { mutableStateOf(game) }
 
     val modifier = Modifier
@@ -254,6 +254,6 @@ fun GameScreenPreview() {
     val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
     val playerWhite = Player("WhitePlayer", Piece.WHITE_PIECE)
     val board = createBoard(playerBlack.color)
-    val game = Game(Pair(playerBlack, playerWhite), board, playerBlack)
+    val game = GameActivity(Pair(playerBlack, playerWhite), board, playerBlack)
     GameScreen(game)
 }

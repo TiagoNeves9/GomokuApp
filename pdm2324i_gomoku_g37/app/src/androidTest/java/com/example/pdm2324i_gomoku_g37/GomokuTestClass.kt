@@ -5,11 +5,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.pdm2324i_gomoku_g37.Game.Game
+import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.createBoard
-import com.example.pdm2324i_gomoku_g37.Game.GameScreen
+import com.example.pdm2324i_gomoku_g37.screens.game.GameScreen
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -29,7 +29,7 @@ class GomokuTestClass {
     val playerB = Player("Gyokeres",Piece.BLACK_PIECE)
     val players = Pair<Player,Player>(playerW,playerB)
     val board = createBoard(playerW.piece())
-    val game =  Game(players,board,playerW)
+    val game =  GameActivity(players,board,playerW)
     @Test
     fun screen_initial_state_display_board() {
 

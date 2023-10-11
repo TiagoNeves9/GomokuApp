@@ -11,6 +11,9 @@ const val N_ON_ROW = 5
 const val BOARD_CELL_SIZE = 21
 
 sealed class Board(val positions: Map<Cell, Piece>) {
+    init {
+        check(BOARD_DIM >= N_ON_ROW) { "Board dimension must be >= to $N_ON_ROW" }
+    }
     fun addPiece(cell: Cell): BoardRun {
         check(this is BoardRun) { "Game finished." }
 
