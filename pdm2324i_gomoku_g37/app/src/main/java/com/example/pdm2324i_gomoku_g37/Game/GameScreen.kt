@@ -1,4 +1,4 @@
-package com.example.pdm2324i_gomoku_g37.screens
+package com.example.pdm2324i_gomoku_g37.Game
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -38,7 +38,6 @@ import com.example.pdm2324i_gomoku_g37.domain.Board
 import com.example.pdm2324i_gomoku_g37.domain.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.BoardWin
-import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece

@@ -1,5 +1,9 @@
-package com.example.pdm2324i_gomoku_g37.domain
+package com.example.pdm2324i_gomoku_g37.Game
 
+import com.example.pdm2324i_gomoku_g37.domain.Board
+import com.example.pdm2324i_gomoku_g37.domain.BoardDraw
+import com.example.pdm2324i_gomoku_g37.domain.BoardWin
+import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 
 

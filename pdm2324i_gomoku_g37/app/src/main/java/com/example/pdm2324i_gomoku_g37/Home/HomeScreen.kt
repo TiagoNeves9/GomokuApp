@@ -1,5 +1,6 @@
-package com.example.pdm2324i_gomoku_g37.screens
+package com.example.pdm2324i_gomoku_g37.Home
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,11 +26,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pdm2324i_gomoku_g37.Authors.Title
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() =
+fun HomeScreen(
+    onAuthorsRequest : () -> Unit = { }
+) {
     Pdm2324i_gomoku_g37Theme {
         Surface(
             color = MaterialTheme.colorScheme.background
@@ -88,7 +93,7 @@ fun HomeScreen() =
                         Modifier,
                         Arrangement.Center
                     ) {
-                        MenuButton {
+                        MenuButton(onAuthorsRequest) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -97,14 +102,14 @@ fun HomeScreen() =
                                     contentDescription = "Authors"
                                 )
                                 Text(
-                                    text = "Rankings",
+                                    text = "Authors",
                                     fontSize = 12.sp,
                                     textAlign = TextAlign.Center
                                 )
                             }
                         }
 
-                        MenuButton {
+                        MenuButton() {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -124,6 +129,7 @@ fun HomeScreen() =
             }
         }
     }
+}
 
 @Composable
 private fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
