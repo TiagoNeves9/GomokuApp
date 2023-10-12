@@ -1,9 +1,6 @@
-package com.example.pdm2324i_gomoku_g37.domain
+package com.example.pdm2324i_gomoku_g37.domain.board
 
-import com.example.pdm2324i_gomoku_g37.domain.board.Cell
-import com.example.pdm2324i_gomoku_g37.domain.board.Direction
-import com.example.pdm2324i_gomoku_g37.domain.board.Piece
-import com.example.pdm2324i_gomoku_g37.domain.board.cellsInDir
+import com.example.pdm2324i_gomoku_g37.domain.Player
 
 
 const val BOARD_DIM = 15

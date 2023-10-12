@@ -32,18 +32,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
-import com.example.pdm2324i_gomoku_g37.domain.BOARD_CELL_SIZE
-import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
-import com.example.pdm2324i_gomoku_g37.domain.Board
-import com.example.pdm2324i_gomoku_g37.domain.BoardDraw
-import com.example.pdm2324i_gomoku_g37.domain.BoardRun
-import com.example.pdm2324i_gomoku_g37.domain.BoardWin
+import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_CELL_SIZE
+import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
+import com.example.pdm2324i_gomoku_g37.domain.board.Board
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
-import com.example.pdm2324i_gomoku_g37.domain.createBoard
+import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
 

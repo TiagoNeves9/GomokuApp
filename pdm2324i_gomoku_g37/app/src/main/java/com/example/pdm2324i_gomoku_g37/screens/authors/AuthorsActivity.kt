@@ -7,10 +7,10 @@ import androidx.activity.compose.setContent
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.MainActivity
 
-class AuthorsActivity : ComponentActivity() {
 
-    companion object{
-        fun navigateTo(origin : HomeActivity) {
+class AuthorsActivity : ComponentActivity() {
+    companion object {
+        fun navigateTo(origin: HomeActivity) {
             val intent = Intent(origin, AuthorsActivity::class.java)
             origin.startActivity(intent)
         }

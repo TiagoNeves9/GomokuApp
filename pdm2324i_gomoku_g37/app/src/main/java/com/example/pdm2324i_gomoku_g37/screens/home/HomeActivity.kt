@@ -7,15 +7,16 @@ import androidx.activity.compose.setContent
 import com.example.pdm2324i_gomoku_g37.MainActivity
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsActivity
 
-class HomeActivity : ComponentActivity(){
 
-    companion object{
-        fun navigateTo(origin : MainActivity) {
+class HomeActivity : ComponentActivity() {
+    companion object {
+        fun navigateTo(origin: MainActivity) {
             val intent = Intent(origin, HomeActivity::class.java)
             origin.startActivity(intent)
         }
     }
-    override fun onCreate(savedInstance : Bundle?){
+
+    override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContent {
             HomeScreen(
@@ -25,5 +26,4 @@ class HomeActivity : ComponentActivity(){
             )
         }
     }
-
 }

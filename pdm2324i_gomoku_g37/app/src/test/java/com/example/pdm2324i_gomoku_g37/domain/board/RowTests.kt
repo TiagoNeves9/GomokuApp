@@ -1,6 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
-import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

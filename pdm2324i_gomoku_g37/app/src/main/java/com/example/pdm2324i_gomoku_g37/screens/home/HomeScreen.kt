@@ -28,11 +28,10 @@ import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.screens.authors.Title
 import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    onAuthorsRequested : () -> Unit = { }
-) {
+fun HomeScreen(onAuthorsRequested: () -> Unit = { }) {
     Pdm2324i_gomoku_g37Theme {
         Surface(
             color = MaterialTheme.colorScheme.background

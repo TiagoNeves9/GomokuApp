@@ -1,7 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
-import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
-
 
 class Cell private constructor(val row: Row, val col: Column) {
     val rowIndex: Int = row.index

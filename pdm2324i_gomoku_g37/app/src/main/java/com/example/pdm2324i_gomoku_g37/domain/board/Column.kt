@@ -1,7 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
-import com.example.pdm2324i_gomoku_g37.domain.BOARD_DIM
-
 
 class Column private constructor(val symbol: Char) {
     val index get() = values.indexOf(this)

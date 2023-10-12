@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
-import com.example.pdm2324i_gomoku_g37.domain.createBoard
+import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.screens.game.GameScreen
 import org.junit.Test
 import org.junit.runner.RunWith

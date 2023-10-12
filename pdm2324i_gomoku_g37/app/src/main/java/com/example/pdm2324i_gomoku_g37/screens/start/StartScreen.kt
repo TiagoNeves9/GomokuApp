@@ -4,6 +4,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
+
 @Composable
 fun StartScreen(onHomeRequested: () -> Unit = {}) {
     Button(onClick = onHomeRequested) {
