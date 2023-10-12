@@ -26,7 +26,8 @@ class MainActivity : ComponentActivity() {
             val playerBlack = Player(User("BlackPlayer"), Turn(Piece.BLACK_PIECE))
             val playerWhite = Player(User("WhitePlayer"), Turn(Piece.WHITE_PIECE))
             val board = createBoard(playerBlack.second.color)
-            val game = GameActivity(Pair(playerBlack, playerWhite), board, playerBlack)
+            val game =
+                GameActivity(Pair(playerBlack.first, playerWhite.first), board, playerBlack)
             GameScreen(game)
         }
     }

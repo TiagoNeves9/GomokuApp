@@ -14,11 +14,10 @@ data class User(val username: String)
 
 data class Turn(val color: Piece) {
     //TODO Does turn needs score?
-    /*
     fun other() =
         if (this.color == Piece.WHITE_PIECE) Piece.BLACK_PIECE
         else Piece.WHITE_PIECE
-
+    /*
     fun piece(): Piece =
         if (this.color == Piece.BLACK_PIECE) Piece.BLACK_PIECE
         else Piece.WHITE_PIECE

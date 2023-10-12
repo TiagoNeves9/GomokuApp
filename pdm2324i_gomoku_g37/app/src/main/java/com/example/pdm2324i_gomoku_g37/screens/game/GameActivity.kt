@@ -10,11 +10,11 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 
 
 data class GameActivity(
-    val players: Pair<Player, Player>, val board: Board, val currentPlayer: Player
+    val users: Pair<User, User>, val board: Board, val currentPlayer: Player
 ) {
     private fun switchTurn() =
-        if (currentPlayer == players.first) players.second
-        else players.first
+        if (currentPlayer.first == users.first) users.second
+        else users.first
 
     fun computeNewGame(cell: Cell): GameActivity {
         val newBoard = this.board.addPiece(cell)
@@ -23,6 +23,11 @@ data class GameActivity(
             this.copy(board = BoardWin(newBoard.positions, this.currentPlayer))
         else if (newBoard.checkDraw())
             this.copy(board = BoardDraw(newBoard.positions))
-        else this.copy(board = newBoard, currentPlayer = this.switchTurn())
+        else this.copy(
+            board = newBoard,
+            currentPlayer = Player(
+                this.switchTurn(), Turn(this.currentPlayer.second.other())
+            )
+        )
     }
 }
