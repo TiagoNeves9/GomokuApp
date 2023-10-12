@@ -32,13 +32,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.Turn
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
-import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
@@ -233,7 +235,7 @@ fun DrawTurnOrWinnerPiece(board: Board) =
         if (board.turn == Piece.BLACK_PIECE) DrawBlackPiece()
         else DrawWhitePiece()
     else if (board is BoardWin)
-        if (board.winner.color == Piece.BLACK_PIECE) DrawBlackPiece()
+        if (board.winner.second.color == Piece.BLACK_PIECE) DrawBlackPiece()
         else DrawWhitePiece()
     else throw IllegalStateException("Game is running or finished with a winner.")
 
@@ -251,9 +253,9 @@ fun StatusBar(content: @Composable () -> Unit = {}) {
 @Preview
 @Composable
 fun GameScreenPreview() {
-    val playerBlack = Player("BlackPlayer", Piece.BLACK_PIECE)
-    val playerWhite = Player("WhitePlayer", Piece.WHITE_PIECE)
-    val board = createBoard(playerBlack.color)
+    val playerBlack = Player(User("BlackPlayer"), Turn(Piece.BLACK_PIECE))
+    val playerWhite = Player(User("WhitePlayer"), Turn(Piece.WHITE_PIECE))
+    val board = createBoard(playerBlack.second.color)
     val game = GameActivity(Pair(playerBlack, playerWhite), board, playerBlack)
     GameScreen(game)
 }

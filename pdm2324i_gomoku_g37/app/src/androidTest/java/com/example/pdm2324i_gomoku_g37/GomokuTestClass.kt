@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
-import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.screens.game.GameScreen
@@ -25,9 +25,9 @@ import org.junit.Rule
 class GomokuTestClass {
     @get:Rule
     val composeTestRule = createComposeRule()
-    val playerW = Player("Cabral",Piece.WHITE_PIECE)
-    val playerB = Player("Gyokeres",Piece.BLACK_PIECE)
-    val players = Pair<Player,Player>(playerW,playerB)
+    val playerW = User("Cabral",Piece.WHITE_PIECE)
+    val playerB = User("Gyokeres",Piece.BLACK_PIECE)
+    val players = Pair<User,User>(playerW,playerB)
     val board = createBoard(playerW.piece())
     val game =  GameActivity(players,board,playerW)
     @Test

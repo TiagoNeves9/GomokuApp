@@ -6,8 +6,8 @@ import kotlin.test.assertSame
 
 
 class PlayerTests {
-    private val playerBlack = Player("PlayerB", Piece.BLACK_PIECE)
-    private val playerWhite = Player("PlayerW", Piece.WHITE_PIECE)
+    private val playerBlack = User("PlayerB", Piece.BLACK_PIECE)
+    private val playerWhite = User("PlayerW", Piece.WHITE_PIECE)
 
     @Test
     fun `Test other Player`() {
