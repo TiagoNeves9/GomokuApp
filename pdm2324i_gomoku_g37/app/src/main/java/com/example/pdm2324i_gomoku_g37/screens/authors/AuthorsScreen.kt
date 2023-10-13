@@ -38,7 +38,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.authors
 import com.example.pdm2324i_gomoku_g37.resourceMap
 import com.example.pdm2324i_gomoku_g37.ui.theme.LightBlue
-import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
 
 
@@ -46,7 +46,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
 fun AuthorsScreen() {
     var index by remember { mutableStateOf(0) }
 
-    Pdm2324i_gomoku_g37Theme {
+    GomokuTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             color = MaterialTheme.colorScheme.background

@@ -46,7 +46,7 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
-import com.example.pdm2324i_gomoku_g37.ui.theme.Pdm2324i_gomoku_g37Theme
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 @Composable
@@ -57,7 +57,7 @@ fun GameScreen(game: GameActivity) {
         .background(Color.DarkGray)
         .fillMaxSize()
 
-    Pdm2324i_gomoku_g37Theme {
+    GomokuTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             Column(
                 modifier,
@@ -250,7 +250,7 @@ fun StatusBar(content: @Composable () -> Unit = {}) {
     Text("Group 37 - Gomoku ", color = Color.Blue)
 }
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GameScreenPreview() {
     val playerBlack = Player(User("BlackPlayer"), Turn(Piece.BLACK_PIECE))

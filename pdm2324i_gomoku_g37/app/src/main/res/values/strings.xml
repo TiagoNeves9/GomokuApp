@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">pdm2324i_gomoku_g37</string>
+    <string name="app_name">Gomoku G37</string>
+    <string name="top_bar_go_back">Back</string>
+    <string name="top_bar_navigate_to_about">About</string>
 </resources>

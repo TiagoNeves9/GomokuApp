@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
-import com.example.pdm2324i_gomoku_g37.MainActivity
 
 
 class AuthorsActivity : ComponentActivity() {
