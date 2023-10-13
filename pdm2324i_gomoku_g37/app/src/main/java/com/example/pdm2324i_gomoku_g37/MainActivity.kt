@@ -18,17 +18,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            /*StartScreen(
+            StartScreen(
                 onHomeRequested = {
                     HomeActivity.navigateTo(origin = this)
                 }
-            )*/
-            val playerBlack = Player(User("BlackPlayer"), Turn(Piece.BLACK_PIECE))
+            )
+            /*val playerBlack = Player(User("BlackPlayer"), Turn(Piece.BLACK_PIECE))
             val playerWhite = Player(User("WhitePlayer"), Turn(Piece.WHITE_PIECE))
             val board = createBoard(playerBlack.second.color)
             val game =
                 GameActivity(Pair(playerBlack.first, playerWhite.first), board, playerBlack)
-            GameScreen(game)
+            GameScreen(game)*/
         }
     }
 }
