@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 
+
 /**
  * Used to aggregate [TopBar] navigation handlers. If a handler is null, the corresponding
  * navigation element is not displayed.
@@ -62,11 +63,11 @@ fun TopBar(navigation: NavigationHandlers = NavigationHandlers()) {
                 }
             }
         }
-    )}
-
+    )
+}
 
 @Preview
 @Composable
-fun topBarPreview(){
+fun topBarPreview() {
     TopBar(navigation = NavigationHandlers(onBackRequested = {}))
 }

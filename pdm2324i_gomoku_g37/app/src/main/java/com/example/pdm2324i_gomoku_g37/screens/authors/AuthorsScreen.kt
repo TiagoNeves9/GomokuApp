@@ -151,12 +151,12 @@ private fun LoadImageByName(imageName: String) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun AuthorsScreenPreview() = AuthorsScreen()
-
 private fun nextIndex(index: Int): Int =
     if (index == authors.size - 1) 0 else index + 1
 
 private fun prevIndex(index: Int): Int =
     if (index == 0) authors.size - 1 else index - 1
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun AuthorsScreenPreview() = AuthorsScreen()

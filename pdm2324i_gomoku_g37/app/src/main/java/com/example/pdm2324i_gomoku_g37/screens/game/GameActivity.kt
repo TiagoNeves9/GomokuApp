@@ -1,11 +1,10 @@
 package com.example.pdm2324i_gomoku_g37.screens.game
 
 import com.example.pdm2324i_gomoku_g37.domain.Player
-import com.example.pdm2324i_gomoku_g37.domain.Turn
+import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
-import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 
 
