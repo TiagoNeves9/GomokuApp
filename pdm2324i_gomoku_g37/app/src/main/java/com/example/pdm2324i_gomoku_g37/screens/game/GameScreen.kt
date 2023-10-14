@@ -42,11 +42,11 @@ import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
-import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+import java.util.UUID
 
 
 @Composable
@@ -164,11 +164,11 @@ fun CellsView(board: Board, onClick: (Cell) -> Unit = {}) =
                 repeat(BOARD_DIM) { col ->
                     val cell = Cell(line, col)
                     when (board.positions[cell]) {
-                        Piece.BLACK_PIECE -> DrawCells(enabled = false) {
+                        Turn.BLACK_PIECE -> DrawCells(enabled = false) {
                             DrawBlackPiece()
                         }
 
-                        Piece.WHITE_PIECE -> DrawCells(enabled = false) {
+                        Turn.WHITE_PIECE -> DrawCells(enabled = false) {
                             DrawWhitePiece()
                         }
 
@@ -232,10 +232,10 @@ fun DrawWhitePiece() =
 @Composable
 fun DrawTurnOrWinnerPiece(board: Board) =
     if (board is BoardRun)
-        if (board.turn == Piece.BLACK_PIECE) DrawBlackPiece()
+        if (board.turn == Turn.BLACK_PIECE) DrawBlackPiece()
         else DrawWhitePiece()
     else if (board is BoardWin)
-        if (board.winner.second.color == Piece.BLACK_PIECE) DrawBlackPiece()
+        if (board.winner.second == Turn.BLACK_PIECE) DrawBlackPiece()
         else DrawWhitePiece()
     else throw IllegalStateException("Game is running or finished with a winner.")
 
@@ -253,9 +253,15 @@ fun StatusBar(content: @Composable () -> Unit = {}) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GameScreenPreview() {
-    val playerBlack = Player(User("BlackPlayer"), Turn(Piece.BLACK_PIECE))
-    val playerWhite = Player(User("WhitePlayer"), Turn(Piece.WHITE_PIECE))
-    val board = createBoard(playerBlack.second.color)
+    val playerBlack = Player(
+        User(UUID.randomUUID(), "BlackPlayer", "enconded123"),
+        Turn.BLACK_PIECE
+    )
+    val playerWhite = Player(
+        User(UUID.randomUUID(), "WhitePlayer", "encodedXYZ"),
+        Turn.WHITE_PIECE
+    )
+    val board = createBoard(playerBlack.second)
     val game = GameActivity(Pair(playerBlack.first, playerWhite.first), board, playerBlack)
     GameScreen(game)
 }

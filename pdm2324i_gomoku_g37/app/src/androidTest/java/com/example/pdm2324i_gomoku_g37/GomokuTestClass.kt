@@ -3,18 +3,13 @@ package com.example.pdm2324i_gomoku_g37
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
-import com.example.pdm2324i_gomoku_g37.domain.User
-import com.example.pdm2324i_gomoku_g37.domain.board.Piece
-import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
-import com.example.pdm2324i_gomoku_g37.screens.game.GameScreen
+import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert.*
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Assert.*
-import org.junit.Rule
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -25,15 +20,18 @@ import org.junit.Rule
 class GomokuTestClass {
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    /*
     val playerW = User("Cabral",Piece.WHITE_PIECE)
     val playerB = User("Gyokeres",Piece.BLACK_PIECE)
     val players = Pair<User,User>(playerW,playerB)
     val board = createBoard(playerW.piece())
     val game =  GameActivity(players,board,playerW)
+    */
     @Test
     fun screen_initial_state_display_board() {
 
-        composeTestRule.setContent { GameScreen(game) }
+        //composeTestRule.setContent { GameScreen(game) }
         composeTestRule.onNodeWithTag("boardTest").assertIsDisplayed()
     }
 

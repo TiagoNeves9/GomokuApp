@@ -1,13 +1,14 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
 import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.Turn
 
 
 const val BOARD_DIM = 15
 const val N_ON_ROW = 5
 const val BOARD_CELL_SIZE = 21
 
-sealed class Board(val positions: Map<Cell, Piece>) {
+sealed class Board(val positions: Map<Cell, Turn>) {
     init {
         check(BOARD_DIM >= N_ON_ROW) { "Board dimension must be >= to $N_ON_ROW" }
     }
@@ -18,13 +19,13 @@ sealed class Board(val positions: Map<Cell, Piece>) {
         return if (this.positions[cell] != null)
             throw IllegalArgumentException("Square already occupied!")
         else {
-            val newMap: Map<Cell, Piece> = this.positions + mapOf(cell to this.turn)
+            val newMap: Map<Cell, Turn> = this.positions + mapOf(cell to this.turn)
             BoardRun(newMap, this.turn.other())
         }
     }
 }
 
-class BoardRun(positions: Map<Cell, Piece>, val turn: Piece) : Board(positions) {
+class BoardRun(positions: Map<Cell, Turn>, val turn: Turn) : Board(positions) {
     fun checkWin(lastMove: Cell): Boolean =
         positions.size >= 2 * N_ON_ROW - 1 && (
                 checkWinInDir(lastMove, Direction.UP, Direction.DOWN) ||
@@ -56,16 +57,16 @@ class BoardRun(positions: Map<Cell, Piece>, val turn: Piece) : Board(positions) 
     }
 }
 
-class BoardWin(positions: Map<Cell, Piece>, val winner: Player) : Board(positions)
+class BoardWin(positions: Map<Cell, Turn>, val winner: Player) : Board(positions)
 
-class BoardDraw(positions: Map<Cell, Piece>) : Board(positions)
+class BoardDraw(positions: Map<Cell, Turn>) : Board(positions)
 
 
-fun createBoard(firstTurn: Piece) = BoardRun(mapOf(), firstTurn)
+fun createBoard(firstTurn: Turn) = BoardRun(mapOf(), firstTurn)
 
 val exampleMap = mapOf(
-    Cell(0, 0) to Piece.BLACK_PIECE,
-    Cell(0, 10) to Piece.BLACK_PIECE,
-    Cell(10, 0) to Piece.WHITE_PIECE,
-    Cell(15, 15) to Piece.WHITE_PIECE
+    Cell(0, 0) to Turn.BLACK_PIECE,
+    Cell(0, 10) to Turn.BLACK_PIECE,
+    Cell(10, 0) to Turn.WHITE_PIECE,
+    Cell(15, 15) to Turn.WHITE_PIECE
 )

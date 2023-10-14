@@ -25,9 +25,7 @@ data class GameActivity(
             this.copy(board = BoardDraw(newBoard.positions))
         else this.copy(
             board = newBoard,
-            currentPlayer = Player(
-                this.switchTurn(), Turn(this.currentPlayer.second.other())
-            )
+            currentPlayer = Player(this.switchTurn(), this.currentPlayer.second.other())
         )
     }
 }
