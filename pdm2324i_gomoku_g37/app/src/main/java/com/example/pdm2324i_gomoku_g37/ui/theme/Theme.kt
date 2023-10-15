@@ -20,15 +20,15 @@ private val DarkColorScheme = darkColorScheme(
     secondary = PurpleGrey80,
     tertiary = Pink80,
     background = Blue50,
-    surface = Blue50,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    background = Blue50,
-    surface = Blue50,
+    primary = BackgroundBlue, //Default button/notification bar color
+    secondary = Blue80,
+    tertiary = Grey10,
+    background = PrimaryBlue,
+    onBackground = Blue80,
+    onPrimaryContainer = Grey10
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
