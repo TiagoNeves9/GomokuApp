@@ -2,4 +2,10 @@
     <string name="app_name">Gomoku G37</string>
     <string name="top_bar_go_back">Back</string>
     <string name="top_bar_navigate_to_about">About</string>
+    <string name="activity_main_description">
+        Have fun playing an abstract strategy board game, called Gomoku or Five in a Row
+    </string>
+    <string name="activity_main_login">Login</string>
+    <string name="activity_main_signup">Sign Up</string>
+    <string name="activity_main_footer">Group 37 - PDM 2023/24</string>
 </resources>

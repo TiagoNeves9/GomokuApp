@@ -89,7 +89,9 @@ fun Title(text: String) =
     Text(
         text = text,
         modifier = Modifier.padding(bottom = 15.dp),
-        fontSize = 35.sp
+        fontSize = 35.sp,
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onBackground
     )
 
 @Composable
