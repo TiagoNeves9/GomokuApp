@@ -1,30 +1,29 @@
 package com.example.pdm2324i_gomoku_g37.screens.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomButtonView
+import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
+import com.example.pdm2324i_gomoku_g37.screens.components.CustomFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
+import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_BUTTON_FONT_SIZE
+import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
+import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PADDING
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,14 +31,21 @@ import com.example.pdm2324i_gomoku_g37.R
 fun MainScreen(onHomeRequested: () -> Unit = {}) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = { BottomBar() }
+        bottomBar = {
+            CustomFooterView {
+                Text(
+                    text = stringResource(id = R.string.activity_main_footer),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     ) { padding ->
-        CustomContainer(
+        CustomContainerView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Title()
+            LargeCustomTitleView(text = "Gomoku")
             Image(painter = painterResource(id = R.drawable.img_gomoku_icon), contentDescription = null)
             DescriptionContainer()
             ButtonsContainer(onHomeRequested)
@@ -47,20 +53,11 @@ fun MainScreen(onHomeRequested: () -> Unit = {}) =
     }
 
 @Composable
-fun Title() =
-    Text(
-        text = "Gomoku",
-        modifier = Modifier.padding(bottom = 15.dp),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-
-@Composable
-fun DescriptionContainer() =
-    CustomContainer(
+private fun DescriptionContainer() =
+    CustomContainerView(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 15.dp, bottom = 15.dp, start = 30.dp, end = 30.dp)
+            .padding(all = MAIN_SCREEN_DEFAULT_PADDING)
     ) {
         Text(
             text = stringResource(id = R.string.activity_main_description),
@@ -70,61 +67,26 @@ fun DescriptionContainer() =
     }
 
 @Composable
-fun ButtonsContainer(onHomeRequested: () -> Unit = {}) =
-    CustomContainer(
+private fun ButtonsContainer(onHomeRequested: () -> Unit = {}) =
+    CustomContainerView(
         modifier = Modifier
-            .padding(top = 15.dp)
+            .padding(top = MAIN_SCREEN_SPACING_PADDING)
     ) {
-        CustomButton(onClick = onHomeRequested) {
+        LargeCustomButtonView(onClick = onHomeRequested) {
             Text(
                 text = stringResource(id = R.string.activity_main_login),
-                fontSize = 20.sp
+                fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
             )
         }
 
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(MAIN_SCREEN_SPACING_PADDING))
 
-        CustomButton {
+        LargeCustomButtonView {
             Text(
                 text = stringResource(id = R.string.activity_main_signup),
-                fontSize = 20.sp
+                fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
             )
         }
-    }
-
-@Composable
-fun BottomBar() =
-    CustomContainer(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 15.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.activity_main_footer),
-            textAlign = TextAlign.Center
-        )
-    }
-
-@Composable
-fun CustomButton(onClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
-    Button(
-        shape = RoundedCornerShape(4.dp),
-        onClick = onClick,
-        modifier = Modifier
-            .size(width = 200.dp, height = 70.dp)
-    ) {
-        content()
-    }
-}
-
-@Composable
-fun CustomContainer(modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) =
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ) {
-        content()
     }
 
 @Preview(showBackground = true, showSystemUi = true)
