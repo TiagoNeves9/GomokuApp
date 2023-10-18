@@ -28,9 +28,7 @@ const val LoginScreenTestTag = "LoginScreenTestTag"
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
 @Composable
-fun LoginForm(
-    onBackRequested: () -> Unit = { }
-) {
+fun LoginScreen (onBackRequested: () -> Unit = { }) {
     var textUsername by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
 
@@ -68,5 +66,5 @@ fun LoginForm(
 @Preview
 @Composable
 fun loginPreview() {
-    LoginForm()
+    LoginScreen()
 }

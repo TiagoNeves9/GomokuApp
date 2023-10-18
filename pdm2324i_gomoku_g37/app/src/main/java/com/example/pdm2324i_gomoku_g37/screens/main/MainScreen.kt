@@ -28,7 +28,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PA
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onHomeRequested: () -> Unit = {}) =
+fun MainScreen(onLoginRequested: () -> Unit = {}, onRegisterRequested: () -> Unit = {}) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
@@ -48,7 +48,7 @@ fun MainScreen(onHomeRequested: () -> Unit = {}) =
             LargeCustomTitleView(text = "Gomoku")
             Image(painter = painterResource(id = R.drawable.img_gomoku_icon), contentDescription = null)
             DescriptionContainer()
-            ButtonsContainer(onHomeRequested)
+            ButtonsContainer(onLoginRequested, onRegisterRequested)
         }
     }
 
@@ -67,12 +67,11 @@ private fun DescriptionContainer() =
     }
 
 @Composable
-private fun ButtonsContainer(onHomeRequested: () -> Unit = {}) =
+private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: () -> Unit) =
     CustomContainerView(
-        modifier = Modifier
-            .padding(top = MAIN_SCREEN_SPACING_PADDING)
+        modifier = Modifier.padding(top = MAIN_SCREEN_SPACING_PADDING)
     ) {
-        LargeCustomButtonView(onClick = onHomeRequested) {
+        LargeCustomButtonView(onClick = onLoginRequested) {
             Text(
                 text = stringResource(id = R.string.activity_main_login),
                 fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE

@@ -29,6 +29,9 @@
         <activity
             android:name=".screens.authors.AuthorsActivity"
             android:exported="false" />
+        <activity
+            android:name=".screens.login.LoginActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
