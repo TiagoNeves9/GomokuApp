@@ -43,7 +43,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
 
 
 @Composable
-fun AuthorsScreen() {
+fun AuthorsScreen(authors: List<Author>) {
     var index by remember { mutableStateOf(0) }
 
     GomokuTheme {
@@ -161,4 +161,4 @@ private fun prevIndex(index: Int): Int =
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun AuthorsScreenPreview() = AuthorsScreen()
+fun AuthorsScreenPreview() = AuthorsScreen(authors = authors)
