@@ -11,7 +11,7 @@ import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 
 class AuthorsActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<AuthorsViewModel>()
+    private val viewModel by viewModels<AuthorsScreenViewModel>()
     private val services = FakeGomokuService()
 
     companion object {
@@ -28,5 +28,10 @@ class AuthorsActivity : ComponentActivity() {
                 authors = viewModel.authors
             )
         }
+    }
+
+    override fun onStart() {
+        viewModel.fetchAuthors(services)
+        super.onStart()
     }
 }

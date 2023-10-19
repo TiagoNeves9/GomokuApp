@@ -28,7 +28,10 @@ const val LoginScreenTestTag = "LoginScreenTestTag"
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
 @Composable
-fun LoginScreen (onBackRequested: () -> Unit = { }) {
+fun LoginScreen (
+    onBackRequested: () -> Unit = { },
+    onHomeRequested: () -> Unit = { }
+) {
     var textUsername by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
 
@@ -56,7 +59,7 @@ fun LoginScreen (onBackRequested: () -> Unit = { }) {
                 value = textPassword,
                 onValueChange = { textPassword = it },
                 label = { Text("Password") })
-            ElevatedButton(onClick = { /*TODO*/ }) {
+            ElevatedButton(onClick = onHomeRequested) {
                 Text(text = "Login")
             }
         }

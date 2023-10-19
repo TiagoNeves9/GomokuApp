@@ -21,6 +21,9 @@ class LoginActivity: ComponentActivity() {
             LoginScreen(
                 onBackRequested = {
                     MainActivity.navigateTo(origin = this)
+                },
+                onHomeRequested = {
+                    HomeActivity.navigateTo(origin = this)
                 }
             )
         }

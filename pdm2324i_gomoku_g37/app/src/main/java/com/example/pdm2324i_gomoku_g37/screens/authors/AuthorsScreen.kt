@@ -43,7 +43,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
 
 
 @Composable
-fun AuthorsScreen(authors: List<Author>) {
+fun AuthorsScreen(authors: List<Author>, onFetchAuthorsRequest: () -> Unit = {}) {
     var index by remember { mutableStateOf(0) }
 
     GomokuTheme {
