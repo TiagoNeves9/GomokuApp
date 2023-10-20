@@ -5,6 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 
 class CellTests {
@@ -113,5 +114,72 @@ class CellTests {
             List(BOARD_DIM - 4) { Cell(3 + it + 1, 2 + it + 1, BOARD_DIM) },
             line2
         )
+    }
+
+    @Test
+    fun `Test distance between two cells horizontally and vertically`() {
+        val from = "8H".toCell(BOARD_DIM) // "8H" is the center of the board
+        val to0 = "8G".toCell(BOARD_DIM)
+        val to1 = "8I".toCell(BOARD_DIM)
+        val to2 = "7H".toCell(BOARD_DIM)
+        val to3 = "9H".toCell(BOARD_DIM)
+        assertEquals(0, from.distance(from))
+        assertEquals(1, from.distance(to0))
+        assertEquals(1, from.distance(to1))
+        assertEquals(1, from.distance(to2))
+        assertEquals(1, from.distance(to3))
+
+        val to4 = "1H".toCell(BOARD_DIM)
+        assertEquals(7, from.distance(to4))
+    }
+
+    @Test
+    fun `Test distance between two cells on diagonally`() {
+        val from = "8H".toCell(BOARD_DIM) // "8H" is the center of the board
+        val to0 = "7G".toCell(BOARD_DIM)
+        val to1 = "7I".toCell(BOARD_DIM)
+        val to2 = "9G".toCell(BOARD_DIM)
+        val to3 = "9I".toCell(BOARD_DIM)
+        assertEquals(1, from.distance(to0))
+        assertEquals(1, from.distance(to1))
+        assertEquals(1, from.distance(to2))
+        assertEquals(1, from.distance(to3))
+
+        val to4 = "6G".toCell(BOARD_DIM)
+        val to5 = "10I".toCell(BOARD_DIM)
+        assertEquals(2, from.distance(to4))
+        assertEquals(2, from.distance(to5))
+
+        val to6 = "1C".toCell(BOARD_DIM)
+        assertEquals(7, from.distance(to6))
+    }
+
+    @Test
+    fun `Test the legal distances for PRO opening rule`() {
+        /** The first player's first stone must be placed in the center of the board.
+         *  The second player's first stone may be placed anywhere on the board.
+         *  The first player's second stone must be placed at least three intersections
+         *  away from the first stone (two empty intersections in between the two stones).
+         *  */
+        val centralCell = "8H".toCell(BOARD_DIM)
+        val to0 = "8F"
+        val to1 = "8G"
+        val to2 = "8I"
+        val to3 = "8J"
+        val to4 = "6H"
+        val to5 = "7H"
+        val to6 = "9H"
+        val to7 = "10H"
+        val to8 = "6F"
+
+        val someIllegalMoves = listOf(to0, to1, to2, to3, to4, to5, to6, to7, to8)
+        someIllegalMoves.forEach {
+            assertTrue { centralCell.distance(it.toCell(BOARD_DIM)) < 3 }
+        }
+
+        val someLegalMoves = listOf("5E", "8E", "1A", "14K")
+        someLegalMoves.forEach {
+            assertTrue { centralCell.distance(it.toCell(BOARD_DIM)) >= 3 }
+        }
     }
 }
