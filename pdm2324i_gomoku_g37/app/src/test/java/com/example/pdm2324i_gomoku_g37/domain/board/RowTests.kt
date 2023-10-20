@@ -22,19 +22,19 @@ class RowTests {
 
     @Test
     fun `Convert a number to a Row`() {
-        assertSame(Row(4), 4.toRowOrNull())
-        assertNull(0.toRowOrNull())
-        assertNull((BOARD_DIM + 1).toRowOrNull())
-        assertSame(Row(4), 4.toRow())
+        assertSame(Row(4), 4.toRowOrNull(BOARD_DIM))
+        assertNull(0.toRowOrNull(BOARD_DIM))
+        assertNull((BOARD_DIM + 1).toRowOrNull(BOARD_DIM))
+        assertSame(Row(4), 4.toRow(BOARD_DIM))
 
-        val ex = assertFailsWith<IllegalArgumentException> { 27.toRow() }
+        val ex = assertFailsWith<IllegalArgumentException> { 27.toRow(BOARD_DIM) }
         assertEquals("Invalid row 27.", ex.message)
     }
 
     @Test
     fun `Row values are correct`() {
-        assertEquals(BOARD_DIM, Row.values.size)
-        assertEquals(0, Row.values[0].index)
-        assertEquals(BOARD_DIM, Row.values[BOARD_DIM - 1].number)
+        assertEquals(BOARD_DIM, Row.valuesMedium.size)
+        assertEquals(0, Row.valuesMedium[0].index)
+        assertEquals(BOARD_DIM, Row.valuesMedium[BOARD_DIM - 1].number)
     }
 }

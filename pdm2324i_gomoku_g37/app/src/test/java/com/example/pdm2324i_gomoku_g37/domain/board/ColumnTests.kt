@@ -22,19 +22,19 @@ class ColumnTests {
 
     @Test
     fun `Convert a symbol to a Column`() {
-        assertSame(Column('B'), 'B'.toColumnOrNull())
-        assertNull('3'.toColumnOrNull())
-        assertNull(('A' + BOARD_DIM).toColumnOrNull())
-        assertSame(Column('C'), 'C'.toColumn())
+        assertSame(Column('B'), 'B'.toColumnOrNull(BOARD_DIM))
+        assertNull('3'.toColumnOrNull(BOARD_DIM))
+        assertNull(('A' + BOARD_DIM).toColumnOrNull(BOARD_DIM))
+        assertSame(Column('C'), 'C'.toColumn(BOARD_DIM))
 
-        val ex = assertFailsWith<IllegalArgumentException> { '?'.toColumn() }
+        val ex = assertFailsWith<IllegalArgumentException> { '?'.toColumn(BOARD_DIM) }
         assertEquals("Invalid column ?.", ex.message)
     }
 
     @Test
     fun `Column values are correct`() {
-        assertEquals(BOARD_DIM, Column.values.size)
-        assertEquals(0, Column.values[0].index)
-        assertEquals('A' + BOARD_DIM - 1, Column.values[BOARD_DIM - 1].symbol)
+        assertEquals(BOARD_DIM, Column.valuesMedium.size)
+        assertEquals(0, Column.valuesMedium[0].index)
+        assertEquals('A' + BOARD_DIM - 1, Column.valuesMedium[BOARD_DIM - 1].symbol)
     }
 }

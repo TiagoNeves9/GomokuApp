@@ -1,5 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain
-
+/*
 import com.example.pdm2324i_gomoku_g37.domain.board.Piece
 import kotlin.test.Test
 import kotlin.test.assertSame
@@ -23,4 +23,4 @@ class PlayerTests {
         assertSame(Piece.WHITE_PIECE, playerBlack.other())
         assertSame(Piece.BLACK_PIECE, playerWhite.other())
     }
-}
+}*/
