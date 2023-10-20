@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class AuthorsScreenViewModel : ViewModel(){
 
-    var authors: List<Author> by mutableStateOf(emptyList())
+    var authors: List<Author>? by mutableStateOf(null)
         private set
 
 

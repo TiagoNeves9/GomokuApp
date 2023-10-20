@@ -32,95 +32,93 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(onAuthorsRequested: () -> Unit = { }) {
-    GomokuTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background
+    Surface(
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Row(
+            Modifier
+                .fillMaxSize()
+                .padding(6.dp),
+            Arrangement.Center,
+            Alignment.CenterVertically,
         ) {
-            Row(
-                Modifier
-                    .fillMaxSize()
-                    .padding(6.dp),
-                Arrangement.Center,
-                Alignment.CenterVertically,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                //TODO mover Title para package de componentes reutilizaveis
+                Title("Group 37")
+
+                Row(
+                    Modifier,
+                    Arrangement.Center
                 ) {
-                    //TODO mover Title para package de componentes reutilizaveis
-                    Title("Group 37")
-
-                    Row(
-                        Modifier,
-                        Arrangement.Center
-                    ) {
-                        MenuButton {
-                            //Text(text = "Play")
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.PlayArrow,
-                                    contentDescription = "Play"
-                                )
-                                Text(
-                                    text = "Play",
-                                    fontSize = 12.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-
-                        MenuButton {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Star,
-                                    contentDescription = "Rankings"
-                                )
-                                Text(
-                                    text = "Rankings",
-                                    fontSize = 12.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
+                    MenuButton {
+                        //Text(text = "Play")
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = "Play"
+                            )
+                            Text(
+                                text = "Play",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
 
-                    Row(
-                        Modifier,
-                        Arrangement.Center
-                    ) {
-                        MenuButton(onAuthorsRequested) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Face,
-                                    contentDescription = "Authors"
-                                )
-                                Text(
-                                    text = "Authors",
-                                    fontSize = 12.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
+                    MenuButton {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = "Rankings"
+                            )
+                            Text(
+                                text = "Rankings",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
                         }
+                    }
+                }
 
-                        MenuButton() {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Info,
-                                    contentDescription = "About"
-                                )
-                                Text(
-                                    text = "About",
-                                    fontSize = 12.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
+                Row(
+                    Modifier,
+                    Arrangement.Center
+                ) {
+                    MenuButton(onAuthorsRequested) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Face,
+                                contentDescription = "Authors"
+                            )
+                            Text(
+                                text = "Authors",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+
+                    MenuButton() {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = "About"
+                            )
+                            Text(
+                                text = "About",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
@@ -148,4 +146,7 @@ private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 
 @Preview
 @Composable
-fun HomeScreenPreview() = HomeScreen()
+fun HomeScreenPreview() =
+    GomokuTheme {
+        HomeScreen()
+    }

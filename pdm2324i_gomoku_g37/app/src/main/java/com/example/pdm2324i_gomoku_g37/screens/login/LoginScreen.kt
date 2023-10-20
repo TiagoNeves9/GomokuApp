@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import com.example.pdm2324i_gomoku_g37.utils.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.utils.TopBar
 
@@ -68,6 +69,7 @@ fun LoginScreen (
 
 @Preview
 @Composable
-fun loginPreview() {
-    LoginScreen()
-}
+fun loginPreview() =
+    GomokuTheme {
+        LoginScreen()
+    }

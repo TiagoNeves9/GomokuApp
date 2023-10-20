@@ -16,10 +16,13 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = Blue50,
+    primary = BackgroundBlue, //Default button/notification bar color
+    secondary = Blue80,
+    tertiary = Grey10,
+    background = PrimaryBlue,
+    onBackground = Grey10,
+    onPrimaryContainer = Grey10,
+    surfaceVariant = Blue80
 )
 
 private val LightColorScheme = lightColorScheme(

@@ -7,14 +7,11 @@ import androidx.activity.compose.setContent
 import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsActivity
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginActivity
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 class HomeActivity : ComponentActivity() {
     companion object {
-        fun navigateTo(origin: MainActivity) {
-            val intent = Intent(origin, HomeActivity::class.java)
-            origin.startActivity(intent)
-        }
 
         fun navigateTo(origin: LoginActivity) {
             val intent = Intent(origin, HomeActivity::class.java)
@@ -25,11 +22,13 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContent {
-            HomeScreen(
-                onAuthorsRequested = {
-                    AuthorsActivity.navigateTo(origin = this)
-                }
-            )
+            GomokuTheme {
+                HomeScreen(
+                    onAuthorsRequested = {
+                        AuthorsActivity.navigateTo(origin = this)
+                    }
+                )
+            }
         }
     }
 }

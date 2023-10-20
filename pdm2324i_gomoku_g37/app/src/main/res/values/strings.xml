@@ -8,4 +8,6 @@
     <string name="activity_main_login">Login</string>
     <string name="activity_main_signup">Sign Up</string>
     <string name="activity_main_footer">Group 37 - PDM 2023/24</string>
+    <string name="activity_authors_group_number">Group 37</string>
+    <string name="activity_authors_email">Email</string>
 </resources>

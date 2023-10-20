@@ -5,8 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 class AuthorsActivity : ComponentActivity() {
@@ -24,9 +26,12 @@ class AuthorsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AuthorsScreen(
-                authors = viewModel.authors
-            )
+            GomokuTheme {
+                AuthorsScreen(
+                    authors = viewModel.authors,
+                    navigation = NavigationHandlers({},{})
+                )
+            }
         }
     }
 

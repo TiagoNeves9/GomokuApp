@@ -24,6 +24,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_BUTTON_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PADDING
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +91,7 @@ private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: 
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun MainScreenPreview() {
-    MainScreen()
-}
+fun MainScreenPreview() =
+    GomokuTheme {
+        MainScreen()
+    }
