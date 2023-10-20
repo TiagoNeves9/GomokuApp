@@ -38,6 +38,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Author
+import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorCardTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorEmailButtonTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNextTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorPrevTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNoAuthorTestTag
 import com.example.pdm2324i_gomoku_g37.resourceMap
 import com.example.pdm2324i_gomoku_g37.screens.components.AUTHOR_IMAGE_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_DEFAULT_PADDING
@@ -58,8 +63,6 @@ data class AuthorsHandlers(
     val onNextRequested: (() -> Unit)? = null,
     val onPrevRequested: (() -> Unit)? = null,
 )
-
-const val EmailTestTag = "EmailTest"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,19 +87,32 @@ fun AuthorsScreen(
         ) {
             LargeCustomTitleView(text = stringResource(id = R.string.activity_authors_group_number))
 
-            ElevatedCard(
-                modifier = Modifier.padding(CARD_PADDING),
-                shape = RoundedCornerShape(DEFAULT_RADIUS),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-                elevation = CardDefaults.cardElevation(defaultElevation = CARD_ELEVATION)
-            ) {
-                authors?.get(index)?.let { author ->
+            val author = authors?.get(index)
+
+            if (author != null) {
+                ElevatedCard(
+                    modifier = Modifier
+                        .padding(CARD_PADDING)
+                        .testTag(AuthorCardTestTag),
+                    shape = RoundedCornerShape(DEFAULT_RADIUS),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                    elevation = CardDefaults.cardElevation(defaultElevation = CARD_ELEVATION)
+                ) {
                     DisplayAuthor(
                         author = author,
                         authorsHandlers = authorsHandlers,
                         onSendEmailRequested = onSendEmailRequested
                     )
                 }
+            } else {
+                Text(
+                    text = stringResource(id = R.string.activity_author_no_author_found),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(AuthorNoAuthorTestTag),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -128,7 +144,7 @@ fun DisplayAuthor(
 
         IconButton(
             onClick = { onSendEmailRequested() },
-            modifier = Modifier.testTag(EmailTestTag)
+            modifier = Modifier.testTag(AuthorEmailButtonTestTag)
         ) {
             Icon(
                 imageVector = Icons.Default.Email,
@@ -149,7 +165,7 @@ fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers(),) =
         Arrangement.Center
     ) {
         authorsHandlers.onPrevRequested?.let {
-            AuthorNavigationButton(it) {
+            AuthorNavigationButton(it, Modifier.testTag(AuthorPrevTestTag)) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = stringResource(id = R.string.activity_authors_previous)
@@ -157,7 +173,7 @@ fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers(),) =
             }
         }
         authorsHandlers.onNextRequested?.let {
-            AuthorNavigationButton(it) {
+            AuthorNavigationButton(it, Modifier.testTag(AuthorNextTestTag)) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     contentDescription = stringResource(id = R.string.activity_authors_next)
@@ -167,10 +183,14 @@ fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers(),) =
     }
 
 @Composable
-private fun AuthorNavigationButton(onClick: () -> Unit, content: @Composable () -> Unit = {}) =
+private fun AuthorNavigationButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit = {}
+) =
     Button(
         onClick = onClick,
-        modifier = Modifier.padding(BUTTON_DEFAULT_PADDING),
+        modifier = modifier.padding(BUTTON_DEFAULT_PADDING),
         shape = RoundedCornerShape(DEFAULT_RADIUS),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.tertiary,

@@ -14,6 +14,7 @@
     <string name="activity_authors_next">Next</string>
     <string name="activity_authors_top_bar_title">Authors</string>
     <string name="activity_authors_image_desc">Author image</string>
+    <string name="activity_author_no_author_found">No author found</string>
 
     <string name="activity_menu_title">Menu</string>
 
