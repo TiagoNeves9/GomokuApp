@@ -32,15 +32,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Turn
-import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
 import com.example.pdm2324i_gomoku_g37.domain.User
+import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
@@ -94,21 +97,21 @@ fun GameScreen(game: GameActivity) {
 
 @Composable
 fun DrawBoard(board: Board, onClick: (Cell) -> Unit = {}) {
-    SymbolAxisView()
+    SymbolAxisView(board.boardSize)
     Row(
         Modifier.testTag("boardTest"),
         Arrangement.Center,
         Alignment.Bottom
     ) {
-        NumberAxisView()
+        NumberAxisView(board.boardSize)
         CellsView(board, onClick)
-        NumberAxisView()
+        NumberAxisView(board.boardSize)
     }
-    SymbolAxisView()
+    SymbolAxisView(board.boardSize)
 }
 
 @Composable
-fun SymbolAxisView() =
+fun SymbolAxisView(boardSize: Int) =
     Row(
         Modifier.padding(top = 10.dp, bottom = 10.dp),
         Arrangement.SpaceEvenly
@@ -116,8 +119,8 @@ fun SymbolAxisView() =
         Box(Modifier.size(BOARD_CELL_SIZE.dp)) {
             AxisText(" ")
         }
-        repeat(BOARD_DIM) {
-            val letter = it.indexToColumn().symbol.toString()
+        repeat(boardSize) {
+            val letter = it.indexToColumn(boardSize).symbol.toString()
             Box(
                 Modifier.size(BOARD_CELL_SIZE.dp),
                 Alignment.Center
@@ -131,13 +134,13 @@ fun SymbolAxisView() =
     }
 
 @Composable
-fun NumberAxisView() =
+fun NumberAxisView(boardSize: Int) =
     Column(
         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        repeat(BOARD_DIM) {
-            val number = it.indexToRow().number.toString()
+        repeat(boardSize) {
+            val number = it.indexToRow(boardSize).number.toString()
             Box(
                 Modifier.size(BOARD_CELL_SIZE.dp),
                 Alignment.Center
@@ -159,10 +162,10 @@ fun AxisText(text: String) =
 @Composable
 fun CellsView(board: Board, onClick: (Cell) -> Unit = {}) =
     Column {
-        repeat(BOARD_DIM) { line ->
+        repeat(board.boardSize) { line ->
             Row {
-                repeat(BOARD_DIM) { col ->
-                    val cell = Cell(line, col)
+                repeat(board.boardSize) { col ->
+                    val cell = Cell(line, col, board.boardSize)
                     when (board.positions[cell]) {
                         Turn.BLACK_PIECE -> DrawCells(enabled = false) {
                             DrawBlackPiece()
@@ -253,15 +256,16 @@ fun StatusBar(content: @Composable () -> Unit = {}) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GameScreenPreview() {
-    val playerBlack = Player(
+    val playerB = Player(
         User(UUID.randomUUID(), "BlackPlayer", "enconded123"),
         Turn.BLACK_PIECE
     )
-    val playerWhite = Player(
+    val playerW = Player(
         User(UUID.randomUUID(), "WhitePlayer", "encodedXYZ"),
         Turn.WHITE_PIECE
     )
-    val board = createBoard(playerBlack.second)
-    val game = GameActivity(Pair(playerBlack.first, playerWhite.first), board, playerBlack)
+    val board = createBoard(playerB.second, BOARD_DIM)
+    val rules = Rules(board.boardSize, Opening.FREESTYLE, Variant.FREESTYLE)
+    val game = GameActivity(Pair(playerB.first, playerW.first), board, playerB, rules)
     GameScreen(game)
 }

@@ -9,37 +9,53 @@ class Cell private constructor(val row: Row, val col: Column) {
         if (this == INVALID) "INVALID Cell!" else "${this.row.number}${this.col.symbol}"
 
     companion object {
-        val values =
+        val valuesMedium =
             List(BOARD_DIM * BOARD_DIM) {
-                Cell((it / BOARD_DIM).indexToRow(), (it % BOARD_DIM).indexToColumn())
+                Cell(
+                    (it / BOARD_DIM).indexToRow(BOARD_DIM),
+                    (it % BOARD_DIM).indexToColumn(BOARD_DIM)
+                )
             }
-        val INVALID = Cell(-1, -1)
+        val valuesBig =
+            List(BIG_BOARD_DIM * BIG_BOARD_DIM) {
+                Cell(
+                    (it / BIG_BOARD_DIM).indexToRow(BIG_BOARD_DIM),
+                    (it % BIG_BOARD_DIM).indexToColumn(BIG_BOARD_DIM)
+                )
 
-        operator fun invoke(rowIndex: Int, colIndex: Int): Cell =
-            if (rowIndex in 0 until BOARD_DIM && colIndex in 0 until BOARD_DIM)
-                values[rowIndex * BOARD_DIM + colIndex]
-            else INVALID
+            }
+        val INVALID = Cell(-1, -1, -1)
 
-        operator fun invoke(row: Row, col: Column): Cell = Cell(row.index, col.index)
+        operator fun invoke(rowIndex: Int, colIndex: Int, boardSize: Int): Cell =
+            if (rowIndex in 0 until boardSize && colIndex in 0 until boardSize) {
+                if (boardSize == BOARD_DIM)
+                    valuesMedium[rowIndex * boardSize + colIndex]
+                else
+                    valuesBig[rowIndex * boardSize + colIndex]
+            } else INVALID
+
+        operator fun invoke(row: Row, col: Column, boardSize: Int = BOARD_DIM): Cell =
+            Cell(row.index, col.index, boardSize)
     }
 }
 
-fun String.toCellOrNull(): Cell? {
+fun String.toCellOrNull(boardSize: Int): Cell? {
     if (this.length < 2 || this.length > 3) return null
     val aux = if (this.length == 2) "0$this" else this
     if (!aux[1].isDigit()) return null  //'1BB' is not a valid cell, but '10B' is
 
-    val row = aux.dropLast(1).toInt().toRowOrNull()
-    val col = aux[2].toColumnOrNull()
-    return Cell.values.find { it.row == row && it.col == col }
+    val row = aux.dropLast(1).toInt().toRowOrNull(boardSize)
+    val col = aux[2].toColumnOrNull(boardSize)
+    return if (boardSize == BOARD_DIM) Cell.valuesMedium.find { it.row == row && it.col == col }
+    else Cell.valuesBig.find { it.row == row && it.col == col }
 }
 
-operator fun Cell.plus(dir: Direction): Cell =
-    Cell(row.index + dir.difRow, col.index + dir.difCol)
+fun Cell.plus(dir: Direction, boardSize: Int): Cell =
+    Cell(row.index + dir.difRow, col.index + dir.difCol, boardSize)
 
 
-fun String.toCell(): Cell =
-    this.toCellOrNull() ?: throw IllegalArgumentException(this.getFailReason())
+fun String.toCell(boardSize: Int): Cell =
+    this.toCellOrNull(boardSize) ?: throw IllegalArgumentException(this.getFailReason())
 
 private fun String.getFailReason(): String {
     if (this.length != 2) return "Cell must have a row and a column."
@@ -52,12 +68,12 @@ private fun String.getFailReason(): String {
     else ""
 }
 
-fun cellsInDir(from: Cell, dir: Direction): List<Cell> {
+fun cellsInDir(from: Cell, dir: Direction, boardSize: Int): List<Cell> {
     val line = mutableListOf<Cell>()
-    var currentCell = from + dir
+    var currentCell = from.plus(dir, boardSize)
     while (currentCell != Cell.INVALID) {
         line.add(currentCell)
-        currentCell += dir
+        currentCell = currentCell.plus(dir, boardSize)
     }
     return line
 }

@@ -5,40 +5,57 @@ import com.example.pdm2324i_gomoku_g37.domain.Turn
 
 
 const val BOARD_DIM = 15
+const val BIG_BOARD_DIM = 19
 const val N_ON_ROW = 5
 const val BOARD_CELL_SIZE = 21
 
-sealed class Board(val positions: Map<Cell, Turn>) {
+sealed class Board(val positions: Map<Cell, Turn>, val boardSize: Int) {
     init {
-        check(BOARD_DIM >= N_ON_ROW) { "Board dimension must be >= to $N_ON_ROW" }
+        check(boardSize >= N_ON_ROW) { "Board dimension must be >= to $N_ON_ROW" }
     }
+
     fun addPiece(cell: Cell): BoardRun {
         check(this is BoardRun) { "Game finished." }
 
         //TODO: Catch do error em vez de throw
-        return if (this.positions[cell] != null)
+        return if (cell.toString() in this.positions.map { it.key.toString() })
             throw IllegalArgumentException("Square already occupied!")
         else {
             val newMap: Map<Cell, Turn> = this.positions + mapOf(cell to this.turn)
-            BoardRun(newMap, this.turn.other())
+            BoardRun(newMap, this.turn.other(), boardSize)
         }
     }
 }
 
-class BoardRun(positions: Map<Cell, Turn>, val turn: Turn) : Board(positions) {
+class BoardRun(positions: Map<Cell, Turn>, val turn: Turn, boardSize: Int) :
+    Board(positions, boardSize) {
     fun checkWin(lastMove: Cell): Boolean =
         positions.size >= 2 * N_ON_ROW - 1 && (
-                checkWinInDir(lastMove, Direction.UP, Direction.DOWN) ||
-                        checkWinInDir(lastMove, Direction.LEFT, Direction.RIGHT) ||
-                        checkWinInDir(lastMove, Direction.UP_LEFT, Direction.DOWN_RIGHT) ||
-                        checkWinInDir(lastMove, Direction.UP_RIGHT, Direction.DOWN_LEFT)
+                checkWinInDir(lastMove, Direction.UP, Direction.DOWN, boardSize) ||
+                        checkWinInDir(lastMove, Direction.LEFT, Direction.RIGHT, boardSize) ||
+                        checkWinInDir(
+                            lastMove,
+                            Direction.UP_LEFT,
+                            Direction.DOWN_RIGHT,
+                            boardSize
+                        ) ||
+                        checkWinInDir(lastMove, Direction.UP_RIGHT, Direction.DOWN_LEFT, boardSize)
                 )
 
-    fun checkDraw(): Boolean = positions.size == BOARD_DIM * BOARD_DIM
+    fun checkDraw(boardSize: Int): Boolean = positions.size == boardSize * boardSize
 
-    private fun checkWinInDir(lastMove: Cell, dir1: Direction, dir2: Direction): Boolean {
+    private fun checkWinInDir(
+        lastMove: Cell,
+        dir1: Direction,
+        dir2: Direction,
+        boardSize: Int
+    ): Boolean {
         val line =
-            cellsInDir(lastMove, dir1).reversed() + lastMove + cellsInDir(lastMove, dir2)
+            cellsInDir(lastMove, dir1, boardSize).reversed() + lastMove + cellsInDir(
+                lastMove,
+                dir2,
+                boardSize
+            )
         // we reverse the first part of the list because we want
         // to check the line from left/top to right/bottom
         return checkWinInLine(line)
@@ -57,16 +74,19 @@ class BoardRun(positions: Map<Cell, Turn>, val turn: Turn) : Board(positions) {
     }
 }
 
-class BoardWin(positions: Map<Cell, Turn>, val winner: Player) : Board(positions)
+class BoardWin(positions: Map<Cell, Turn>, val winner: Player, boardSize: Int) :
+    Board(positions, boardSize)
 
-class BoardDraw(positions: Map<Cell, Turn>) : Board(positions)
+class BoardDraw(positions: Map<Cell, Turn>, boardSize: Int) : Board(positions, boardSize)
 
-
-fun createBoard(firstTurn: Turn) = BoardRun(mapOf(), firstTurn)
+fun createBoard(firstTurn: Turn = Turn.BLACK_PIECE, boardSize: Int) =
+    BoardRun(mapOf(), firstTurn, boardSize)
 
 val exampleMap = mapOf(
-    Cell(0, 0) to Turn.BLACK_PIECE,
-    Cell(0, 10) to Turn.BLACK_PIECE,
-    Cell(10, 0) to Turn.WHITE_PIECE,
-    Cell(15, 15) to Turn.WHITE_PIECE
+    "1A".toCell(BOARD_DIM) to Turn.BLACK_PIECE,
+    "5C".toCell(BOARD_DIM) to Turn.WHITE_PIECE,
+    "2B".toCell(BOARD_DIM) to Turn.BLACK_PIECE,
+    "5D".toCell(BOARD_DIM) to Turn.WHITE_PIECE,
+    "11A".toCell(BOARD_DIM) to Turn.BLACK_PIECE,
+    "14E".toCell(BOARD_DIM) to Turn.WHITE_PIECE
 )

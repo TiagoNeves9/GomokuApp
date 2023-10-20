@@ -68,6 +68,6 @@ fun LoginScreen (
 
 @Preview
 @Composable
-fun loginPreview() {
+fun LoginPreview() {
     LoginScreen()
 }
