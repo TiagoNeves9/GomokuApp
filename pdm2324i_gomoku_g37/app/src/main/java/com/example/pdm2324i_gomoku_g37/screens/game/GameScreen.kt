@@ -67,12 +67,6 @@ fun GameScreen(game: GameActivity) {
                 Arrangement.Bottom,
                 Alignment.CenterHorizontally
             ) {
-                /*
-                TODO is this here?
-                val variant = rules.variant
-                if (this.board is BoardRun && variant.wantSwapAfterFirst(this.board))
-                    return this.copy(users = Pair(users.second, users.first))
-                */
                 DrawBoard(currentGame.board) { cell ->
                     currentGame = currentGame.computeNewGame(cell, currentGame.rules)
                 }

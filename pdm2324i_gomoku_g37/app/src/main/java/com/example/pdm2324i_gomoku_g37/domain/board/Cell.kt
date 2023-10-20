@@ -1,7 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
 import java.lang.Integer.max
-import java.lang.Math.abs
 
 
 class Cell private constructor(val row: Row, val col: Column) {
