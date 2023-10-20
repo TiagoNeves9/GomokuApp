@@ -81,7 +81,7 @@ private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: 
 
         Spacer(modifier = Modifier.height(MAIN_SCREEN_SPACING_PADDING))
 
-        LargeCustomButtonView {
+        LargeCustomButtonView(onClick = onRegisterRequested) {
             Text(
                 text = stringResource(id = R.string.activity_main_signup),
                 fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE

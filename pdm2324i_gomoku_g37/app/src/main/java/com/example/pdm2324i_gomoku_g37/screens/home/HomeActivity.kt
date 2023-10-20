@@ -13,7 +13,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 class HomeActivity : ComponentActivity() {
     companion object {
 
-        fun navigateTo(origin: LoginActivity) {
+        fun navigateTo(origin: ComponentActivity) {
             val intent = Intent(origin, HomeActivity::class.java)
             origin.startActivity(intent)
         }

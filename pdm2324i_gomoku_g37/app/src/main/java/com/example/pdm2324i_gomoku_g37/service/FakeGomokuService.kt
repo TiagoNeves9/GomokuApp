@@ -10,5 +10,7 @@ class FakeGomokuService : GomokuService {
         Author(48264, "João Pereira", "O pior programador", "img_joao"),
     )
 
+
+
     override suspend fun fetchAuthors(): List<Author> = authors
 }

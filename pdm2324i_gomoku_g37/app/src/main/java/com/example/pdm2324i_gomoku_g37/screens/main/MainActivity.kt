@@ -15,13 +15,14 @@ import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
 import com.example.pdm2324i_gomoku_g37.screens.game.GameScreen
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginActivity
+import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import java.util.UUID
 
 
 class MainActivity : ComponentActivity() {
     companion object {
-        fun navigateTo(origin: LoginActivity) {
+        fun navigateTo(origin: ComponentActivity) {
             val intent = Intent(origin, MainActivity::class.java)
             origin.startActivity(intent)
         }
@@ -34,12 +35,10 @@ class MainActivity : ComponentActivity() {
                 MainScreen(
                     onLoginRequested = {
                         LoginActivity.navigateTo(origin = this)
-                    }
-                    /* TODO
+                    },
                     onRegisterRequested = {
-                        RegisterActivity.navigateTo(origin = this)
+                        SignUpActivity.navigateTo(origin = this)
                     }
-                    */
                 )
             }
 
