@@ -1,7 +1,10 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
+import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Turn
+import com.example.pdm2324i_gomoku_g37.domain.Variant
 
 
 const val BOARD_DIM = 15
@@ -14,15 +17,24 @@ sealed class Board(val positions: Map<Cell, Turn>, val boardSize: Int) {
         check(boardSize >= N_ON_ROW) { "Board dimension must be >= to $N_ON_ROW" }
     }
 
-    fun addPiece(cell: Cell): BoardRun {
+    fun addPiece(cell: Cell, rules: Rules): BoardRun {
         check(this is BoardRun) { "Game finished." }
 
         //TODO: Catch do error em vez de throw
-        return if (cell.toString() in this.positions.map { it.key.toString() })
+        if (cell.toString() in this.positions.map { it.key.toString() })
             throw IllegalArgumentException("Square already occupied!")
         else {
-            val newMap: Map<Cell, Turn> = this.positions + mapOf(cell to this.turn)
-            BoardRun(newMap, this.turn.other(), boardSize)
+            val opening = rules.opening
+            val respectOpening: Boolean =
+                opening ==
+                        Opening.FREESTYLE || (
+                        opening == Opening.PRO && opening.isProOpening(this, cell)
+                        )
+
+            if (respectOpening) {
+                val newMap: Map<Cell, Turn> = this.positions + mapOf(cell to this.turn)
+                return BoardRun(newMap, this.turn.other(), boardSize)
+            } else throw IllegalArgumentException("Invalid move!")
         }
     }
 }
@@ -45,19 +57,14 @@ class BoardRun(positions: Map<Cell, Turn>, val turn: Turn, boardSize: Int) :
     fun checkDraw(boardSize: Int): Boolean = positions.size == boardSize * boardSize
 
     private fun checkWinInDir(
-        lastMove: Cell,
-        dir1: Direction,
-        dir2: Direction,
-        boardSize: Int
+        lastMove: Cell, dir1: Direction, dir2: Direction, boardSize: Int
     ): Boolean {
         val line =
-            cellsInDir(lastMove, dir1, boardSize).reversed() + lastMove + cellsInDir(
-                lastMove,
-                dir2,
-                boardSize
-            )
-        // we reverse the first part of the list because we want
-        // to check the line from left/top to right/bottom
+            cellsInDir(lastMove, dir1, boardSize).reversed() +
+                    lastMove +
+                    cellsInDir(lastMove, dir2, boardSize)
+        /*  we reverse the first part of the list because we want
+            to check the line from left/top to right/bottom     */
         return checkWinInLine(line)
     }
 

@@ -32,6 +32,9 @@
         <activity
             android:name=".screens.login.LoginActivity"
             android:exported="false" />
+        <activity
+            android:name=".screens.signup.SignUpActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.pdm2324i_gomoku_g37.screens.login
+package com.example.pdm2324i_gomoku_g37.screens.signup
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ElevatedButton
@@ -23,23 +24,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+import com.example.pdm2324i_gomoku_g37.screens.login.LoginScreenTestTag
 import com.example.pdm2324i_gomoku_g37.utils.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.utils.TopBar
 
-
-const val LoginScreenTestTag = "LoginScreenTestTag"
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
+const val SignUpScreenTestTag = "SignUpScreenTestTag"
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen (
+fun SignUpScreen(
     onBackRequested: () -> Unit = { },
     onHomeRequested: () -> Unit = { }
-) {
+){
     var textUsername by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -47,7 +44,7 @@ fun LoginScreen (
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .testTag(LoginScreenTestTag),
+            .testTag(SignUpScreenTestTag),
         topBar = { TopBar(NavigationHandlers(onBackRequested = onBackRequested)) },
     ) { padding ->
         Column(
@@ -76,16 +73,11 @@ fun LoginScreen (
                     }
                 }
             )
+
             ElevatedButton(onClick = onHomeRequested) {
-                Text(text = "Login")
+                Text(text = "Register")
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun loginPreview() =
-    GomokuTheme {
-        LoginScreen()
-    }
