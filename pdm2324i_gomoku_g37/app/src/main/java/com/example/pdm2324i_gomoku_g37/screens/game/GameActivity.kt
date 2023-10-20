@@ -20,7 +20,9 @@ data class GameActivity(
         val newBoard = this.board.addPiece(cell, rules)
 
         return if (newBoard.checkWin(cell))
-            this.copy(board = BoardWin(newBoard.positions, this.currentPlayer, this.rules.boardDim))
+            this.copy(
+                board = BoardWin(newBoard.positions, this.currentPlayer, this.rules.boardDim)
+            )
         else if (newBoard.checkDraw(this.board.boardSize))
             this.copy(board = BoardDraw(newBoard.positions, this.rules.boardDim))
         else this.copy(

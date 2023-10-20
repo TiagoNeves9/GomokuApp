@@ -44,7 +44,6 @@ enum class Variant {
     fun wantSwapAfterFirst(boardRun: BoardRun): Boolean {
         return if (this == SWAP_AFTER_FIRST && boardRun.positions.size == 1) {
             println("Do you want to swap? Y/N")
-
             when (readln().uppercase()) {
                 "Y" -> true
                 "N" -> false
