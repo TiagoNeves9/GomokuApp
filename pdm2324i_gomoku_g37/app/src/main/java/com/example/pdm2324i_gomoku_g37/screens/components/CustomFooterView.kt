@@ -21,6 +21,15 @@ fun CustomFooterView(modifier: Modifier = Modifier, content: @Composable () -> U
         content()
     }
 
+@Composable
+fun GroupFooterView() =
+    CustomFooterView {
+        Text(
+            text = stringResource(id = R.string.activity_main_footer),
+            textAlign = TextAlign.Center
+        )
+    }
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CustomFooterViewPreview() {

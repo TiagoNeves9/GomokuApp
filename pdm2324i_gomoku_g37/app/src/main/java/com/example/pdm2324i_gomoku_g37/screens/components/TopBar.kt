@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -89,6 +90,17 @@ fun TopBar(
         }
     )
 }
+
+@Composable
+fun CustomBar(text: String, navigation: NavigationHandlers = NavigationHandlers()) =
+    Box(
+        contentAlignment = Alignment.TopCenter,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 10.dp)
+    ) {
+        TopBar("Authors", navigation)
+    }
 
 @Preview
 @Composable

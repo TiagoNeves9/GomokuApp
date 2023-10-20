@@ -2,7 +2,6 @@ package com.example.pdm2324i_gomoku_g37.screens.authors
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -25,17 +23,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -46,51 +36,46 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Author
-import com.example.pdm2324i_gomoku_g37.domain.authors
 import com.example.pdm2324i_gomoku_g37.resourceMap
+import com.example.pdm2324i_gomoku_g37.screens.components.AUTHOR_IMAGE_SIZE
+import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_DEFAULT_PADDING
+import com.example.pdm2324i_gomoku_g37.screens.components.CARD_ELEVATION
+import com.example.pdm2324i_gomoku_g37.screens.components.CARD_PADDING
+import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_RADIUS
+import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
-import com.example.pdm2324i_gomoku_g37.screens.components.CustomFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_CONTENT_PADDING
+import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.ICON_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
-import com.example.pdm2324i_gomoku_g37.screens.components.NavigateBackTestTag
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
-import com.example.pdm2324i_gomoku_g37.screens.components.TopBar
-import com.example.pdm2324i_gomoku_g37.ui.theme.LightBlue
+import com.example.pdm2324i_gomoku_g37.screens.components.ROW_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-import com.example.pdm2324i_gomoku_g37.ui.theme.SoftRed
 
+data class AuthorsHandlers(
+    val onNextRequested: (() -> Unit)? = null,
+    val onPrevRequested: (() -> Unit)? = null,
+)
+
+const val EmailTestTag = "EmailTest"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthorsScreen(
     authors: List<Author>? = null,
-    navigation: NavigationHandlers = NavigationHandlers()
+    index: Int,
+    authorsHandlers: AuthorsHandlers = AuthorsHandlers(),
+    navigation: NavigationHandlers = NavigationHandlers(),
+    onSendEmailRequested: () -> Unit = { },
 ) {
-    var index by remember { mutableStateOf(0) }
-
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            Box(
-                contentAlignment = TopCenter,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = 10.dp)
-            ) {
-                TopBar("Authors", navigation)
-            }
+            CustomBar(text = stringResource(id = R.string.activity_authors_top_bar_title), navigation)
         },
-        bottomBar = {
-            CustomFooterView {
-                Text(
-                    text = stringResource(id = R.string.activity_main_footer),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+        bottomBar = { GroupFooterView() }
     ) { padding ->
         CustomContainerView(
             modifier = Modifier
@@ -100,16 +85,16 @@ fun AuthorsScreen(
             LargeCustomTitleView(text = stringResource(id = R.string.activity_authors_group_number))
 
             ElevatedCard(
-                modifier = Modifier.padding(40.dp),
-                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier.padding(CARD_PADDING),
+                shape = RoundedCornerShape(DEFAULT_RADIUS),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = CARD_ELEVATION)
             ) {
-                authors?.let { authors ->
+                authors?.get(index)?.let { author ->
                     DisplayAuthor(
-                        author = authors[index],
-                        nextIndex = { index = nextIndex(index) },
-                        prevIndex = { index = prevIndex(index) }
+                        author = author,
+                        authorsHandlers = authorsHandlers,
+                        onSendEmailRequested = onSendEmailRequested
                     )
                 }
             }
@@ -120,13 +105,13 @@ fun AuthorsScreen(
 @Composable
 fun DisplayAuthor(
     author: Author,
-    nextIndex: () -> Unit = {},
-    prevIndex: () -> Unit = {}
+    authorsHandlers: AuthorsHandlers = AuthorsHandlers(),
+    onSendEmailRequested: () -> Unit = { },
 ) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(25.dp),
+            .padding(ROW_DEFAULT_PADDING),
         Arrangement.Center
     ) {
         LoadImageByName(author.img)
@@ -136,55 +121,48 @@ fun DisplayAuthor(
         Text(
             text = "\t${author.number}\t-\t${author.name}\n" +
                     "\t${author.desc}\n",
-            modifier = Modifier
-                .fillMaxWidth(),
-            fontSize = 20.sp,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
 
         IconButton(
-            onClick = { TODO() },
-            modifier = Modifier.testTag(NavigateBackTestTag) //CHANGE TAG
+            onClick = { onSendEmailRequested() },
+            modifier = Modifier.testTag(EmailTestTag)
         ) {
             Icon(
                 imageVector = Icons.Default.Email,
                 contentDescription = stringResource(id = R.string.activity_authors_email),
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(ICON_SIZE)
             )
         }
-        NavigationButtons(nextIndex, prevIndex)
+        NavigationButtons(authorsHandlers)
     }
 }
 
 @Composable
-fun Title(text: String) =
-    Text(
-        text = text,
-        modifier = Modifier.padding(bottom = 15.dp),
-        fontSize = 35.sp,
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-
-@Composable
-fun NavigationButtons(onNextClick: () -> Unit, onPrevClick: () -> Unit) =
+fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers(),) =
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(bottom = 25.dp, top = 15.dp),
+            .padding(bottom = ROW_DEFAULT_PADDING, top = ROW_DEFAULT_PADDING),
         Arrangement.Center
     ) {
-        AuthorNavigationButton(onPrevClick) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Prev"
-            )
+        authorsHandlers.onPrevRequested?.let {
+            AuthorNavigationButton(it) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = stringResource(id = R.string.activity_authors_previous)
+                )
+            }
         }
-        AuthorNavigationButton(onNextClick) {
-            Icon(
-                imageVector = Icons.Default.ArrowForward,
-                contentDescription = "Next"
-            )
+        authorsHandlers.onNextRequested?.let {
+            AuthorNavigationButton(it) {
+                Icon(
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = stringResource(id = R.string.activity_authors_next)
+                )
+            }
         }
     }
 
@@ -192,13 +170,13 @@ fun NavigationButtons(onNextClick: () -> Unit, onPrevClick: () -> Unit) =
 private fun AuthorNavigationButton(onClick: () -> Unit, content: @Composable () -> Unit = {}) =
     Button(
         onClick = onClick,
-        modifier = Modifier.padding(5.dp),
-        shape = RoundedCornerShape(4.dp),
+        modifier = Modifier.padding(BUTTON_DEFAULT_PADDING),
+        shape = RoundedCornerShape(DEFAULT_RADIUS),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
             contentColor = Color.White
         ),
-        contentPadding = PaddingValues(10.dp)
+        contentPadding = PaddingValues(DEFAULT_CONTENT_PADDING)
     ) {
         content()
     }
@@ -212,27 +190,26 @@ private fun LoadImageByName(imageName: String) {
 
         Image(
             painter = painter,
-            contentDescription = null,
+            contentDescription = stringResource(id = R.string.activity_authors_image_desc),
             modifier = Modifier
                 .clip(CircleShape)
-                .size(150.dp),
-            alignment = Alignment.Center,
+                .size(AUTHOR_IMAGE_SIZE),
+            alignment = Center,
             contentScale = ContentScale.Crop,
         )
     }
 }
 
-private fun nextIndex(index: Int): Int =
-    if (index == authors.size - 1) 0 else index + 1
-
-private fun prevIndex(index: Int): Int =
-    if (index == 0) authors.size - 1 else index - 1
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun AuthorsScreenPreview() =
+fun AuthorsScreenPreview() {
+    val author = Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt")
     GomokuTheme {
         AuthorsScreen(
-            authors = authors,
-            NavigationHandlers(onBackRequested = {}, onInfoRequested = {}))
+            authors = listOf(author),
+            index = 0,
+            AuthorsHandlers({}, {}),
+            NavigationHandlers(onBackRequested = {}, onInfoRequested = {})
+        )
     }
+}

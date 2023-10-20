@@ -14,10 +14,24 @@ class AuthorsScreenViewModel : ViewModel(){
     var authors: List<Author>? by mutableStateOf(null)
         private set
 
+    var index: Int by mutableStateOf(0)
+        private set
 
     fun fetchAuthors(services : FakeGomokuService){
         viewModelScope.launch {
             authors = services.fetchAuthors()
+        }
+    }
+
+    fun nextIndex() {
+        authors?.let {
+            index = if (index == it.size - 1) 0 else index + 1
+        }
+    }
+
+    fun prevIndex() {
+        authors?.let {
+            index = if (index == 0) it.size - 1 else index - 1
         }
     }
 

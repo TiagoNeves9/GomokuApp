@@ -10,4 +10,14 @@
     <string name="activity_main_footer">Group 37 - PDM 2023/24</string>
     <string name="activity_authors_group_number">Group 37</string>
     <string name="activity_authors_email">Email</string>
+    <string name="activity_authors_previous">Previous</string>
+    <string name="activity_authors_next">Next</string>
+    <string name="activity_authors_top_bar_title">Authors</string>
+    <string name="activity_authors_image_desc">Author image</string>
+
+    <string name="activity_menu_title">Menu</string>
+
+    <string name="activity_info_no_suitable_app">No suitable application found.</string>
+
+    <string name="activity_author_email_subject">About the Gomoku App of Group 37</string>
 </resources>
