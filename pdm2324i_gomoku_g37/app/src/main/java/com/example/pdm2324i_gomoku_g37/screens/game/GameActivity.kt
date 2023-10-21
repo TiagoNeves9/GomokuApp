@@ -16,8 +16,8 @@ data class GameActivity(
         if (currentPlayer.first == users.first) users.second
         else users.first
 
-    fun computeNewGame(cell: Cell, rules: Rules): GameActivity {
-        val newBoard = this.board.addPiece(cell, rules)
+    fun computeNewGame(cell: Cell): GameActivity {
+        val newBoard = this.board.addPiece(cell)
 
         return if (newBoard.checkWin(cell))
             this.copy(

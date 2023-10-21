@@ -41,7 +41,7 @@ enum class Variant {
     FREESTYLE, SWAP_AFTER_FIRST;
 
     /** This function checks if the variant rules are respected */
-    fun wantSwapAfterFirst(boardRun: BoardRun): Boolean {
+    /*fun wantSwapAfterFirst(boardRun: BoardRun): Boolean {
         return if (this == SWAP_AFTER_FIRST && boardRun.positions.size == 1) {
             println("Do you want to swap? Y/N")
             when (readln().uppercase()) {
@@ -50,7 +50,7 @@ enum class Variant {
                 else -> throw IllegalArgumentException("Invalid input!")
             }
         } else false
-    }
+    }*/
 }
 
 fun String.toOpening(): Opening =

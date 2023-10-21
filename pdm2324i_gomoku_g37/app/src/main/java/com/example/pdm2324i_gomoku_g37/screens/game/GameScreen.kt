@@ -68,7 +68,7 @@ fun GameScreen(game: GameActivity) {
                 Alignment.CenterHorizontally
             ) {
                 DrawBoard(currentGame.board) { cell ->
-                    currentGame = currentGame.computeNewGame(cell, currentGame.rules)
+                    currentGame = currentGame.computeNewGame(cell)
                 }
 
                 Spacer(Modifier.padding(vertical = BOARD_CELL_SIZE.dp))

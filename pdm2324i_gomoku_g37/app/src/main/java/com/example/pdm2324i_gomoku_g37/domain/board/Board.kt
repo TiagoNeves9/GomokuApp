@@ -17,24 +17,17 @@ sealed class Board(val positions: Map<Cell, Turn>, val boardSize: Int) {
         check(boardSize >= N_ON_ROW) { "Board dimension must be >= to $N_ON_ROW" }
     }
 
-    fun addPiece(cell: Cell, rules: Rules): BoardRun {
+    fun addPiece(cell: Cell): BoardRun {
         check(this is BoardRun) { "Game finished." }
 
         //TODO: Catch do error em vez de throw
-        if (cell.toString() in this.positions.map { it.key.toString() })
+        return if (cell.rowIndex !in 0 until boardSize || cell.colIndex !in 0 until boardSize)
+            throw IllegalArgumentException("Invalid cell (outside of the board dimensions)!")
+        else if (cell.toString() in this.positions.map { it.key.toString() })
             throw IllegalArgumentException("Square already occupied!")
         else {
-            val opening = rules.opening
-            val respectOpening: Boolean =
-                opening ==
-                        Opening.FREESTYLE || (
-                        opening == Opening.PRO && opening.isProOpening(this, cell)
-                        )
-
-            if (respectOpening) {
-                val newMap: Map<Cell, Turn> = this.positions + mapOf(cell to this.turn)
-                return BoardRun(newMap, this.turn.other(), boardSize)
-            } else throw IllegalArgumentException("Invalid move!")
+            val newMap: Map<Cell, Turn> = this.positions + mapOf(cell to this.turn)
+            BoardRun(newMap, this.turn.other(), boardSize)
         }
     }
 }
@@ -89,11 +82,11 @@ class BoardDraw(positions: Map<Cell, Turn>, boardSize: Int) : Board(positions, b
 fun createBoard(firstTurn: Turn = Turn.BLACK_PIECE, boardSize: Int) =
     BoardRun(mapOf(), firstTurn, boardSize)
 
-val exampleMap = mapOf(
+/*val exampleMap = mapOf(
     "1A".toCell(BOARD_DIM) to Turn.BLACK_PIECE,
     "5C".toCell(BOARD_DIM) to Turn.WHITE_PIECE,
     "2B".toCell(BOARD_DIM) to Turn.BLACK_PIECE,
     "5D".toCell(BOARD_DIM) to Turn.WHITE_PIECE,
     "11A".toCell(BOARD_DIM) to Turn.BLACK_PIECE,
     "14E".toCell(BOARD_DIM) to Turn.WHITE_PIECE
-)
+)*/
