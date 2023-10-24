@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.authors
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -23,7 +24,7 @@ class AuthorsActivity : ComponentActivity() {
     private val services = FakeGomokuService()
 
     companion object {
-        fun navigateTo(origin: HomeActivity) {
+        fun navigateTo(origin: ComponentActivity) {
             val intent = Intent(origin, AuthorsActivity::class.java)
             origin.startActivity(intent)
         }

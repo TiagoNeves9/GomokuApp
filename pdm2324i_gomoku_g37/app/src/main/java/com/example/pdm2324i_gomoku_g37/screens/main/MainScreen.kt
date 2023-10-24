@@ -1,16 +1,26 @@
 package com.example.pdm2324i_gomoku_g37.screens.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -69,23 +79,44 @@ private fun DescriptionContainer() =
 
 @Composable
 private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: () -> Unit) =
-    CustomContainerView(
-        modifier = Modifier.padding(top = MAIN_SCREEN_SPACING_PADDING)
+    Row(modifier = Modifier
+        .padding(MAIN_SCREEN_SPACING_PADDING)
+        .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
     ) {
         LargeCustomButtonView(onClick = onLoginRequested) {
-            Text(
-                text = stringResource(id = R.string.activity_main_login),
-                fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
-            )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Login"
+                )
+                Text(
+                    text = stringResource(id = R.string.activity_main_login),
+                    fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(MAIN_SCREEN_SPACING_PADDING))
+        Spacer(modifier = Modifier.width(MAIN_SCREEN_SPACING_PADDING))
 
         LargeCustomButtonView(onClick = onRegisterRequested) {
-            Text(
-                text = stringResource(id = R.string.activity_main_signup),
-                fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
-            )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = "Sign Up"
+                )
+                Text(
+                    text = stringResource(id = R.string.activity_main_signup),
+                    fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 

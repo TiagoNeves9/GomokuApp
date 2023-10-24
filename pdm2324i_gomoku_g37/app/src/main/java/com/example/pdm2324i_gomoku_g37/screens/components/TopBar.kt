@@ -99,7 +99,7 @@ fun CustomBar(text: String, navigation: NavigationHandlers = NavigationHandlers(
             .fillMaxWidth()
             .padding(all = 10.dp)
     ) {
-        TopBar("Authors", navigation)
+        TopBar(text, navigation)
     }
 
 @Preview

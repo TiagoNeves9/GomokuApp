@@ -7,3 +7,7 @@ object AuthorsScreenTestTags {
     const val AuthorPrevTestTag = "AuthorFetchPrevTestTag"
     const val AuthorEmailButtonTestTag = "AuthorEmailTestTag"
 }
+
+object LoginScreenTestTags {
+    const val LoginScreenTestTag = "LoginScreenTestTag"
+}

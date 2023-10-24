@@ -24,17 +24,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import com.example.pdm2324i_gomoku_g37.screens.login.LoginScreenTestTag
-import com.example.pdm2324i_gomoku_g37.utils.NavigationHandlers
-import com.example.pdm2324i_gomoku_g37.utils.TopBar
+import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
+import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 
 const val SignUpScreenTestTag = "SignUpScreenTestTag"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
-    onBackRequested: () -> Unit = { },
+    navigation: NavigationHandlers = NavigationHandlers(),
     onHomeRequested: () -> Unit = { }
 ){
     var textUsername by remember { mutableStateOf("") }
@@ -45,7 +46,9 @@ fun SignUpScreen(
         modifier = Modifier
             .fillMaxSize()
             .testTag(SignUpScreenTestTag),
-        topBar = { TopBar(NavigationHandlers(onBackRequested = onBackRequested)) },
+        topBar = {
+            CustomBar(text = stringResource(id = R.string.activity_authors_top_bar_title), navigation)
+        },
     ) { padding ->
         Column(
             Modifier

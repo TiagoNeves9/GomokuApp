@@ -220,8 +220,8 @@ private fun LoadImageByName(imageName: String) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
+@Preview(showBackground = true, showSystemUi = true)
 fun AuthorsScreenPreview() {
     val author = Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt")
     GomokuTheme {

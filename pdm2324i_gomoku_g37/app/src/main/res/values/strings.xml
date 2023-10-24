@@ -21,4 +21,6 @@
     <string name="activity_info_no_suitable_app">No suitable application found.</string>
 
     <string name="activity_author_email_subject">About the Gomoku App of Group 37</string>
+
+    <string name="activity_login_top_bar_title">Login</string>
 </resources>

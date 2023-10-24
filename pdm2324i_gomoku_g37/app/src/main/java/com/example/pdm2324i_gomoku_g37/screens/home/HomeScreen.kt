@@ -146,8 +146,8 @@ private fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit
 @Preview(showBackground = true, showSystemUi = true)
 private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 
-@Preview
 @Composable
+@Preview(showBackground = true, showSystemUi = true)
 fun HomeScreenPreview() =
     GomokuTheme {
         HomeScreen()
