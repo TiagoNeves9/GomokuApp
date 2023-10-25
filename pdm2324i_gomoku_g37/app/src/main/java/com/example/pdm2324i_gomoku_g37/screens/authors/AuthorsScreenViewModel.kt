@@ -24,14 +24,18 @@ class AuthorsScreenViewModel : ViewModel(){
     }
 
     fun nextIndex() {
-        authors?.let {
-            index = if (index == it.size - 1) 0 else index + 1
+        viewModelScope.launch {
+            authors?.let {
+                index = if (index == it.size - 1) 0 else index + 1
+            }
         }
     }
 
     fun prevIndex() {
-        authors?.let {
-            index = if (index == 0) it.size - 1 else index - 1
+        viewModelScope.launch {
+            authors?.let {
+                index = if (index == 0) it.size - 1 else index - 1
+            }
         }
     }
 

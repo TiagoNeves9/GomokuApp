@@ -32,18 +32,30 @@ import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
+data class SignUpScreenState(
+    val username: String = "",
+    val password: String = "",
+    val passwordVisible: Boolean = false,
+    val confirmPassword: String = "",
+    val confirmPasswordVisible: Boolean = false
+)
+
+data class SignUpScreenFunctions(
+    val onUsernameChange: (String) -> Unit = { },
+    val onPasswordChange: (String) -> Unit = { },
+    val onPasswordVisibilityChange: () -> Unit = { },
+    val onConfirmPasswordChange: (String) -> Unit = { },
+    val onConfirmPasswordVisibilityChange: () -> Unit = { },
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
+    state: SignUpScreenState = SignUpScreenState(),
     navigation: NavigationHandlers = NavigationHandlers(),
+    functions: SignUpScreenFunctions = SignUpScreenFunctions(),
     onHomeRequested: () -> Unit = { }
 ){
-    var textUsername by remember { mutableStateOf("") }
-    var textPassword by remember { mutableStateOf("") }
-    var textRepeatPassword by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false) }
-    var passwordRepeatVisibility by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             CustomBar(text = stringResource(id = R.string.activity_sign_up_bar_title), navigation)
@@ -62,25 +74,23 @@ fun SignUpScreen(
                 contentDescription = null
             )
 
-            UsernameTextFieldView(textUsername) { textUsername = it }
+            UsernameTextFieldView(state.username, functions.onUsernameChange)
 
             PasswordTextFieldView(
-                value = textPassword,
-                passwordVisibility = passwordVisibility,
-                enablePasswordVisibility = { passwordVisibility = !passwordVisibility },
-                isRepeatPassword = false
-            ) {
-                textPassword = it
-            }
+                value = state.password,
+                passwordVisibility = state.passwordVisible,
+                enablePasswordVisibility = functions.onPasswordVisibilityChange,
+                isRepeatPassword = false,
+                onClick = functions.onPasswordChange
+            )
 
             PasswordTextFieldView(
-                value = textRepeatPassword,
-                passwordVisibility = passwordRepeatVisibility,
-                enablePasswordVisibility = { passwordRepeatVisibility = !passwordRepeatVisibility },
-                isRepeatPassword = true
-            ) {
-                textRepeatPassword = it
-            }
+                value = state.confirmPassword,
+                passwordVisibility = state.confirmPasswordVisible,
+                enablePasswordVisibility = functions.onConfirmPasswordVisibilityChange,
+                isRepeatPassword = true,
+                onClick = functions.onConfirmPasswordChange
+            )
 
             ElevatedButton(
                 onClick = onHomeRequested,
