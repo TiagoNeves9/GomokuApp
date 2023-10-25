@@ -11,3 +11,7 @@ object AuthorsScreenTestTags {
 object LoginScreenTestTags {
     const val LoginScreenTestTag = "LoginScreenTestTag"
 }
+
+object SignUpScreenTestTags {
+    const val SignUpScreenTestTag = "SignUpScreenTestTag"
+}

@@ -9,6 +9,7 @@ import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginActivity
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginScreen
 import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 class SignUpActivity : ComponentActivity() {
 
@@ -22,17 +23,19 @@ class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
         setContent {
-            SignUpScreen(
-                navigation = NavigationHandlers(
-                    onBackRequested = {
-                        MainActivity.navigateTo(origin = this)
-                    },
-                    {}
-                ),
-                onHomeRequested = {
-                    HomeActivity.navigateTo(origin = this)
-                }
-            )
+            GomokuTheme {
+                SignUpScreen(
+                    navigation = NavigationHandlers(
+                        onBackRequested = {
+                            MainActivity.navigateTo(origin = this)
+                        },
+                        {}
+                    ),
+                    onHomeRequested = {
+                        HomeActivity.navigateTo(origin = this)
+                    }
+                )
+            }
         }
     }
 }

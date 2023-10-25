@@ -50,6 +50,10 @@ import com.example.pdm2324i_gomoku_g37.screens.components.LARGE_BUTTON_WIDTH
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
+import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
+import com.example.pdm2324i_gomoku_g37.screens.components.PasswordVisibilityView
+import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
+import com.example.pdm2324i_gomoku_g37.screens.components.onVisualTransformation
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
@@ -80,23 +84,18 @@ fun LoginScreen (
                 painter = painterResource(id = R.drawable.img_gomoku_icon),
                 contentDescription = null
             )
+            
+            UsernameTextFieldView(textUsername) { textUsername = it }
 
-            OutlinedTextField(
-                value = textUsername,
-                onValueChange = { textUsername = it },
-                label = { Text("Username") }
-            )
-            OutlinedTextField(
+            PasswordTextFieldView(
                 value = textPassword,
-                onValueChange = { textPassword = it },
-                label = { Text("Password") },
-                visualTransformation = onVisualTransformation(passwordVisibility),
-                trailingIcon = {
-                    PasswordVisibility(passwordVisibility) {
-                        passwordVisibility = !passwordVisibility
-                    }
-                }
-            )
+                passwordVisibility = passwordVisibility,
+                enablePasswordVisibility = { passwordVisibility = !passwordVisibility },
+                isRepeatPassword = false
+            ) {
+                textPassword = it
+            }
+
             ElevatedButton(
                 onClick = onHomeRequested,
                 shape = RoundedCornerShape(BUTTON_RADIUS),
@@ -116,19 +115,6 @@ fun LoginScreen (
         }
     }
 }
-
-private fun onVisualTransformation(passwordVisibility: Boolean) =
-    if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation()
-
-@Composable
-private fun PasswordVisibility(passwordVisibility: Boolean, onClick: () -> Unit = {}) {
-    val image = if (passwordVisibility) Icons.Filled.Lock else Icons.Filled.Face
-    val descriptor = if (passwordVisibility) "Hide Password" else "Show Password"
-    IconButton(onClick = onClick) {
-        Icon(imageVector = image, contentDescription = descriptor )
-    }
-}
-
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
