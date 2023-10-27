@@ -1,8 +1,8 @@
 package com.example.pdm2324i_gomoku_g37.presentation
 
-import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsScreenViewModel
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
+import com.example.pdm2324i_gomoku_g37.service.GomokuAuthors
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -12,7 +12,6 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -34,19 +33,18 @@ class AuthorsScreenViewModelTests {
 
     @Test
     fun fetchAuthors_triggers_call_to_service() {
-        val authors: List<Author> =
-            listOf(
-                Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-            )
         // Arrange
+        val expectedAuthors = GomokuAuthors.authors
         val serviceMock = mockk<FakeGomokuService> {
             coEvery { fetchAuthors() } coAnswers {
                 delay(1000)
-                authors
+                expectedAuthors
             }
         }
+
         // Act
         sut.fetchAuthors(serviceMock)
+
         // Assert
         coVerify(exactly = 1) { serviceMock.fetchAuthors() }
     }
@@ -54,15 +52,14 @@ class AuthorsScreenViewModelTests {
     @Test
     fun fetchAuthors_publishes_authors() {
         // Arrange
-        val expected = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
+        val expectedAuthors = GomokuAuthors.authors
         val serviceMock = mockk<FakeGomokuService> {
             coEvery { fetchAuthors() } coAnswers {
                 delay(1000)
-                expected
+                expectedAuthors
             }
         }
+
         // Act
         sut.fetchAuthors(serviceMock)
         rule.advanceUntilIdle()
@@ -70,44 +67,67 @@ class AuthorsScreenViewModelTests {
         // Assert
         val actual = sut.authors
         assertNotNull(actual)
-        assertEquals(expected, actual)
+        assertEquals(expectedAuthors, actual)
     }
 
     @Test
     fun next_author_index_publishes_new_index() {
         // Arrange
-        val expected = 0
+        val expectedIndex = 0
 
         // Act
         // Assert
         val actual = sut.index
-        assertEquals(expected, actual)
+        assertEquals(expectedIndex, actual)
     }
 
     @Test
     fun nextIndex_publishes_new_index() {
         // Arrange
-        val expected = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-            )
+        val expectedAuthors = GomokuAuthors.authors
+        val expectedIndex = 1
         val serviceMock = mockk<FakeGomokuService> {
             coEvery { fetchAuthors() } coAnswers {
                 delay(1000)
-                expected
+                expectedAuthors
             }
         }
+
         // Act
         sut.fetchAuthors(serviceMock)
-        sut.nextIndex()
         rule.advanceUntilIdle()
+        sut.nextIndex()
 
         // Assert
         val actualAuthors = sut.authors
         val actualIndex = sut.index
         assertNotNull(actualAuthors)
-        assertEquals(expected, actualAuthors)
-        assertEquals(1,actualIndex)
+        assertEquals(expectedAuthors, actualAuthors)
+        assertEquals(expectedIndex,actualIndex)
+    }
+
+    @Test
+    fun prevIndex_publishes_new_index() {
+        // Arrange
+        val expectedAuthors = GomokuAuthors.authors
+        val expectedIndex = 2
+        val serviceMock = mockk<FakeGomokuService> {
+            coEvery { fetchAuthors() } coAnswers {
+                delay(1000)
+                expectedAuthors
+            }
+        }
+
+        // Act
+        sut.fetchAuthors(serviceMock)
+        rule.advanceUntilIdle()
+        sut.prevIndex()
+
+        // Assert
+        val actualAuthors = sut.authors
+        val actualIndex = sut.index
+        assertNotNull(actualAuthors)
+        assertEquals(expectedAuthors, actualAuthors)
+        assertEquals(expectedIndex, actualIndex)
     }
 }
