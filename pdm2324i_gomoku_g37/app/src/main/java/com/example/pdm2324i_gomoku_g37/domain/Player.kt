@@ -9,7 +9,7 @@ import java.util.*
  * */
 typealias Player = Pair<User, Turn>
 
-data class User(val userId: UUID, val username: String, val encodedPassword: String) {
+data class User(val id: Int, val username: String, val encodedPassword: String) {
     /*
     fun other() =
         if (this.color == Piece.WHITE_PIECE) Piece.BLACK_PIECE

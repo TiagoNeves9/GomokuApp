@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
+import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.launch
 
 class AuthorsScreenViewModel : ViewModel(){
@@ -17,7 +18,7 @@ class AuthorsScreenViewModel : ViewModel(){
     var index: Int by mutableStateOf(0)
         private set
 
-    fun fetchAuthors(services : FakeGomokuService){
+    fun fetchAuthors(services: GomokuService){
         viewModelScope.launch {
             authors = services.fetchAuthors()
         }
