@@ -10,11 +10,11 @@ import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
-class SignUpActivity : ComponentActivity() {
 
+class SignUpActivity : ComponentActivity() {
     private val viewModel by viewModels<SignUpScreenViewModel>()
 
-    companion object{
+    companion object {
         fun navigateTo(origin: ComponentActivity) {
             val intent = Intent(origin, SignUpActivity::class.java)
             origin.startActivity(intent)
@@ -37,7 +37,7 @@ class SignUpActivity : ComponentActivity() {
                         onBackRequested = {
                             MainActivity.navigateTo(origin = this)
                         },
-                        {}
+                        onInfoRequested = { /*InfoActivity.navigateTo(origin = this)*/ }
                     ),
                     functions = SignUpScreenFunctions(
                         onUsernameChange = viewModel::changeUsername,

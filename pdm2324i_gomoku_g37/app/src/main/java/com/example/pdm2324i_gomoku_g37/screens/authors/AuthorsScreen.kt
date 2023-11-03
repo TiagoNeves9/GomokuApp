@@ -59,6 +59,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.ROW_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
+
 data class AuthorsHandlers(
     val onNextRequested: (() -> Unit)? = null,
     val onPrevRequested: (() -> Unit)? = null,
@@ -72,11 +73,14 @@ fun AuthorsScreen(
     authorsHandlers: AuthorsHandlers = AuthorsHandlers(),
     navigation: NavigationHandlers = NavigationHandlers(),
     onSendEmailRequested: () -> Unit = { },
-) {
+) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            CustomBar(text = stringResource(id = R.string.activity_authors_top_bar_title),navigation )
+            CustomBar(
+                text = stringResource(id = R.string.activity_authors_top_bar_title),
+                navigation
+            )
         },
         bottomBar = { GroupFooterView() }
     ) { padding ->
@@ -85,10 +89,11 @@ fun AuthorsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            require(index >= 0) { "Index must be greater than or equal to 0" }
+
             LargeCustomTitleView(text = stringResource(id = R.string.activity_authors_group_number))
 
             val author = authors?.get(index)
-
             if (author != null) {
                 ElevatedCard(
                     modifier = Modifier
@@ -104,19 +109,16 @@ fun AuthorsScreen(
                         onSendEmailRequested = onSendEmailRequested
                     )
                 }
-            } else {
-                Text(
-                    text = stringResource(id = R.string.activity_author_no_author_found),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag(AuthorNoAuthorTestTag),
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
+            } else Text(
+                text = stringResource(id = R.string.activity_author_no_author_found),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(AuthorNoAuthorTestTag),
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
         }
     }
-}
 
 @Composable
 fun DisplayAuthor(
@@ -152,12 +154,13 @@ fun DisplayAuthor(
                 modifier = Modifier.size(ICON_SIZE)
             )
         }
+
         NavigationButtons(authorsHandlers)
     }
 }
 
 @Composable
-fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers(),) =
+fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers()) =
     Row(
         Modifier
             .fillMaxWidth()
@@ -168,7 +171,7 @@ fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers(),) =
             AuthorNavigationButton(it, Modifier.testTag(AuthorPrevTestTag)) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = stringResource(id = R.string.activity_authors_previous)
+                    contentDescription = stringResource(R.string.activity_authors_previous)
                 )
             }
         }
@@ -176,7 +179,7 @@ fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers(),) =
             AuthorNavigationButton(it, Modifier.testTag(AuthorNextTestTag)) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
-                    contentDescription = stringResource(id = R.string.activity_authors_next)
+                    contentDescription = stringResource(R.string.activity_authors_next)
                 )
             }
         }
@@ -206,11 +209,10 @@ private fun LoadImageByName(imageName: String) {
     val resourceId = resourceMap[imageName]
 
     resourceId?.let { id ->
-        val painter: Painter = painterResource(id = id)
-
+        val painter: Painter = painterResource(id)
         Image(
             painter = painter,
-            contentDescription = stringResource(id = R.string.activity_authors_image_desc),
+            contentDescription = stringResource(R.string.activity_authors_image_desc),
             modifier = Modifier
                 .clip(CircleShape)
                 .size(AUTHOR_IMAGE_SIZE),
@@ -223,7 +225,13 @@ private fun LoadImageByName(imageName: String) {
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun AuthorsScreenPreview() {
-    val author = Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt")
+    val author = Author(
+        48292,
+        "Tiago Neves",
+        "O melhor programador",
+        "img_tiago",
+        "a48292@alunos.isel.pt"
+    )
     GomokuTheme {
         AuthorsScreen(
             authors = listOf(author),

@@ -1,15 +1,8 @@
 package com.example.pdm2324i_gomoku_g37.screens.components
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 
 val MAIN_SCREEN_DEFAULT_PADDING = 30.dp
 val MAIN_SCREEN_SPACING_PADDING = 15.dp
@@ -30,7 +23,7 @@ val DEFAULT_CONTENT_PADDING = 10.dp
 
 val AUTHOR_IMAGE_SIZE = 150.dp
 
-val LARGE_BUTTON_WIDTH = 200.dp
+val LARGE_BUTTON_WIDTH = 120.dp
 val LARGE_BUTTON_HEIGHT = 120.dp
 
 val PASSWORD_SHOW_HIDE_ICON_SIZE = 20.dp

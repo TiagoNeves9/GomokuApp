@@ -10,15 +10,14 @@ import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
-class InfoActivity : ComponentActivity() {
 
+class InfoActivity : ComponentActivity() {
     private val viewModel by viewModels<InfoScreenViewModel>()
     private val services = FakeGomokuService()
 
-
-    companion object{
-        fun navigateTo(origin: ComponentActivity){
-            val intent = Intent(origin,InfoActivity::class.java)
+    companion object {
+        fun navigateTo(origin: ComponentActivity) {
+            val intent = Intent(origin, InfoActivity::class.java)
             origin.startActivity(intent)
         }
     }
@@ -35,7 +34,7 @@ class InfoActivity : ComponentActivity() {
                 InfoScreen(
                     viewModel.info,
                     navigation = NavigationHandlers(
-                        onBackRequested = {HomeActivity.navigateTo(origin = this)}
+                        onBackRequested = { HomeActivity.navigateTo(origin = this) }
                     )
                 )
             }

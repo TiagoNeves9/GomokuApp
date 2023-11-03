@@ -36,21 +36,19 @@ import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Turn
+import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
-import com.example.pdm2324i_gomoku_g37.domain.User
-import com.example.pdm2324i_gomoku_g37.domain.Variant
-import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_CELL_SIZE
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
+import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
-import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-import java.util.UUID
 
 
 @Composable
@@ -99,6 +97,7 @@ fun GameScreen(game: GameActivity) {
 @Composable
 fun DrawBoard(board: Board, onClick: (Cell) -> Unit = {}) {
     SymbolAxisView(board.boardSize)
+
     Row(
         Modifier.testTag("boardTest"),
         Arrangement.Center,
@@ -108,6 +107,7 @@ fun DrawBoard(board: Board, onClick: (Cell) -> Unit = {}) {
         CellsView(board, onClick)
         NumberAxisView(board.boardSize)
     }
+
     SymbolAxisView(board.boardSize)
 }
 
@@ -120,6 +120,7 @@ fun SymbolAxisView(boardSize: Int) =
         Box(Modifier.size(BOARD_CELL_SIZE.dp)) {
             AxisText(" ")
         }
+
         repeat(boardSize) {
             val letter = it.indexToColumn(boardSize).symbol.toString()
             Box(
@@ -129,6 +130,7 @@ fun SymbolAxisView(boardSize: Int) =
                 AxisText(letter)
             }
         }
+
         Box(Modifier.size(BOARD_CELL_SIZE.dp)) {
             AxisText(" ")
         }
@@ -200,6 +202,7 @@ fun DrawCells(
         Alignment.Center
     ) {
         DrawPlusSymbol(padding)
+
         content()
     }
 }

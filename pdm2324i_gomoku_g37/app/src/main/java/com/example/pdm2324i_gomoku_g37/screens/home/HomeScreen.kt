@@ -33,7 +33,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onAuthorsRequested: () -> Unit = { }) {
+fun HomeScreen(onAuthorsRequested: () -> Unit = { }) =
     Surface(
         color = MaterialTheme.colorScheme.background
     ) {
@@ -108,7 +108,7 @@ fun HomeScreen(onAuthorsRequested: () -> Unit = { }) {
                         }
                     }
 
-                    MenuButton() {
+                    MenuButton {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -127,7 +127,6 @@ fun HomeScreen(onAuthorsRequested: () -> Unit = { }) {
             }
         }
     }
-}
 
 @Composable
 private fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =

@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,9 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
-import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomButtonView
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomButtonView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_BUTTON_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
@@ -45,7 +43,7 @@ fun MainScreen(onLoginRequested: () -> Unit = {}, onRegisterRequested: () -> Uni
         bottomBar = {
             CustomFooterView {
                 Text(
-                    text = stringResource(id = R.string.activity_main_footer),
+                    text = stringResource(R.string.activity_main_footer),
                     textAlign = TextAlign.Center
                 )
             }
@@ -57,7 +55,10 @@ fun MainScreen(onLoginRequested: () -> Unit = {}, onRegisterRequested: () -> Uni
                 .padding(padding)
         ) {
             LargeCustomTitleView(text = "Gomoku")
-            Image(painter = painterResource(id = R.drawable.img_gomoku_icon), contentDescription = null)
+            Image(
+                painter = painterResource(R.drawable.img_gomoku_icon),
+                contentDescription = null
+            )
             DescriptionContainer()
             ButtonsContainer(onLoginRequested, onRegisterRequested)
         }
@@ -71,7 +72,7 @@ private fun DescriptionContainer() =
             .padding(all = MAIN_SCREEN_DEFAULT_PADDING)
     ) {
         Text(
-            text = stringResource(id = R.string.activity_main_description),
+            text = stringResource(R.string.activity_main_description),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
@@ -79,10 +80,11 @@ private fun DescriptionContainer() =
 
 @Composable
 private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: () -> Unit) =
-    Row(modifier = Modifier
-        .padding(MAIN_SCREEN_SPACING_PADDING)
-        .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+    Row(
+        Modifier
+            .padding(MAIN_SCREEN_SPACING_PADDING)
+            .fillMaxWidth(),
+        Arrangement.Center,
     ) {
         LargeCustomButtonView(onClick = onLoginRequested) {
             Column(
@@ -94,13 +96,13 @@ private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: 
                     contentDescription = "Login"
                 )
                 Text(
-                    text = stringResource(id = R.string.activity_main_login),
+                    text = stringResource(R.string.activity_main_login),
                     fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
                 )
             }
         }
 
-        Spacer(modifier = Modifier.width(MAIN_SCREEN_SPACING_PADDING))
+        Spacer(Modifier.width(MAIN_SCREEN_SPACING_PADDING))
 
         LargeCustomButtonView(onClick = onRegisterRequested) {
             Column(
@@ -112,7 +114,7 @@ private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: 
                     contentDescription = "Sign Up"
                 )
                 Text(
-                    text = stringResource(id = R.string.activity_main_signup),
+                    text = stringResource(R.string.activity_main_signup),
                     fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE,
                     textAlign = TextAlign.Center
                 )
