@@ -54,13 +54,27 @@ import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
 import com.example.pdm2324i_gomoku_g37.screens.components.PasswordVisibilityView
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.screens.components.onVisualTransformation
+import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpScreenFunctions
+import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpScreenState
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
+data class LoginScreenState(
+    val username: String = "",
+    val password: String = "",
+    val passwordVisible: Boolean = false,
+)
 
+data class LoginScreenFunctions(
+    val onUsernameChange: (String) -> Unit = { },
+    val onPasswordChange: (String) -> Unit = { },
+    val onPasswordVisibilityChange: () -> Unit = { },
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen (
+    state: LoginScreenState = LoginScreenState(),
     navigation: NavigationHandlers = NavigationHandlers(),
+    functions: LoginScreenFunctions = LoginScreenFunctions(),
     onHomeRequested: () -> Unit = { }
 ) {
     var textUsername by remember { mutableStateOf("") }
@@ -85,16 +99,15 @@ fun LoginScreen (
                 contentDescription = null
             )
             
-            UsernameTextFieldView(textUsername) { textUsername = it }
+            UsernameTextFieldView(state.username,functions.onUsernameChange)
 
             PasswordTextFieldView(
-                value = textPassword,
-                passwordVisibility = passwordVisibility,
-                enablePasswordVisibility = { passwordVisibility = !passwordVisibility },
-                isRepeatPassword = false
-            ) {
-                textPassword = it
-            }
+                value = state.password,
+                passwordVisibility = state.passwordVisible,
+                enablePasswordVisibility = functions.onPasswordVisibilityChange,
+                isRepeatPassword = false,
+                onClick = functions.onPasswordChange
+            )
 
             ElevatedButton(
                 onClick = onHomeRequested,

@@ -48,6 +48,7 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
+import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import java.util.UUID
 
@@ -257,11 +258,11 @@ fun StatusBar(content: @Composable () -> Unit = {}) {
 @Composable
 fun GameScreenPreview() {
     val playerB = Player(
-        User(UUID.randomUUID(), "BlackPlayer", "enconded123"),
+        GomokuUsers.users[0],
         Turn.BLACK_PIECE
     )
     val playerW = Player(
-        User(UUID.randomUUID(), "WhitePlayer", "encodedXYZ"),
+        GomokuUsers.users[1],
         Turn.WHITE_PIECE
     )
     val board = createBoard(playerB.second, BOARD_DIM)
