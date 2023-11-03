@@ -76,7 +76,7 @@ fun AuthorsScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            CustomBar(text = stringResource(id = R.string.activity_authors_top_bar_title), navigation)
+            CustomBar(text = stringResource(id = R.string.activity_authors_top_bar_title),navigation )
         },
         bottomBar = { GroupFooterView() }
     ) { padding ->

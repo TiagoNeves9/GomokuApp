@@ -10,4 +10,6 @@ interface GomokuService {
     suspend fun fetchAuthors(): List<Author>
 
     suspend fun signUp(username: String, password: String): UserId
+
+    suspend fun fetchInfo(): String
 }

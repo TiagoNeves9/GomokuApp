@@ -77,10 +77,6 @@ fun LoginScreen (
     functions: LoginScreenFunctions = LoginScreenFunctions(),
     onHomeRequested: () -> Unit = { }
 ) {
-    var textUsername by remember { mutableStateOf("") }
-    var textPassword by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             CustomBar(text = stringResource(id = R.string.activity_login_top_bar_title), navigation)

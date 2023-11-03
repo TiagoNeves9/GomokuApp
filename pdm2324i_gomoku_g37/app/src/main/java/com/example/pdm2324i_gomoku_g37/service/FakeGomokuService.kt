@@ -8,6 +8,9 @@ class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors
     override suspend fun signUp(username: String, password: String): UserId =
         UserId(GomokuUsers.addUser(username, password))
+
+    override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
+
 }
 
 object GomokuAuthors {

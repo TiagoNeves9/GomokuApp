@@ -14,6 +14,8 @@ import androidx.activity.viewModels
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
+import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
+import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
@@ -46,7 +48,9 @@ class AuthorsActivity : ComponentActivity() {
                         { viewModel.nextIndex() },
                         { viewModel.prevIndex() }
                     ),
-                    navigation = NavigationHandlers({},{}),
+                    navigation = NavigationHandlers(
+                        onBackRequested = { HomeActivity.navigateTo(origin = this) },
+                        onInfoRequested = { InfoActivity.navigateTo(origin = this)}),
                     onSendEmailRequested = {
                         viewModel.authors?.get(viewModel.index)?.let { author ->
                             openSendEmail(author.email)
