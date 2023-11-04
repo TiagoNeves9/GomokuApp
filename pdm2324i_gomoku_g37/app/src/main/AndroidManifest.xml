@@ -39,6 +39,9 @@
         <activity
             android:name=".screens.signup.SignUpActivity"
             android:exported="false"/>
+        <activity
+            android:name=".screens.info.InfoActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
