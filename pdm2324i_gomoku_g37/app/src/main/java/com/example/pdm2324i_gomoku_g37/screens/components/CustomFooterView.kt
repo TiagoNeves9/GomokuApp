@@ -11,12 +11,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 
+
+val CUSTOM_FOOTER_PADDING = 15.dp
+
 @Composable
 fun CustomFooterView(modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) =
     CustomContainerView(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 15.dp)
+            .padding(bottom = CUSTOM_FOOTER_PADDING)
     ) {
         content()
     }
@@ -25,18 +28,17 @@ fun CustomFooterView(modifier: Modifier = Modifier, content: @Composable () -> U
 fun GroupFooterView() =
     CustomFooterView {
         Text(
-            text = stringResource(id = R.string.activity_main_footer),
+            text = stringResource(R.string.activity_main_footer),
             textAlign = TextAlign.Center
         )
     }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun CustomFooterViewPreview() {
+fun CustomFooterViewPreview() =
     CustomFooterView {
         Text(
-            text = stringResource(id = R.string.activity_main_footer),
+            text = stringResource(R.string.activity_main_footer),
             textAlign = TextAlign.Center
         )
     }
-}

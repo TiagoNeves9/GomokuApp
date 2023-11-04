@@ -8,14 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.launch
 
-class InfoScreenViewModel : ViewModel() {
 
+class InfoScreenViewModel : ViewModel() {
     var info: String? by mutableStateOf(null)
         private set
 
-    fun fetchInfo(services: GomokuService){
-        viewModelScope.launch{
+    fun fetchInfo(services: GomokuService) =
+        viewModelScope.launch {
             info = services.fetchInfo()
         }
-    }
 }

@@ -7,31 +7,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
+
 class LoginScreenViewModel : ViewModel() {
     var username by mutableStateOf("")
         private set
 
-    fun changeUsername(newUsername: String) {
+    fun changeUsername(newUsername: String) =
         viewModelScope.launch {
             username = newUsername
         }
-    }
 
     var password by mutableStateOf("")
         private set
 
-    fun changePassword(newPassword: String) {
+    fun changePassword(newPassword: String) =
         viewModelScope.launch {
             password = newPassword
         }
-    }
 
     var passwordVisible by mutableStateOf(false)
         private set
 
-    fun changePasswordVisible() {
+    fun changePasswordVisible() =
         viewModelScope.launch {
             passwordVisible = !passwordVisible
         }
-    }
 }

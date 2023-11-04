@@ -10,10 +10,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -31,6 +27,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+
 
 data class SignUpScreenState(
     val username: String = "",
@@ -55,19 +52,21 @@ fun SignUpScreen(
     navigation: NavigationHandlers = NavigationHandlers(),
     functions: SignUpScreenFunctions = SignUpScreenFunctions(),
     onHomeRequested: () -> Unit = { }
-){
+) =
     Scaffold(
-        topBar = {
-            CustomBar(text = stringResource(id = R.string.activity_sign_up_bar_title), navigation)
-        },
-        bottomBar = { GroupFooterView() },
         modifier = Modifier
             .fillMaxSize()
             .testTag(SignUpScreenTestTag),
+        topBar = {
+            CustomBar(
+                text = stringResource(R.string.activity_sign_up_bar_title),
+                navigation = navigation
+            )
+        },
+        bottomBar = { GroupFooterView() },
     ) { padding ->
         CustomContainerView(
-            modifier = Modifier
-                .fillMaxSize()
+            Modifier.fillMaxSize()
         ) {
             Image(
                 painter = painterResource(id = R.drawable.img_gomoku_icon),
@@ -101,16 +100,12 @@ fun SignUpScreen(
                     top = MAIN_SCREEN_SPACING_PADDING,
                     bottom = MAIN_SCREEN_SPACING_PADDING
                 ),
-                modifier = Modifier
-                    .padding(padding)
+                modifier = Modifier.padding(padding)
             ) {
-                Text(
-                    text = stringResource(id = R.string.activity_sign_up_register_button)
-                )
+                Text(stringResource(R.string.activity_sign_up_register_button))
             }
         }
     }
-}
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)

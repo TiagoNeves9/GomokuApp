@@ -11,23 +11,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.R
 
+
+val CUSTOM_CONT_FONT_SIZE = 20.sp
+
 @Composable
 fun CustomContainerView(modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) =
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        modifier,
+        Arrangement.Center,
+        Alignment.CenterHorizontally
     ) {
         content()
     }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun CustomContainerViewPreview() {
+fun CustomContainerViewPreview() =
     CustomContainerView {
         Text(
-            text = stringResource(id = R.string.activity_main_signup),
-            fontSize = 20.sp
+            text = stringResource(R.string.activity_main_signup),
+            fontSize = CUSTOM_CONT_FONT_SIZE
         )
     }
-}

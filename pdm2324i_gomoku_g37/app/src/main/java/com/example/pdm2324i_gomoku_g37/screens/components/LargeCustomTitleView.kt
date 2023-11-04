@@ -6,19 +6,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+
 @Composable
-fun LargeCustomTitleView(text: String) =
+fun LargeCustomTitleView(text: String, bottomPadding: Dp = 15.dp) =
     Text(
         text = text,
-        modifier = Modifier.padding(bottom = 15.dp),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onBackground
+        modifier = Modifier.padding(bottom = bottomPadding),
+        color = MaterialTheme.colorScheme.onBackground,
+        style = MaterialTheme.typography.titleLarge
     )
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun LargeCustomTitleViewPreview() {
-    LargeCustomTitleView(text = "Gomoku")
-}
+fun LargeCustomTitleViewPreview() = LargeCustomTitleView(text = "Gomoku")

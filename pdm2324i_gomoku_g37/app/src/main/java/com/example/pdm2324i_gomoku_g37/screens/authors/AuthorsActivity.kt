@@ -1,6 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.screens.authors
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -15,13 +14,11 @@ import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
-import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 class AuthorsActivity : ComponentActivity() {
-
     private val viewModel by viewModels<AuthorsScreenViewModel>()
     private val services = FakeGomokuService()
 
@@ -50,7 +47,7 @@ class AuthorsActivity : ComponentActivity() {
                     ),
                     navigation = NavigationHandlers(
                         onBackRequested = { HomeActivity.navigateTo(origin = this) },
-                        onInfoRequested = { InfoActivity.navigateTo(origin = this)}),
+                        onInfoRequested = { InfoActivity.navigateTo(origin = this) }),
                     onSendEmailRequested = {
                         viewModel.authors?.get(viewModel.index)?.let { author ->
                             openSendEmail(author.email)
@@ -68,7 +65,6 @@ class AuthorsActivity : ComponentActivity() {
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
                 putExtra(Intent.EXTRA_SUBJECT, R.string.activity_author_email_subject)
             }
-
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             Log.e(TAG, "Failed to send email", e)
