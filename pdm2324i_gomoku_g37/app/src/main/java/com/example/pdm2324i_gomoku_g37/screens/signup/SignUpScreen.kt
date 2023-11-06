@@ -16,6 +16,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Loading
+import com.example.pdm2324i_gomoku_g37.domain.UserId
+import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.helpers.SignUpScreenTestTags.SignUpScreenTestTag
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_RADIUS
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
@@ -25,11 +29,13 @@ import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PA
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
+import com.example.pdm2324i_gomoku_g37.screens.components.RefreshFab
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 data class SignUpScreenState(
+    val user: LoadState<UserId> = idle(),
     val username: String = "",
     val password: String = "",
     val passwordVisible: Boolean = false,
@@ -43,6 +49,7 @@ data class SignUpScreenFunctions(
     val onPasswordVisibilityChange: () -> Unit = { },
     val onConfirmPasswordChange: (String) -> Unit = { },
     val onConfirmPasswordVisibilityChange: () -> Unit = { },
+    val onSignUpRequested: () -> Unit = {},
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,13 +57,19 @@ data class SignUpScreenFunctions(
 fun SignUpScreen(
     state: SignUpScreenState = SignUpScreenState(),
     navigation: NavigationHandlers = NavigationHandlers(),
-    functions: SignUpScreenFunctions = SignUpScreenFunctions(),
-    onHomeRequested: () -> Unit = { }
+    functions: SignUpScreenFunctions = SignUpScreenFunctions()
 ) =
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .testTag(SignUpScreenTestTag),
+        floatingActionButton = {
+            RefreshFab(
+                onClick = functions.onSignUpRequested,
+                refreshing = state.user is Loading,
+                modifier = Modifier.testTag("SignUpRefreshTestTag")
+            )
+        },
         topBar = {
             CustomBar(
                 text = stringResource(R.string.activity_sign_up_bar_title),
@@ -92,7 +105,7 @@ fun SignUpScreen(
             )
 
             ElevatedButton(
-                onClick = onHomeRequested,
+                onClick = functions.onSignUpRequested,
                 shape = RoundedCornerShape(BUTTON_RADIUS),
                 contentPadding = PaddingValues(
                     start = MAIN_SCREEN_DEFAULT_PADDING,

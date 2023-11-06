@@ -3,13 +3,16 @@ package com.example.pdm2324i_gomoku_g37.service
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
+import kotlinx.coroutines.delay
 
 
 class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors
 
-    override suspend fun signUp(username: String, password: String): UserId =
-        UserId(GomokuUsers.addUser(username, password))
+    override suspend fun signUp(username: String, password: String): UserId {
+        delay(2000)
+        return UserId(GomokuUsers.createUser(username, password))
+    }
 
     override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
 }
@@ -50,7 +53,7 @@ object GomokuUsers {
     val users: List<User>
         get() = _users.toList()
 
-    fun addUser(username: String, password: String): Int {
+    fun createUser(username: String, password: String): Int {
         val newUser = User(users.size + 1, username, password)
         _users.add(newUser)
         return newUser.id
