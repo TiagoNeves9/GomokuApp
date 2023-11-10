@@ -69,12 +69,12 @@ fun LoginScreen(
                 contentDescription = null
             )
 
-            UsernameTextFieldView(state.username, functions.onUsernameChange)
+            UsernameTextFieldView(value = state.username, onClick = functions.onUsernameChange)
 
             PasswordTextFieldView(
                 value = state.password,
                 passwordVisibility = state.passwordVisible,
-                enablePasswordVisibility = functions.onPasswordVisibilityChange,
+                //enablePasswordVisibility = functions.onPasswordVisibilityChange,
                 isRepeatPassword = false,
                 onClick = functions.onPasswordChange
             )

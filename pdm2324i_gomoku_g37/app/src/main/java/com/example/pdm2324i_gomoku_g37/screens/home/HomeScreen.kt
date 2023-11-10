@@ -27,13 +27,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
+import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onAuthorsRequested: () -> Unit = { }) =
+fun HomeScreen(
+    userInfo: UserInfo,
+    onAuthorsRequested: () -> Unit = { }
+) =
     Surface(
         color = MaterialTheme.colorScheme.background
     ) {
@@ -47,6 +52,7 @@ fun HomeScreen(onAuthorsRequested: () -> Unit = { }) =
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text("User: ${userInfo.username}")
                 //TODO mover Title para package de componentes reutilizaveis
                 LargeCustomTitleView(text = stringResource(id = R.string.activity_menu_title))
 
@@ -149,5 +155,6 @@ private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 @Preview(showBackground = true, showSystemUi = true)
 fun HomeScreenPreview() =
     GomokuTheme {
-        HomeScreen()
+        val user = GomokuUsers.users[0]
+        HomeScreen(UserInfo(user.id, user.username))
     }

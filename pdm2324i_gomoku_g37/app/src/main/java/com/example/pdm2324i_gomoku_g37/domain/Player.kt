@@ -21,6 +21,8 @@ data class User(val id: Int, val username: String, val encodedPassword: String) 
     */
 }
 
+data class UserInfo(val id: Int, val username: String)
+
 enum class Turn {
     BLACK_PIECE, WHITE_PIECE;
 

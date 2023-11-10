@@ -43,7 +43,7 @@ class LoginActivity : ComponentActivity() {
                         onPasswordVisibilityChange = viewModel::changePasswordVisible
                     ),
                     onHomeRequested = {
-                        HomeActivity.navigateTo(origin = this)
+                        //HomeActivity.navigateTo(origin = this)
                     }
                 )
             }

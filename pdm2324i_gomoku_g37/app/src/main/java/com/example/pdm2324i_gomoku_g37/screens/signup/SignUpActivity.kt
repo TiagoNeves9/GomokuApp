@@ -2,11 +2,12 @@ package com.example.pdm2324i_gomoku_g37.screens.signup
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.pdm2324i_gomoku_g37.GomokuDependencyProvider
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
@@ -41,12 +42,18 @@ class SignUpActivity : ComponentActivity() {
             GomokuTheme {
                 SignUpScreen(
                     state = SignUpScreenState(
-                        user = viewModel.user,
+                        user = viewModel.userId,
                         username = viewModel.username,
+                        usernameErrorText = viewModel.usernameErrorText,
+                        isUsernameInputError = viewModel.isUsernameInputError,
                         password = viewModel.password,
-                        passwordVisible = viewModel.passwordVisible,
+                        passwordErrorText = viewModel.passwordErrorText,
+                        isPasswordInputError = viewModel.isPasswordInputError,
+                        passwordVisible = viewModel.isPasswordVisible,
                         confirmPassword = viewModel.confirmPassword,
-                        confirmPasswordVisible = viewModel.confirmPasswordVisible
+                        confirmPasswordErrorText = viewModel.confirmPasswordErrorText,
+                        isConfirmPasswordInputError = viewModel.isConfirmPasswordInputError,
+                        confirmPasswordVisible = viewModel.isConfirmPasswordVisible
                     ),
                     navigation = NavigationHandlers(
                         onBackRequested = {
@@ -56,10 +63,16 @@ class SignUpActivity : ComponentActivity() {
                     ),
                     functions = SignUpScreenFunctions(
                         onUsernameChange = viewModel::changeUsername,
+                        onUsernameErrorTextChange = viewModel::changeUsernameErrorText,
+                        onIsUsernameInputErrorChange = viewModel::changeIsUsernameInputError,
                         onPasswordChange = viewModel::changePassword,
-                        onPasswordVisibilityChange = viewModel::changePasswordVisible,
+                        onPasswordErrorTextChange = viewModel::changePasswordErrorText,
+                        onIsPasswordInputErrorChange = viewModel::changeIsPasswordInputError,
+                        onPasswordVisibilityChange = viewModel::changeIsPasswordVisible,
                         onConfirmPasswordChange = viewModel::changeConfirmPassword,
-                        onConfirmPasswordVisibilityChange = viewModel::changeConfirmPasswordVisible,
+                        onConfirmPasswordErrorTextChange = viewModel::changeConfirmPasswordErrorText,
+                        onIsConfirmPasswordInputErrorChange = viewModel::changeIsConfirmPasswordInputError,
+                        onConfirmPasswordVisibilityChange = viewModel::changeIsConfirmPasswordVisible,
                         onSignUpRequested = ::doSignUp
                     )
                 )
@@ -69,9 +82,11 @@ class SignUpActivity : ComponentActivity() {
 
     private fun doSignUp() {
         viewModel.signUp { signUpResult ->
-            signUpResult.getOrNull()?.let { userId ->
-                HomeActivity.navigateTo(this)
-                Log.v("SignUp", "Sign up successful with user: $userId")
+            if (signUpResult is Loaded) {
+                signUpResult.getOrNull()?.let { userId ->
+                    val user = UserInfo(userId.id, viewModel.username)
+                    HomeActivity.navigateTo(this, user)
+                }
             }
         }
     }

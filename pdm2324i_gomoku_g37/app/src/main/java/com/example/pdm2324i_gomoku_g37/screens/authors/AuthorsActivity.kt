@@ -46,8 +46,8 @@ class AuthorsActivity : ComponentActivity() {
                         { viewModel.prevIndex() }
                     ),
                     navigation = NavigationHandlers(
-                        onBackRequested = { HomeActivity.navigateTo(origin = this) },
-                        onInfoRequested = { InfoActivity.navigateTo(origin = this) }),
+                        onBackRequested = { /*HomeActivity.navigateTo(origin = this)*/ },
+                        onInfoRequested = { /*InfoActivity.navigateTo(origin = this)*/ }),
                     onSendEmailRequested = {
                         viewModel.authors?.get(viewModel.index)?.let { author ->
                             openSendEmail(author.email)

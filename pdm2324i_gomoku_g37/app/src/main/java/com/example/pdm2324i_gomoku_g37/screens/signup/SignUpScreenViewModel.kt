@@ -1,6 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.screens.signup
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,10 +8,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
+import com.example.pdm2324i_gomoku_g37.domain.Loading
 import com.example.pdm2324i_gomoku_g37.domain.UserId
+import com.example.pdm2324i_gomoku_g37.domain.failure
 import com.example.pdm2324i_gomoku_g37.domain.idle
-import com.example.pdm2324i_gomoku_g37.domain.loaded
-import com.example.pdm2324i_gomoku_g37.domain.loading
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.launch
 
@@ -25,55 +25,127 @@ class SignUpScreenViewModel(private val service: GomokuService) : ViewModel() {
         }
     }
 
-    var username by mutableStateOf("")
-        private set
+    /**
+     * username
+     */
+    private var _username by mutableStateOf("")
 
-    fun changeUsername(newUsername: String) =
-        viewModelScope.launch {
-            username = newUsername
-        }
+    val username: String
+        get() = _username
 
-    var password by mutableStateOf("")
-        private set
+    private var _usernameErrorText by mutableStateOf("")
 
-    fun changePassword(newPassword: String) =
-        viewModelScope.launch {
-            password = newPassword
-        }
+    val usernameErrorText: String
+        get() = _usernameErrorText
 
-    var passwordVisible by mutableStateOf(false)
-        private set
+    private var _isUsernameInputError by mutableStateOf(false)
 
-    fun changePasswordVisible() =
-        viewModelScope.launch {
-            passwordVisible = !passwordVisible
-        }
+    val isUsernameInputError: Boolean
+        get() = _isUsernameInputError
 
-    var confirmPassword by mutableStateOf("")
-        private set
+    fun changeUsername(username: String) = viewModelScope.launch {
+        _username = username
+    }
 
-    fun changeConfirmPassword(newConfirmPassword: String) =
-        viewModelScope.launch {
-            confirmPassword = newConfirmPassword
-        }
+    fun changeUsernameErrorText(error: String) = viewModelScope.launch {
+        _usernameErrorText = error
+    }
 
-    var confirmPasswordVisible by mutableStateOf(false)
-        private set
+    fun changeIsUsernameInputError(isError: Boolean) = viewModelScope.launch {
+        _isUsernameInputError = isError
+    }
 
-    fun changeConfirmPasswordVisible() = viewModelScope.launch {
-        confirmPasswordVisible = !confirmPasswordVisible
+    /**
+     * Password
+     */
+
+    private var _password by mutableStateOf("")
+
+    val password: String
+        get() = _password
+
+    private var _passwordErrorText by mutableStateOf("")
+
+    val passwordErrorText: String
+        get() = _passwordErrorText
+
+    private var _isPasswordInputError by mutableStateOf(false)
+
+    val isPasswordInputError: Boolean
+        get() = _isPasswordInputError
+
+    private var _isPasswordVisible by mutableStateOf(false)
+
+    val isPasswordVisible: Boolean
+        get() = _isPasswordVisible
+
+    fun changePassword(password: String) = viewModelScope.launch {
+        _password = password
+    }
+
+    fun changePasswordErrorText(error: String) = viewModelScope.launch {
+        _passwordErrorText = error
+    }
+
+    fun changeIsPasswordInputError(isError: Boolean) = viewModelScope.launch {
+        _isPasswordInputError = isError
+    }
+
+    fun changeIsPasswordVisible(isVisible: Boolean) = viewModelScope.launch {
+        _isPasswordVisible = isVisible
+    }
+
+    /**
+     * Confirm Password
+     */
+
+    private var _confirmPassword by mutableStateOf("")
+
+    val confirmPassword: String
+        get() = _confirmPassword
+
+    private var _confirmPasswordErrorText by mutableStateOf("")
+
+    val confirmPasswordErrorText: String
+        get() = _confirmPasswordErrorText
+
+    private var _isConfirmPasswordInputError by mutableStateOf(false)
+
+    val isConfirmPasswordInputError: Boolean
+        get() = _isConfirmPasswordInputError
+
+    private var _isConfirmPasswordVisible by mutableStateOf(false)
+
+    val isConfirmPasswordVisible: Boolean
+        get() = _isConfirmPasswordVisible
+
+    fun changeConfirmPassword(confirmPassword: String) = viewModelScope.launch {
+        _confirmPassword = confirmPassword
+    }
+
+    fun changeConfirmPasswordErrorText(error: String) = viewModelScope.launch {
+        _confirmPasswordErrorText = error
+    }
+
+    fun changeIsConfirmPasswordInputError(isError: Boolean) = viewModelScope.launch {
+        _isConfirmPasswordInputError = isError
+    }
+
+    fun changeIsConfirmPasswordVisible(isVisible: Boolean) = viewModelScope.launch {
+        _isConfirmPasswordVisible = isVisible
     }
 
     /**
      * The userid that will represent the new signed in user. The user is loaded from a remote location by the
      * provided service and therefore its state is represented by a [LoadState].
      */
-    var user by mutableStateOf<LoadState<UserId>>(idle())
+    var userId by mutableStateOf<LoadState<UserId>>(idle())
 
-    fun signUp(signUpResult: (Result<UserId>) -> Unit = {}) = viewModelScope.launch {
-        user = loading()
-        val result: Result<UserId> = kotlin.runCatching { service.signUp(username, password) }
-        user = loaded(result)
-        signUpResult(result)
+
+    fun signUp(signUpResult: (LoadState<UserId>) -> Unit = {}) = viewModelScope.launch {
+        userId = Loading
+        userId = Loaded(kotlin.runCatching { service.signUp(username, password) })
+        signUpResult(userId)
     }
+
 }
