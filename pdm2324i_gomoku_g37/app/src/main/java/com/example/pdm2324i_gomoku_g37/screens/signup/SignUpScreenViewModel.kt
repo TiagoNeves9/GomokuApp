@@ -8,11 +8,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
-import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.Loading
 import com.example.pdm2324i_gomoku_g37.domain.UserId
-import com.example.pdm2324i_gomoku_g37.domain.failure
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.domain.loaded
+import com.example.pdm2324i_gomoku_g37.screens.components.EmptyConfirmPassword
+import com.example.pdm2324i_gomoku_g37.screens.components.EmptyPassword
+import com.example.pdm2324i_gomoku_g37.screens.components.EmptyUsername
+import com.example.pdm2324i_gomoku_g37.screens.components.UnmatchedPasswords
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.launch
 
@@ -139,13 +143,28 @@ class SignUpScreenViewModel(private val service: GomokuService) : ViewModel() {
      * The userid that will represent the new signed in user. The user is loaded from a remote location by the
      * provided service and therefore its state is represented by a [LoadState].
      */
-    var userId by mutableStateOf<LoadState<UserId>>(idle())
+    private var _userInfo by mutableStateOf<LoadState<UserInfo>>(idle())
 
+    val userInfo: LoadState<UserInfo>
+        get() = _userInfo
 
-    fun signUp(signUpResult: (LoadState<UserId>) -> Unit = {}) = viewModelScope.launch {
-        userId = Loading
-        userId = Loaded(kotlin.runCatching { service.signUp(username, password) })
-        signUpResult(userId)
+    fun dismissError() {
+        _userInfo = idle()
     }
 
+    fun signUp(signUpResult: (LoadState<UserInfo>) -> Unit = {}) = viewModelScope.launch {
+        _userInfo = Loading
+        _userInfo = loaded(
+            when {
+                username.isBlank() -> Result.failure(EmptyUsername())
+                password.isBlank() -> Result.failure(EmptyPassword())
+                confirmPassword.isBlank() -> Result.failure(EmptyConfirmPassword())
+                password != confirmPassword -> Result.failure(UnmatchedPasswords())
+                else -> kotlin.runCatching {
+                    UserInfo(service.signUp(username, password).id, username)
+                }
+            }
+        )
+        signUpResult(userInfo)
+    }
 }

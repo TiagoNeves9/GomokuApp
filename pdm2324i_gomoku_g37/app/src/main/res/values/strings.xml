@@ -31,9 +31,24 @@
     <string name="activity_sign_up_bar_title">Sign Up</string>
     <string name="activity_sign_up_register_button">Register</string>
     <string name="activity_sign_up_input_pass_rep">Repeat Password</string>
+    <string name="activity_sign_up_show_password">Show password</string>
+    <string name="activity_sign_up_hide_password">Hide password</string>
 
+    <string name="error_username_title">Error invalid username</string>
     <string name="username_is_blank_input_error">Username cannot be empty</string>
+
+    <string name="error_password_title">Error invalid password</string>
     <string name="password_is_blank_input_error">Password cannot be empty</string>
-    <string name="repeat_password_is_blank_input_error">Password cannot be empty</string>
+
+    <string name="error_confirm_password_title">Error invalid confirm password</string>
+    <string name="repeat_password_is_blank_input_error">Confirm password cannot be empty</string>
     <string name="repeat_password_and_password_not_equal_input_error">Confirm password must be equal to password</string>
+
+    <string name="error_api_title">Error accessing the server</string>
+    <string name="error_could_not_reach_api">Please check if the device is connected to the internet</string>
+
+    <string name="error_retry_button_text">Retry</string>
+
+    <string name="loading_sign_up_title">Create account</string>
+    <string name="loading_sign_up_message">We are creating your account!</string>
 </resources>

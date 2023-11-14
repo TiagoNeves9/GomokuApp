@@ -6,8 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.pdm2324i_gomoku_g37.GomokuDependencyProvider
-import com.example.pdm2324i_gomoku_g37.domain.Loaded
-import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
@@ -42,7 +40,7 @@ class SignUpActivity : ComponentActivity() {
             GomokuTheme {
                 SignUpScreen(
                     state = SignUpScreenState(
-                        user = viewModel.userId,
+                        userInfo = viewModel.userInfo,
                         username = viewModel.username,
                         usernameErrorText = viewModel.usernameErrorText,
                         isUsernameInputError = viewModel.isUsernameInputError,
@@ -73,7 +71,8 @@ class SignUpActivity : ComponentActivity() {
                         onConfirmPasswordErrorTextChange = viewModel::changeConfirmPasswordErrorText,
                         onIsConfirmPasswordInputErrorChange = viewModel::changeIsConfirmPasswordInputError,
                         onConfirmPasswordVisibilityChange = viewModel::changeIsConfirmPasswordVisible,
-                        onSignUpRequested = ::doSignUp
+                        onSignUpRequested = ::doSignUp,
+                        onDismissError = viewModel::dismissError
                     )
                 )
             }
@@ -82,11 +81,9 @@ class SignUpActivity : ComponentActivity() {
 
     private fun doSignUp() {
         viewModel.signUp { signUpResult ->
-            if (signUpResult is Loaded) {
-                signUpResult.getOrNull()?.let { userId ->
-                    val user = UserInfo(userId.id, viewModel.username)
-                    HomeActivity.navigateTo(this, user)
-                }
+            signUpResult.getOrNull()?.let { userInfo ->
+                HomeActivity.navigateTo(this, userInfo)
+                finish()
             }
         }
     }

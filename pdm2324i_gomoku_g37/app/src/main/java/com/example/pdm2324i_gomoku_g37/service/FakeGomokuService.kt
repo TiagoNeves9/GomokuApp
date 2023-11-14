@@ -1,20 +1,29 @@
 package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Author
+import com.example.pdm2324i_gomoku_g37.domain.Token
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
 import kotlinx.coroutines.delay
 
+private const val FAKE_SERVICE_DELAY = 5000L
 
 class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors
 
     override suspend fun signUp(username: String, password: String): UserId {
-        delay(2000)
+        delay(FAKE_SERVICE_DELAY)
         return UserId(GomokuUsers.createUser(username, password))
     }
 
     override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
+
+    override suspend fun signIn(username: String, password: String): Token {
+        val user: User = GomokuUsers.users.first { user ->
+            user.username == username && user.encodedPassword == password
+        }
+        return Token(GomokuUsers.tokens.getValue(user.id))
+    }
 }
 
 object GomokuAuthors {
@@ -52,6 +61,15 @@ object GomokuUsers {
 
     val users: List<User>
         get() = _users.toList()
+
+    private val _tokens: MutableMap<Int, String> = mutableMapOf(
+        1  to "123",
+        2 to "456",
+        3 to "789"
+    )
+
+    val tokens: Map<Int, String>
+        get() = _tokens
 
     fun createUser(username: String, password: String): Int {
         val newUser = User(users.size + 1, username, password)

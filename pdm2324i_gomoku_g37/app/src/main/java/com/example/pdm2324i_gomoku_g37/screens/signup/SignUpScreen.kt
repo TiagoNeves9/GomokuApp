@@ -18,24 +18,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.Loading
-import com.example.pdm2324i_gomoku_g37.domain.UserId
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.helpers.SignUpScreenTestTags.SignUpScreenTestTag
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_RADIUS
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
-import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
-import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PADDING
+import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
+import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.screens.components.RefreshFab
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 data class SignUpScreenState(
-    val user: LoadState<UserId> = idle(),
+    val userInfo: LoadState<UserInfo> = idle(),
     val username: String = "",
     val usernameErrorText: String = "",
     val isUsernameInputError: Boolean = false,
@@ -59,9 +60,10 @@ data class SignUpScreenFunctions(
     val onPasswordVisibilityChange: (Boolean) -> Unit = { },
     val onConfirmPasswordChange: (String) -> Unit = { },
     val onConfirmPasswordErrorTextChange: (String) -> Unit = { },
-    val onIsConfirmPasswordInputErrorChange: (Boolean) -> Unit = {},
+    val onIsConfirmPasswordInputErrorChange: (Boolean) -> Unit = { },
     val onConfirmPasswordVisibilityChange: (Boolean) -> Unit = { },
     val onSignUpRequested: () -> Unit = { },
+    val onDismissError: () -> Unit = { }
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,23 +77,13 @@ fun SignUpScreen(
         modifier = Modifier
             .fillMaxSize()
             .testTag(SignUpScreenTestTag),
-        floatingActionButton = {
-            RefreshFab(
-                onClick = functions.onSignUpRequested,
-                refreshing = state.user is Loading,
-                modifier = Modifier.testTag("SignUpRefreshTestTag")
-            )
-        },
-        topBar = {
-            CustomBar(
-                text = stringResource(R.string.activity_sign_up_bar_title),
-                navigation = navigation
-            )
-        },
+        topBar = { CustomBar(text = stringResource(R.string.activity_sign_up_bar_title), navigation = navigation) },
         bottomBar = { GroupFooterView() },
     ) { padding ->
         CustomContainerView(
-            Modifier.fillMaxSize()
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.img_gomoku_icon),
@@ -127,57 +119,64 @@ fun SignUpScreen(
 
             ElevatedButton(
                 onClick = functions.onSignUpRequested,
-                enabled = validateUserInfo(state, functions),
+                enabled = isButtonEnabled(state),
                 shape = RoundedCornerShape(BUTTON_RADIUS),
-                contentPadding = PaddingValues(
-                    start = MAIN_SCREEN_DEFAULT_PADDING,
-                    end = MAIN_SCREEN_DEFAULT_PADDING,
-                    top = MAIN_SCREEN_SPACING_PADDING,
-                    bottom = MAIN_SCREEN_SPACING_PADDING
-                ),
                 modifier = Modifier.padding(padding)
             ) {
                 Text(stringResource(R.string.activity_sign_up_register_button))
             }
+
+            if (state.userInfo is Loading)
+                LoadingAlert(R.string.loading_sign_up_title, R.string.loading_sign_up_message)
+
+            ValidateSignUpInputs(state, functions)
+
+            state.userInfo.exceptionOrNull()?.let { cause ->
+                ProcessError(functions.onDismissError, cause)
+            }
         }
     }
 
+
+private fun isButtonEnabled(state: SignUpScreenState = SignUpScreenState()) =
+    state.username.isNotBlank() && state.password.isNotBlank() &&
+            state.confirmPassword.isNotBlank() && state.password == state.confirmPassword
+
 @Composable
-private fun validateUserInfo(
-    state: SignUpScreenState = SignUpScreenState(),
-    functions: SignUpScreenFunctions = SignUpScreenFunctions()
-): Boolean = when {
-    state.username.isBlank() -> {
-        functions.onUsernameErrorTextChange(stringResource(R.string.username_is_blank_input_error))
-        functions.onIsUsernameInputErrorChange(true)
-        false
+private fun ValidateSignUpInputs(state: SignUpScreenState, functions: SignUpScreenFunctions) =
+    when {
+        state.username.isBlank() -> IncorrectUsername(functions, R.string.username_is_blank_input_error)
+        state.password.isBlank() -> IncorrectPassword(functions, R.string.password_is_blank_input_error)
+        state.confirmPassword.isBlank() -> IncorrectConfirmPassword(functions, R.string.repeat_password_is_blank_input_error)
+        state.password != state.confirmPassword -> IncorrectConfirmPassword(functions, R.string.repeat_password_and_password_not_equal_input_error)
+        else -> clearInputsError(functions)
     }
-    state.password.isBlank() -> {
-       functions.onIsUsernameInputErrorChange(false)
-       functions.onPasswordErrorTextChange(stringResource(R.string.password_is_blank_input_error))
-       functions.onIsPasswordInputErrorChange(true)
-       false
-    }
-    state.confirmPassword.isBlank() -> {
-        functions.onIsUsernameInputErrorChange(false)
-        functions.onIsPasswordInputErrorChange(false)
-        functions.onConfirmPasswordErrorTextChange(stringResource(R.string.repeat_password_is_blank_input_error))
-        functions.onIsConfirmPasswordInputErrorChange(true)
-        false
-    }
-    state.password != state.confirmPassword -> {
-        functions.onIsUsernameInputErrorChange(false)
-        functions.onIsPasswordInputErrorChange(false)
-        functions.onIsConfirmPasswordInputErrorChange(true)
-        functions.onConfirmPasswordErrorTextChange(stringResource(R.string.repeat_password_and_password_not_equal_input_error))
-        false
-    }
-    else -> {
-        functions.onIsUsernameInputErrorChange(false)
-        functions.onIsPasswordInputErrorChange(false)
-        functions.onIsConfirmPasswordInputErrorChange(false)
-        true
-    }
+
+@Composable
+private fun IncorrectUsername(functions: SignUpScreenFunctions, message: Int) {
+    functions.onUsernameErrorTextChange(stringResource(message))
+    functions.onIsUsernameInputErrorChange(true)
+}
+
+@Composable
+private fun IncorrectPassword(functions: SignUpScreenFunctions, message: Int) {
+    functions.onIsUsernameInputErrorChange(false)
+    functions.onIsPasswordInputErrorChange(true)
+    functions.onPasswordErrorTextChange(stringResource(message))
+}
+
+@Composable
+private fun IncorrectConfirmPassword(functions: SignUpScreenFunctions, message: Int) {
+    functions.onIsUsernameInputErrorChange(false)
+    functions.onIsPasswordInputErrorChange(false)
+    functions.onIsConfirmPasswordInputErrorChange(true)
+    functions.onConfirmPasswordErrorTextChange(stringResource(message))
+}
+
+private fun clearInputsError(functions: SignUpScreenFunctions) {
+    functions.onIsUsernameInputErrorChange(false)
+    functions.onIsPasswordInputErrorChange(false)
+    functions.onIsConfirmPasswordInputErrorChange(false)
 }
 
 @Composable

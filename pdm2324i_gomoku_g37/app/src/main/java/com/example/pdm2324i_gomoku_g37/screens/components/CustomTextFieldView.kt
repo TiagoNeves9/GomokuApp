@@ -1,9 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.screens.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
@@ -28,7 +26,7 @@ import com.example.pdm2324i_gomoku_g37.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UsernameTextFieldView(
-    value: String,
+    value: String = "",
     isError: Boolean = false,
     errorText: String = "",
     onClick: (String) -> Unit = {}
@@ -39,26 +37,17 @@ fun UsernameTextFieldView(
         label = { Text(text = stringResource(R.string.activity_login_sign_up_input_username)) },
         singleLine = true,
         isError = isError,
-        supportingText = {
-             if (isError)
-                 Text(text = errorText, color = MaterialTheme.colorScheme.error)
-        },
+        supportingText = { SupportingText(isError = isError, errorText = errorText) },
         leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = stringResource(R.string.activity_login_sign_up_input_username)
-            )
+            Icon(imageVector = Icons.Default.Person, contentDescription = stringResource(R.string.activity_login_sign_up_input_username))
         },
-        trailingIcon = {
-            if (isError)
-                Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
-        }
+        trailingIcon = { TrailingIcon(isError = isError) }
     )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextFieldView(
-    value: String,
+    value: String = "",
     isError: Boolean = false,
     errorText: String = "",
     passwordVisibility: Boolean,
@@ -69,16 +58,10 @@ fun PasswordTextFieldView(
     OutlinedTextField(
         value = value,
         onValueChange = onClick,
-        label = {
-            if (isRepeatPassword) Text(text = stringResource(R.string.activity_sign_up_input_pass_rep))
-            else Text(text = stringResource(R.string.activity_login_sign_up_input_password))
-        },
+        label = { PasswordLabel(isRepeatPassword) },
         singleLine = true,
         isError = isError,
-        supportingText = {
-            if (isError)
-                Text(text = errorText, color = MaterialTheme.colorScheme.error)
-        },
+        supportingText = { SupportingText(isError = isError, errorText = errorText) },
         visualTransformation = onVisualTransformation(passwordVisibility),
         leadingIcon = {
             Icon(
@@ -87,13 +70,8 @@ fun PasswordTextFieldView(
             )
         },
         trailingIcon = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (isError)
-                    Icon(
-                        Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error
-                    )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TrailingIcon(isError = isError)
                 PasswordVisibilityView(passwordVisibility, enablePasswordVisibility)
             }
         }
@@ -104,12 +82,29 @@ private fun onVisualTransformation(passwordVisibility: Boolean) =
     else PasswordVisualTransformation()
 
 @Composable
-fun PasswordVisibilityView(passwordVisibility: Boolean, onClick: (Boolean) -> Unit = {}) {
+private fun SupportingText(isError: Boolean, errorText: String) {
+    if (isError)
+        Text(text = errorText, color = MaterialTheme.colorScheme.error)
+}
+
+@Composable
+private fun TrailingIcon(isError: Boolean) {
+    if (isError)
+        Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
+}
+
+@Composable
+private fun PasswordLabel(isRepeatPassword: Boolean) =
+    if (isRepeatPassword) Text(text = stringResource(R.string.activity_sign_up_input_pass_rep))
+    else Text(text = stringResource(R.string.activity_login_sign_up_input_password))
+
+@Composable
+private fun PasswordVisibilityView(passwordVisibility: Boolean, onClick: (Boolean) -> Unit = {}) {
     val image = if (passwordVisibility) R.drawable.password_hide
                 else R.drawable.password_show
 
-    val descriptor = if (passwordVisibility) "Hide Password"
-                     else "Show Password"
+    val descriptor = if (passwordVisibility) stringResource(id = R.string.activity_sign_up_hide_password)
+                     else stringResource(id = R.string.activity_sign_up_show_password)
     IconButton(onClick = { onClick(!passwordVisibility) }) {
         Image(
             painter = painterResource(image),

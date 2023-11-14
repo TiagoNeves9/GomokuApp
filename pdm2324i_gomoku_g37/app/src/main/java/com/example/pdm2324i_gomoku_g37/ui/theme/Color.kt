@@ -50,3 +50,5 @@ val Red40 = Color(0xFFcc0000)
 val Red50 = Color(0xFFff0000)
 val Red80 = Color(0xFFff9999)
 val Red90 = Color(0xFFffcccc)
+
+val Green40 = Color(0xFF80ed99)
