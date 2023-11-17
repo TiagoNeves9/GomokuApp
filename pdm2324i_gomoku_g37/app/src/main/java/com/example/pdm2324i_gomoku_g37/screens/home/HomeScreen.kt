@@ -33,11 +33,16 @@ import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
+val BUTTON_NAME_SIZE = 12.sp
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     userInfo: UserInfo,
-    onAuthorsRequested: () -> Unit = { }
+    onPlayRequest: () -> Unit = { },
+    onRankingsRequest: () -> Unit = { },
+    onAuthorsRequested: () -> Unit = { },
+    onAboutRequested: () -> Unit = { }
 ) =
     Surface(
         color = MaterialTheme.colorScheme.background
@@ -60,8 +65,7 @@ fun HomeScreen(
                     Modifier,
                     Arrangement.Center
                 ) {
-                    MenuButton {
-                        //Text(text = "Play")
+                    MenuButton(onPlayRequest) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -71,7 +75,7 @@ fun HomeScreen(
                             )
                             Text(
                                 text = "Play",
-                                fontSize = 12.sp,
+                                fontSize = BUTTON_NAME_SIZE,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -87,7 +91,7 @@ fun HomeScreen(
                             )
                             Text(
                                 text = "Rankings",
-                                fontSize = 12.sp,
+                                fontSize = BUTTON_NAME_SIZE,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -108,7 +112,7 @@ fun HomeScreen(
                             )
                             Text(
                                 text = "Authors",
-                                fontSize = 12.sp,
+                                fontSize = BUTTON_NAME_SIZE,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -124,7 +128,7 @@ fun HomeScreen(
                             )
                             Text(
                                 text = "About",
-                                fontSize = 12.sp,
+                                fontSize = BUTTON_NAME_SIZE,
                                 textAlign = TextAlign.Center
                             )
                         }

@@ -78,8 +78,8 @@ fun AuthorsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CustomBar(
-                text = stringResource(id = R.string.activity_authors_top_bar_title),
-                navigation
+                text = stringResource(R.string.activity_authors_top_bar_title),
+                navigation = navigation
             )
         },
         bottomBar = { GroupFooterView() }
@@ -91,7 +91,7 @@ fun AuthorsScreen(
         ) {
             require(index >= 0) { "Index must be greater than or equal to 0" }
 
-            LargeCustomTitleView(text = stringResource(id = R.string.activity_authors_group_number))
+            LargeCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
 
             val author = authors?.get(index)
             if (author != null) {
@@ -100,8 +100,10 @@ fun AuthorsScreen(
                         .padding(CARD_PADDING)
                         .testTag(AuthorCardTestTag),
                     shape = RoundedCornerShape(DEFAULT_RADIUS),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-                    elevation = CardDefaults.cardElevation(defaultElevation = CARD_ELEVATION)
+                    colors = CardDefaults
+                        .cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                    elevation = CardDefaults
+                        .cardElevation(defaultElevation = CARD_ELEVATION)
                 ) {
                     DisplayAuthor(
                         author = author,

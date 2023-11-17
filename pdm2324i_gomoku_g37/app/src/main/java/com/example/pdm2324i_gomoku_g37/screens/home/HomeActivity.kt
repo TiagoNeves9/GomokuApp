@@ -7,7 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsActivity
-import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
 import kotlinx.parcelize.Parcelize
 
 
@@ -17,7 +17,7 @@ class HomeActivity : ComponentActivity() {
             with(origin) {
                 val intent = Intent(this, HomeActivity::class.java)
                 intent.putExtra(USER_INFO_EXTRA, UserInfoExtra(userInfo))
-                startActivity(intent)
+                origin.startActivity(intent)
             }
         }
     }
@@ -28,12 +28,14 @@ class HomeActivity : ComponentActivity() {
             getUserInfoExtra()?.let { userInfoExtra ->
                 HomeScreen(
                     userInfo = userInfoExtra.toUserInfo(),
+                    onPlayRequest = {
+                        PlayActivity.navigateTo(origin = this)
+                    },
                     onAuthorsRequested = {
                         AuthorsActivity.navigateTo(origin = this)
                     }
                 )
             }
-
         }
     }
 

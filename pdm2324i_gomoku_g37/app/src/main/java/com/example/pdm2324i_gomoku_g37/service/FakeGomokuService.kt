@@ -1,22 +1,28 @@
 package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Author
+import com.example.pdm2324i_gomoku_g37.domain.Lobby
+import com.example.pdm2324i_gomoku_g37.domain.Opening
+import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Token
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
+import com.example.pdm2324i_gomoku_g37.domain.Variant
 import kotlinx.coroutines.delay
+import java.util.UUID
 
 private const val FAKE_SERVICE_DELAY = 5000L
 
 class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors
 
+    override suspend fun fetchLobbies(): List<Lobby> = GomokuLobbies.lobbies
+    override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
+
     override suspend fun signUp(username: String, password: String): UserId {
         delay(FAKE_SERVICE_DELAY)
         return UserId(GomokuUsers.createUser(username, password))
     }
-
-    override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
 
     override suspend fun signIn(username: String, password: String): Token {
         val user: User = GomokuUsers.users.first { user ->
@@ -52,6 +58,26 @@ object GomokuAuthors {
     )
 }
 
+object GomokuLobbies {
+    val lobbies: List<Lobby> = listOf(
+        Lobby(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            Rules(15, Opening.FREESTYLE, Variant.FREESTYLE)
+        ),
+        Lobby(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
+        ),
+        Lobby(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            Rules(15, Opening.PRO, Variant.FREESTYLE)
+        ),
+    )
+}
+
 object GomokuUsers {
     private val _users: MutableList<User> = mutableListOf(
         User(1, "tbmaster", "jubas"),
@@ -63,7 +89,7 @@ object GomokuUsers {
         get() = _users.toList()
 
     private val _tokens: MutableMap<Int, String> = mutableMapOf(
-        1  to "123",
+        1 to "123",
         2 to "456",
         3 to "789"
     )

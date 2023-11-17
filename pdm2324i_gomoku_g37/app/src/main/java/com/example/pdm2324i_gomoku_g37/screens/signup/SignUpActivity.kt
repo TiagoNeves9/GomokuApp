@@ -82,7 +82,7 @@ class SignUpActivity : ComponentActivity() {
     private fun doSignUp() {
         viewModel.signUp { signUpResult ->
             signUpResult.getOrNull()?.let { userInfo ->
-                HomeActivity.navigateTo(this, userInfo)
+                HomeActivity.navigateTo(origin = this, userInfo = userInfo)
                 finish()
             }
         }
