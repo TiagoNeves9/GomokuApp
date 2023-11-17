@@ -13,6 +13,8 @@ interface GomokuService {
 
     suspend fun fetchLobbies(): List<Lobby>
 
+    suspend fun fetchProfile(): String
+
     suspend fun fetchInfo(): String
 
     suspend fun signUp(username: String, password: String): UserId

@@ -139,7 +139,7 @@ fun HomeScreen(
     }
 
 @Composable
-private fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
+fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
     ElevatedButton(
         shape = RoundedCornerShape(2.dp),
         onClick = onClick,

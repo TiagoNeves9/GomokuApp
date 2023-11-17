@@ -8,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.launch
 
-class ProfileScreenViewModel : ViewModel() {
 
-    var profile : String? by mutableStateOf(null)
-    fun fetchProfile(services : GomokuService) =
+class ProfileScreenViewModel : ViewModel() {
+    var profile: String? by mutableStateOf(null)
+    fun fetchProfile(services: GomokuService) =
         viewModelScope.launch {
             profile = services.fetchProfile()
         }

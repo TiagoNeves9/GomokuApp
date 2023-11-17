@@ -17,6 +17,9 @@ class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors
 
     override suspend fun fetchLobbies(): List<Lobby> = GomokuLobbies.lobbies
+
+    override suspend fun fetchProfile(): String = "CHANGE THIS" //TODO
+
     override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
 
     override suspend fun signUp(username: String, password: String): UserId {
