@@ -11,11 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsActivity
-import com.example.pdm2324i_gomoku_g37.screens.main.MainScreenViewModel
-import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
+import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
 import java.lang.IllegalStateException
 
 
@@ -46,7 +42,10 @@ class HomeActivity : ComponentActivity() {
         setContent {
             HomeScreen(
                 userInfo = viewModel.userInfo ?: throw IllegalStateException(),
-                onAuthorsRequested = { AuthorsActivity.navigateTo(origin = this) }
+                onAuthorsRequested = { AuthorsActivity.navigateTo(origin = this) },
+                onPlayRequested = { PlayActivity.navigateTo(origin = this) },
+                onRankingsRequested = { },
+                onAboutRequested = { }
             )
         }
     }

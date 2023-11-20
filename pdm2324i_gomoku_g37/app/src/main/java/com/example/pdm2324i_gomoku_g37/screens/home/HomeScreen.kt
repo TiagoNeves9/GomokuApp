@@ -37,11 +37,16 @@ import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
+val BUTTON_NAME_SIZE = 12.sp
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     userInfo: UserInfo,
-    onAuthorsRequested: () -> Unit = { }
+    onAuthorsRequested: () -> Unit = { },
+    onPlayRequested: () -> Unit = { },
+    onRankingsRequested: () -> Unit = { },
+    onAboutRequested: () -> Unit = { }
 ) {
     Scaffold(
 
@@ -59,8 +64,7 @@ fun HomeScreen(
                 Modifier,
                 Arrangement.Center
             ) {
-                MenuButton {
-                    //Text(text = "Play")
+                MenuButton(onPlayRequested) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -76,7 +80,7 @@ fun HomeScreen(
                     }
                 }
 
-                MenuButton {
+                MenuButton(onRankingsRequested) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -113,7 +117,7 @@ fun HomeScreen(
                     }
                 }
 
-                MenuButton {
+                MenuButton(onAboutRequested) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -132,103 +136,9 @@ fun HomeScreen(
         }
     }
 }
-    /*Surface(
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Row(
-            Modifier
-                .fillMaxSize()
-                .padding(6.dp),
-            Arrangement.Center,
-            Alignment.CenterVertically,
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("User: ${userInfo.username}")
-                //TODO mover Title para package de componentes reutilizaveis
-                LargeCustomTitleView(text = stringResource(id = R.string.activity_menu_title))
-
-                Row(
-                    Modifier,
-                    Arrangement.Center
-                ) {
-                    MenuButton {
-                        //Text(text = "Play")
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Play"
-                            )
-                            Text(
-                                text = "Play",
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-
-                    MenuButton {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = "Rankings"
-                            )
-                            Text(
-                                text = "Rankings",
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-
-                Row(
-                    Modifier,
-                    Arrangement.Center
-                ) {
-                    MenuButton(onAuthorsRequested) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Face,
-                                contentDescription = "Authors"
-                            )
-                            Text(
-                                text = "Authors",
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-
-                    MenuButton {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = "About"
-                            )
-                            Text(
-                                text = "About",
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }*/
 
 @Composable
-private fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
+fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
     ElevatedButton(
         shape = RoundedCornerShape(2.dp),
         onClick = onClick,

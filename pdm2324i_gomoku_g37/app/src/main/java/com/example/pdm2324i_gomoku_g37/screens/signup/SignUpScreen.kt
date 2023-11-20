@@ -1,8 +1,11 @@
 package com.example.pdm2324i_gomoku_g37.screens.signup
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedButton
@@ -10,11 +13,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.Loading
@@ -31,10 +36,11 @@ import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
 import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
-import com.example.pdm2324i_gomoku_g37.screens.components.RefreshFab
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
+
+val myPadding = 10.dp
 
 data class SignUpScreenState(
     val userInfo: LoadState<UserId> = idle(),
@@ -78,7 +84,12 @@ fun SignUpScreen(
         modifier = Modifier
             .fillMaxSize()
             .testTag(SignUpScreenTestTag),
-        topBar = { CustomBar(text = stringResource(R.string.activity_sign_up_bar_title), navigation = navigation) },
+        topBar = {
+            CustomBar(
+                text = stringResource(R.string.activity_sign_up_bar_title),
+                navigation = navigation
+            )
+        },
         bottomBar = { GroupFooterView() },
     ) { padding ->
         CustomContainerView(
@@ -86,10 +97,16 @@ fun SignUpScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.img_gomoku_icon),
-                contentDescription = null
-            )
+            Row(
+                Modifier.fillMaxHeight(0.3F),
+                Arrangement.Center,
+                Alignment.Top
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.img_gomoku_icon),
+                    contentDescription = null
+                )
+            }
 
             UsernameTextFieldView(
                 value = state.username,
@@ -122,7 +139,7 @@ fun SignUpScreen(
                 onClick = functions.onSignUpRequested,
                 enabled = isButtonEnabled(state),
                 shape = RoundedCornerShape(BUTTON_RADIUS),
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(myPadding)
             ) {
                 Text(stringResource(R.string.activity_sign_up_register_button))
             }
@@ -146,10 +163,26 @@ private fun isButtonEnabled(state: SignUpScreenState = SignUpScreenState()) =
 @Composable
 private fun ValidateSignUpInputs(state: SignUpScreenState, functions: SignUpScreenFunctions) =
     when {
-        state.username.isBlank() -> IncorrectUsername(functions, R.string.username_is_blank_input_error)
-        state.password.isBlank() -> IncorrectPassword(functions, R.string.password_is_blank_input_error)
-        state.confirmPassword.isBlank() -> IncorrectConfirmPassword(functions, R.string.repeat_password_is_blank_input_error)
-        state.password != state.confirmPassword -> IncorrectConfirmPassword(functions, R.string.repeat_password_and_password_not_equal_input_error)
+        state.username.isBlank() -> IncorrectUsername(
+            functions,
+            R.string.username_is_blank_input_error
+        )
+
+        state.password.isBlank() -> IncorrectPassword(
+            functions,
+            R.string.password_is_blank_input_error
+        )
+
+        state.confirmPassword.isBlank() -> IncorrectConfirmPassword(
+            functions,
+            R.string.repeat_password_is_blank_input_error
+        )
+
+        state.password != state.confirmPassword -> IncorrectConfirmPassword(
+            functions,
+            R.string.repeat_password_and_password_not_equal_input_error
+        )
+
         else -> clearInputsError(functions)
     }
 

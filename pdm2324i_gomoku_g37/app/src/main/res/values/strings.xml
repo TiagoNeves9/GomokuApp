@@ -12,8 +12,10 @@
     <string name="activity_authors_previous">Previous</string>
     <string name="activity_authors_next">Next</string>
     <string name="activity_authors_top_bar_title">Authors</string>
+    <string name="activity_play_top_bar_title">Play</string>
     <string name="activity_info_top_bar_title">Info</string>
     <string name="activity_authors_image_desc">Author image</string>
+    <string name="activity_profile_top_bar_title">Profile</string>
     <string name="activity_author_no_author_found">No author found</string>
 
     <string name="activity_menu_title">Menu</string>

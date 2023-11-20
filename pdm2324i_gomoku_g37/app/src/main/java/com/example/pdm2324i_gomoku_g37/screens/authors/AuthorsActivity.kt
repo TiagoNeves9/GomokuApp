@@ -53,7 +53,8 @@ class AuthorsActivity : ComponentActivity() {
                     ),
                     navigation = NavigationHandlers(
                         onBackRequested = { /*HomeActivity.navigateTo(origin = this)*/ },
-                        onInfoRequested = { /*InfoActivity.navigateTo(origin = this)*/ }),
+                        onInfoRequested = { /*InfoActivity.navigateTo(origin = this)*/ }
+                    ),
                     onSendEmailRequested = {
                         viewModel.authors?.get(viewModel.index)?.let { author ->
                             openSendEmail(author.email)
@@ -64,7 +65,7 @@ class AuthorsActivity : ComponentActivity() {
         }
     }
 
-    private fun openSendEmail(email: String) {
+    private fun openSendEmail(email: String) =
         try {
             val intent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
@@ -82,5 +83,4 @@ class AuthorsActivity : ComponentActivity() {
                 )
                 .show()
         }
-    }
 }

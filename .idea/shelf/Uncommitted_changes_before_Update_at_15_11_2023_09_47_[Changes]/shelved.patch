@@ -1,0 +1,204 @@
+Index: pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreen.kt b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreen.kt
+new file mode 100644
+--- /dev/null	(date 1699444474247)
++++ b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreen.kt	(date 1699444474247)
+@@ -0,0 +1,41 @@
++package com.example.pdm2324i_gomoku_g37.screens.profile
++
++import androidx.compose.foundation.layout.fillMaxSize
++import androidx.compose.foundation.layout.padding
++import androidx.compose.material3.ExperimentalMaterial3Api
++import androidx.compose.material3.MaterialTheme
++import androidx.compose.material3.Scaffold
++import androidx.compose.runtime.Composable
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.res.stringResource
++import com.example.pdm2324i_gomoku_g37.R
++import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
++import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
++import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
++import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
++
++@OptIn(ExperimentalMaterial3Api::class)
++@Composable
++fun ProfileScreen(
++    navigation: NavigationHandlers = NavigationHandlers()
++) =
++    Scaffold(
++        containerColor = MaterialTheme.colorScheme.background,
++        topBar = {
++            CustomBar(
++                text = stringResource(id = R.string.activity_profile_top_bar_title),
++                navigation
++            )
++        },
++        bottomBar = { GroupFooterView()}
++    ) {padding ->
++        CustomContainerView(
++            modifier = Modifier
++                .fillMaxSize()
++                .padding(padding)
++        ) {
++
++
++        }
++
++    }
+\ No newline at end of file
+Index: pdm2324i_gomoku_g37/app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n\r\n    <application\r\n        android:name=\".GomokuApplication\"\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.Pdm2324i_gomoku_g37\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".screens.main.MainActivity\"\r\n            android:exported=\"true\"\r\n            android:label=\"@string/app_name\"\r\n            android:theme=\"@style/Theme.Pdm2324i_gomoku_g37\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n        <activity\r\n            android:name=\".screens.home.HomeActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".screens.authors.AuthorsActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".screens.login.LoginActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".screens.signup.SignUpActivity\"\r\n            android:exported=\"false\"/>\r\n        <activity\r\n            android:name=\".screens.info.InfoActivity\"\r\n            android:exported=\"false\"/>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pdm2324i_gomoku_g37/app/src/main/AndroidManifest.xml b/pdm2324i_gomoku_g37/app/src/main/AndroidManifest.xml
+--- a/pdm2324i_gomoku_g37/app/src/main/AndroidManifest.xml	(revision 15e31149c3d2b00d821c42934cef611435bdfa7a)
++++ b/pdm2324i_gomoku_g37/app/src/main/AndroidManifest.xml	(date 1699444474151)
+@@ -42,6 +42,9 @@
+         <activity
+             android:name=".screens.info.InfoActivity"
+             android:exported="false"/>
++        <activity
++            android:name=".screens.profile.ProfileActivity"
++            android:exported="false"/>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: pdm2324i_gomoku_g37/app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <string name=\"app_name\">Gomoku G37</string>\r\n    <string name=\"top_bar_go_back\">Back</string>\r\n    <string name=\"top_bar_navigate_to_about\">About</string>\r\n    <string name=\"activity_main_description\">\r\n        Have fun playing an abstract strategy board game, called Gomoku or Five in a Row\r\n    </string>\r\n    <string name=\"activity_main_login\">Login</string>\r\n    <string name=\"activity_main_signup\">Sign Up</string>\r\n    <string name=\"activity_main_footer\">Group 37 - PDM 2023/24</string>\r\n    <string name=\"activity_authors_group_number\">Group 37</string>\r\n    <string name=\"activity_authors_email\">Email</string>\r\n    <string name=\"activity_authors_previous\">Previous</string>\r\n    <string name=\"activity_authors_next\">Next</string>\r\n    <string name=\"activity_authors_top_bar_title\">Authors</string>\r\n    <string name=\"activity_info_top_bar_title\">Info</string>\r\n    <string name=\"activity_authors_image_desc\">Author image</string>\r\n    <string name=\"activity_author_no_author_found\">No author found</string>\r\n\r\n    <string name=\"activity_menu_title\">Menu</string>\r\n\r\n    <string name=\"activity_info_no_suitable_app\">No suitable application found.</string>\r\n\r\n    <string name=\"activity_author_email_subject\">About the Gomoku App of Group 37</string>\r\n\r\n    <string name=\"activity_login_top_bar_title\">Login</string>\r\n\r\n    <string name=\"activity_login_sign_up_input_username\">Username</string>\r\n    <string name=\"activity_login_sign_up_input_password\">Password</string>\r\n\r\n    <string name=\"activity_sign_up_bar_title\">Sign Up</string>\r\n    <string name=\"activity_sign_up_register_button\">Register</string>\r\n    <string name=\"activity_sign_up_input_pass_rep\">Repeat Password</string>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pdm2324i_gomoku_g37/app/src/main/res/values/strings.xml b/pdm2324i_gomoku_g37/app/src/main/res/values/strings.xml
+--- a/pdm2324i_gomoku_g37/app/src/main/res/values/strings.xml	(revision 15e31149c3d2b00d821c42934cef611435bdfa7a)
++++ b/pdm2324i_gomoku_g37/app/src/main/res/values/strings.xml	(date 1699444292218)
+@@ -15,6 +15,7 @@
+     <string name="activity_authors_top_bar_title">Authors</string>
+     <string name="activity_info_top_bar_title">Info</string>
+     <string name="activity_authors_image_desc">Author image</string>
++    <string name="activity_profile_top_bar_title">Profile</string>
+     <string name="activity_author_no_author_found">No author found</string>
+ 
+     <string name="activity_menu_title">Menu</string>
+Index: pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/GomokuService.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.pdm2324i_gomoku_g37.service\r\n\r\nimport com.example.pdm2324i_gomoku_g37.domain.Author\r\nimport com.example.pdm2324i_gomoku_g37.domain.UserId\r\n\r\ninterface GomokuService {\r\n    /*\r\n    * Fetches the authors from the service\r\n    */\r\n    suspend fun fetchAuthors(): List<Author>\r\n\r\n    suspend fun signUp(username: String, password: String): UserId\r\n\r\n    suspend fun fetchInfo(): String\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/GomokuService.kt b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/GomokuService.kt
+--- a/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/GomokuService.kt	(revision 15e31149c3d2b00d821c42934cef611435bdfa7a)
++++ b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/GomokuService.kt	(date 1699445020000)
+@@ -12,4 +12,5 @@
+     suspend fun signUp(username: String, password: String): UserId
+ 
+     suspend fun fetchInfo(): String
++    suspend fun fetchProfile(): String?
+ }
+\ No newline at end of file
+Index: pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/FakeGomokuService.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.pdm2324i_gomoku_g37.service\r\n\r\nimport com.example.pdm2324i_gomoku_g37.domain.Author\r\nimport com.example.pdm2324i_gomoku_g37.domain.User\r\nimport com.example.pdm2324i_gomoku_g37.domain.UserId\r\nimport kotlinx.coroutines.delay\r\n\r\n\r\nclass FakeGomokuService : GomokuService {\r\n    override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors\r\n\r\n    override suspend fun signUp(username: String, password: String): UserId {\r\n        delay(2000)\r\n        return UserId(GomokuUsers.createUser(username, password))\r\n    }\r\n\r\n    override suspend fun fetchInfo(): String = \"This is Gomoku Version X.X.X made by G37-53D\"\r\n}\r\n\r\nobject GomokuAuthors {\r\n    val authors: List<Author> = listOf(\r\n        Author(\r\n            48292,\r\n            \"Tiago Neves\",\r\n            \"O melhor programador\",\r\n            \"img_tiago\",\r\n            \"a48292@alunos.isel.pt\"\r\n        ),\r\n        Author(\r\n            48333,\r\n            \"Tomás Barroso\",\r\n            \"O programador mediano\",\r\n            \"img_tomas\",\r\n            \"a48333@alunos.isel.pt\"\r\n        ),\r\n        Author(\r\n            48264,\r\n            \"João Pereira\",\r\n            \"O pior programador\",\r\n            \"img_joao\",\r\n            \"a48264@alunos.isel.pt\"\r\n        )\r\n    )\r\n}\r\n\r\nobject GomokuUsers {\r\n    private val _users: MutableList<User> = mutableListOf(\r\n        User(1, \"tbmaster\", \"jubas\"),\r\n        User(2, \"jp\", \"paulinho\"),\r\n        User(3, \"noobmaster69\", \"qwerty\")\r\n    )\r\n\r\n    val users: List<User>\r\n        get() = _users.toList()\r\n\r\n    fun createUser(username: String, password: String): Int {\r\n        val newUser = User(users.size + 1, username, password)\r\n        _users.add(newUser)\r\n        return newUser.id\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/FakeGomokuService.kt b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/FakeGomokuService.kt
+--- a/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/FakeGomokuService.kt	(revision 15e31149c3d2b00d821c42934cef611435bdfa7a)
++++ b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/service/FakeGomokuService.kt	(date 1699445020038)
+@@ -15,6 +15,10 @@
+     }
+ 
+     override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
++
++    override suspend fun fetchProfile(): String? {
++        
++    }
+ }
+ 
+ object GomokuAuthors {
+Index: pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileActivity.kt b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileActivity.kt
+new file mode 100644
+--- /dev/null	(date 1699444884735)
++++ b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileActivity.kt	(date 1699444884735)
+@@ -0,0 +1,35 @@
++package com.example.pdm2324i_gomoku_g37.screens.profile
++
++import android.content.Intent
++import android.os.Bundle
++import androidx.activity.ComponentActivity
++import androidx.activity.compose.setContent
++import androidx.activity.viewModels
++import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
++import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
++
++class ProfileActivity : ComponentActivity() {
++    private val viewModel by viewModels<ProfileScreenViewModel>()
++    private val services = FakeGomokuService()
++
++    companion object{
++        fun navigateTo(origin: ComponentActivity){
++            val intent = Intent(origin, ProfileActivity::class.java)
++            origin.startActivity(intent)
++        }
++    }
++
++    override fun onStart() {
++        viewModel.fetchProfile(services)
++        super.onStart()
++    }
++
++    override fun onCreate(savedInstanceState: Bundle?){
++        super.onCreate(savedInstanceState)
++        setContent{
++            GomokuTheme {
++                ProfileScreen()
++            }
++        }
++    }
++}
+\ No newline at end of file
+Index: pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreenViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreenViewModel.kt b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreenViewModel.kt
+new file mode 100644
+--- /dev/null	(date 1699444884721)
++++ b/pdm2324i_gomoku_g37/app/src/main/java/com/example/pdm2324i_gomoku_g37/screens/profile/ProfileScreenViewModel.kt	(date 1699444884721)
+@@ -0,0 +1,18 @@
++package com.example.pdm2324i_gomoku_g37.screens.profile
++
++import androidx.compose.runtime.getValue
++import androidx.compose.runtime.mutableStateOf
++import androidx.compose.runtime.setValue
++import androidx.lifecycle.ViewModel
++import androidx.lifecycle.viewModelScope
++import com.example.pdm2324i_gomoku_g37.service.GomokuService
++import kotlinx.coroutines.launch
++
++class ProfileScreenViewModel : ViewModel() {
++
++    var profile : String? by mutableStateOf(null)
++    fun fetchProfile(services : GomokuService) =
++        viewModelScope.launch {
++            profile = services.fetchProfile()
++        }
++}
+\ No newline at end of file
