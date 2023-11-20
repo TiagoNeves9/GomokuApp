@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.Loading
+import com.example.pdm2324i_gomoku_g37.domain.UserId
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
@@ -36,7 +37,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 data class SignUpScreenState(
-    val userInfo: LoadState<UserInfo> = idle(),
+    val userInfo: LoadState<UserId> = idle(),
     val username: String = "",
     val usernameErrorText: String = "",
     val isUsernameInputError: Boolean = false,

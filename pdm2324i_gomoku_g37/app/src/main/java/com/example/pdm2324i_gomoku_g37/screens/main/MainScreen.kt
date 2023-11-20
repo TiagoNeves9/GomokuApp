@@ -3,17 +3,10 @@ package com.example.pdm2324i_gomoku_g37.screens.main
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,27 +20,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomFooterView
-import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomButtonView
+import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.SmallCustomButtonView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_BUTTON_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
-import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PADDING
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onLoginRequested: () -> Unit = {}, onRegisterRequested: () -> Unit = {}) =
+fun MainScreen(onStartRequested: () -> Unit = {}) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            CustomFooterView {
-                Text(
-                    text = stringResource(R.string.activity_main_footer),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+        bottomBar = { GroupFooterView() }
     ) { padding ->
         CustomContainerView(
             modifier = Modifier
@@ -60,7 +46,21 @@ fun MainScreen(onLoginRequested: () -> Unit = {}, onRegisterRequested: () -> Uni
                 contentDescription = null
             )
             DescriptionContainer()
-            ButtonsContainer(onLoginRequested, onRegisterRequested)
+            SmallCustomButtonView(onClick = onStartRequested) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    /*Icon(
+                        imageVector = Icons.Default.Start,
+                        contentDescription = "Start"
+                    )*/
+                    Text(
+                        text = stringResource(R.string.activity_main_start),
+                        fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
+                    )
+                }
+            }
         }
     }
 
@@ -76,50 +76,6 @@ private fun DescriptionContainer() =
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
-    }
-
-@Composable
-private fun ButtonsContainer(onLoginRequested: () -> Unit, onRegisterRequested: () -> Unit) =
-    Row(
-        Modifier
-            .padding(MAIN_SCREEN_SPACING_PADDING)
-            .fillMaxWidth(),
-        Arrangement.Center,
-    ) {
-        LargeCustomButtonView(onClick = onLoginRequested) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Login"
-                )
-                Text(
-                    text = stringResource(R.string.activity_main_login),
-                    fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
-                )
-            }
-        }
-
-        Spacer(Modifier.width(MAIN_SCREEN_SPACING_PADDING))
-
-        LargeCustomButtonView(onClick = onRegisterRequested) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddCircle,
-                    contentDescription = "Sign Up"
-                )
-                Text(
-                    text = stringResource(R.string.activity_main_signup),
-                    fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
     }
 
 @Preview(showBackground = true, showSystemUi = true)

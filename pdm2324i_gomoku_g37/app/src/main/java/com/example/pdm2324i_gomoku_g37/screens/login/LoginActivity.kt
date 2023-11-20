@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
+import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
@@ -43,7 +44,10 @@ class LoginActivity : ComponentActivity() {
                         onPasswordVisibilityChange = viewModel::changePasswordVisible
                     ),
                     onHomeRequested = {
-                        //HomeActivity.navigateTo(origin = this)
+                        HomeActivity.navigateTo(origin = this)
+                    },
+                    onSignUpRequested = {
+                        SignUpActivity.navigateTo(origin = this)
                     }
                 )
             }

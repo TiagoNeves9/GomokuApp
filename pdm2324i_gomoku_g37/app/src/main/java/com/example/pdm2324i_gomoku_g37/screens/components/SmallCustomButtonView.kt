@@ -15,14 +15,14 @@ import com.example.pdm2324i_gomoku_g37.R
 val LARGE_BUTTON_FONT_SIZE = 20.sp
 
 @Composable
-fun LargeCustomButtonView(
+fun SmallCustomButtonView(
     onClick: () -> Unit = {},
     content: @Composable () -> Unit = {}
 ) =
     ElevatedButton(
         onClick = onClick,
         shape = RoundedCornerShape(BUTTON_RADIUS),
-        modifier = Modifier.size(width = LARGE_BUTTON_WIDTH, height = LARGE_BUTTON_HEIGHT)
+        modifier = Modifier.size(width = SMALL_BUTTON_WIDTH, height = SMALL_BUTTON_HEIGHT)
     ) {
         content()
     }
@@ -30,9 +30,9 @@ fun LargeCustomButtonView(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LargeCustomButtonViewPreview() =
-    LargeCustomButtonView {
+    SmallCustomButtonView {
         Text(
-            text = stringResource(R.string.activity_main_signup),
+            text = stringResource(R.string.activity_main_start),
             fontSize = LARGE_BUTTON_FONT_SIZE
         )
     }

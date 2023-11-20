@@ -29,7 +29,7 @@ fun CustomContainerView(modifier: Modifier = Modifier, content: @Composable () -
 fun CustomContainerViewPreview() =
     CustomContainerView {
         Text(
-            text = stringResource(R.string.activity_main_signup),
+            text = stringResource(R.string.activity_main_start),
             fontSize = CUSTOM_CONT_FONT_SIZE
         )
     }

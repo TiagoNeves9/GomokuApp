@@ -6,7 +6,7 @@ import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
 import kotlinx.coroutines.delay
 
-private const val FAKE_SERVICE_DELAY = 5000L
+private const val FAKE_SERVICE_DELAY = 3000L
 
 class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors
@@ -19,11 +19,20 @@ class FakeGomokuService : GomokuService {
     override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
 
     override suspend fun signIn(username: String, password: String): Token {
-        val user: User = GomokuUsers.users.first { user ->
+        delay(FAKE_SERVICE_DELAY)
+        val user = GomokuUsers.users.firstOrNull { user ->
             user.username == username && user.encodedPassword == password
         }
-        return Token(GomokuUsers.tokens.getValue(user.id))
+        if (user != null) return Token(generateRandomString(10))
+        else throw Exception("User Not Found")
     }
+}
+
+private fun generateRandomString(length: Int): String {
+    val charset = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    return (1..length)
+        .map { charset.random() }
+        .joinToString("")
 }
 
 object GomokuAuthors {
@@ -63,7 +72,7 @@ object GomokuUsers {
         get() = _users.toList()
 
     private val _tokens: MutableMap<Int, String> = mutableMapOf(
-        1  to "123",
+        1 to "123",
         2 to "456",
         3 to "789"
     )

@@ -1,9 +1,14 @@
 package com.example.pdm2324i_gomoku_g37.screens.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,6 +20,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.helpers.LoginScreenTestTags.LoginScreenTestTag
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_RADIUS
@@ -47,8 +53,9 @@ fun LoginScreen(
     state: LoginScreenState = LoginScreenState(),
     navigation: NavigationHandlers = NavigationHandlers(),
     functions: LoginScreenFunctions = LoginScreenFunctions(),
-    onHomeRequested: () -> Unit = { }
-) =
+    onHomeRequested: () -> Unit = { },
+    onSignUpRequested: () -> Unit = {}
+) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -79,25 +86,34 @@ fun LoginScreen(
                 onClick = functions.onPasswordChange
             )
 
-            ElevatedButton(
-                onClick = onHomeRequested,
-                shape = RoundedCornerShape(BUTTON_RADIUS),
-                contentPadding = PaddingValues(
-                    start = MAIN_SCREEN_DEFAULT_PADDING,
-                    end = MAIN_SCREEN_DEFAULT_PADDING,
-                    top = MAIN_SCREEN_SPACING_PADDING,
-                    bottom = MAIN_SCREEN_SPACING_PADDING
-                ),
-                modifier = Modifier.padding(padding)
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Login")
+                ElevatedButton(
+                    onClick = onHomeRequested,
+                    shape = RoundedCornerShape(BUTTON_RADIUS),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 35.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.activity_login_top_bar_title))
+                }
+                ElevatedButton(
+                    onClick = onSignUpRequested,
+                    shape = RoundedCornerShape(BUTTON_RADIUS),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 35.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.activity_sign_up_bar_title))
+                }
             }
         }
     }
+}
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun LoginPreview() =
+fun LoginPreview() {
     GomokuTheme {
         LoginScreen()
     }
+}
+

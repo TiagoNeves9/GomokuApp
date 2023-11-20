@@ -1,8 +1,13 @@
 package com.example.pdm2324i_gomoku_g37
 
 import android.app.Application
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import com.example.pdm2324i_gomoku_g37.domain.UserInfoRepository
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
+import com.example.pdm2324i_gomoku_g37.storage.UserInfoDataStore
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 
@@ -13,7 +18,7 @@ import okhttp3.OkHttpClient
  */
 const val GomokuAppTestTag = "GomokuAppTestTag"
 
-interface GomokuDependencyProvider {
+interface GomokuDependenciesContainer {
     /**
      * The HTTP client used to perform HTTP requests
      */
@@ -28,13 +33,21 @@ interface GomokuDependencyProvider {
      * The service used to fetch jokes
      */
     val gomokuService: GomokuService
+
+    /**
+     * UserInfo repository
+     */
+    val userInfoRepository: UserInfoRepository
 }
 
 /**
  * The application's class used to resolve dependencies, acting as a Service Locator.
  * Dependencies are then injected manually by each Android Component (e.g Activity, Service, etc.).
  */
-class GomokuApplication : Application(), GomokuDependencyProvider {
+class GomokuApplication : Application(), GomokuDependenciesContainer {
+
+    private val dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_info")
+
     /**
      * The HTTP client used to perform HTTP requests
      */
@@ -53,5 +66,11 @@ class GomokuApplication : Application(), GomokuDependencyProvider {
      */
     override val gomokuService: GomokuService =
         FakeGomokuService()
+
+    /**
+     * The UserInfo repository
+     */
+    override val userInfoRepository: UserInfoRepository
+        get() = UserInfoDataStore(dataStore)
 
 }

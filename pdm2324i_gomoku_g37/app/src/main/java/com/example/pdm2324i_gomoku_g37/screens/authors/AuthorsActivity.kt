@@ -10,17 +10,23 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
+import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpScreenViewModel
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 class AuthorsActivity : ComponentActivity() {
-    private val viewModel by viewModels<AuthorsScreenViewModel>()
-    private val services = FakeGomokuService()
+
+    private val dependencies by lazy { application as GomokuDependenciesContainer }
+
+    private val viewModel by viewModels<AuthorsScreenViewModel> {
+        AuthorsScreenViewModel.factory(dependencies.gomokuService)
+    }
 
     companion object {
         fun navigateTo(origin: ComponentActivity) {
@@ -30,7 +36,7 @@ class AuthorsActivity : ComponentActivity() {
     }
 
     override fun onStart() {
-        viewModel.fetchAuthors(services)
+        viewModel.fetchAuthors()
         super.onStart()
     }
 

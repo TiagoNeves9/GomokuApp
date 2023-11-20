@@ -16,6 +16,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
+import com.example.pdm2324i_gomoku_g37.screens.components.CustomFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
@@ -38,8 +42,97 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 fun HomeScreen(
     userInfo: UserInfo,
     onAuthorsRequested: () -> Unit = { }
-) =
-    Surface(
+) {
+    Scaffold(
+
+        bottomBar = { GroupFooterView() }
+    ) { padding ->
+        CustomContainerView(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Text("User: ${userInfo.username}")
+            LargeCustomTitleView(text = stringResource(id = R.string.activity_menu_title))
+
+            Row(
+                Modifier,
+                Arrangement.Center
+            ) {
+                MenuButton {
+                    //Text(text = "Play")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Play"
+                        )
+                        Text(
+                            text = "Play",
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                MenuButton {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Rankings"
+                        )
+                        Text(
+                            text = "Rankings",
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            Row(
+                Modifier,
+                Arrangement.Center
+            ) {
+                MenuButton(onAuthorsRequested) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Face,
+                            contentDescription = "Authors"
+                        )
+                        Text(
+                            text = "Authors",
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                MenuButton {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = "About"
+                        )
+                        Text(
+                            text = "About",
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+    /*Surface(
         color = MaterialTheme.colorScheme.background
     ) {
         Row(
@@ -132,7 +225,7 @@ fun HomeScreen(
                 }
             }
         }
-    }
+    }*/
 
 @Composable
 private fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
@@ -153,8 +246,9 @@ private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun HomeScreenPreview() =
+fun HomeScreenPreview() {
     GomokuTheme {
-        val user = GomokuUsers.users[0]
-        HomeScreen(UserInfo(user.id, user.username))
+        val userInfo = UserInfo(1, "prefiew user", "ab12")
+        HomeScreen(userInfo)
     }
+}
