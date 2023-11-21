@@ -35,12 +35,7 @@ class PlayActivity : ComponentActivity() {
                 PlayScreen(
                     lobbies = viewModel.lobbies,
                     navigation = NavigationHandlers(
-                        onBackRequested = {
-                            HomeActivity.navigateTo(
-                                origin = this,
-                                userInfo = UserInfo(-1, "CHANGE_THIS")
-                            )
-                        }, //TODO change this hardcoded userInfo
+                        onBackRequested = { HomeActivity.navigateTo(origin = this) },
                         onInfoRequested = { InfoActivity.navigateTo(origin = this) }
                     )
                 )

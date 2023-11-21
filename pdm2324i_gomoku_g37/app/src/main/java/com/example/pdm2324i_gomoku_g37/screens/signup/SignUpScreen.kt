@@ -43,7 +43,7 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 val myPadding = 10.dp
 
 data class SignUpScreenState(
-    val userInfo: LoadState<UserId> = idle(),
+    val userInfo: LoadState<UserInfo?> = idle(),
     val username: String = "",
     val usernameErrorText: String = "",
     val isUsernameInputError: Boolean = false,

@@ -6,11 +6,18 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
+import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.CoroutineScope
@@ -40,11 +47,23 @@ class SignUpActivity : ComponentActivity() {
 
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
+
+        lifecycleScope.launch {
+            viewModel.userInfoFlow.collect {
+                if (it is Loaded) {
+                    doNavigation(it.getOrNull())
+                    viewModel.resetToIdle()
+                    finish()
+                }
+            }
+        }
+
         setContent {
+            val currentUserInfo by viewModel.userInfoFlow.collectAsState(initial = idle())
             GomokuTheme {
                 SignUpScreen(
                     state = SignUpScreenState(
-                        userInfo = viewModel.userInfo,
+                        userInfo = currentUserInfo,
                         username = viewModel.username,
                         usernameErrorText = viewModel.usernameErrorText,
                         isUsernameInputError = viewModel.isUsernameInputError,
@@ -58,10 +77,8 @@ class SignUpActivity : ComponentActivity() {
                         confirmPasswordVisible = viewModel.isConfirmPasswordVisible
                     ),
                     navigation = NavigationHandlers(
-                        onBackRequested = {
-                            MainActivity.navigateTo(origin = this)
-                        },
-                        onInfoRequested = { /*InfoActivity.navigateTo(origin = this)*/ }
+                        onBackRequested = { MainActivity.navigateTo(origin = this) },
+                        onInfoRequested = { InfoActivity.navigateTo(origin = this) }
                     ),
                     functions = SignUpScreenFunctions(
                         onUsernameChange = viewModel::changeUsername,
@@ -75,21 +92,16 @@ class SignUpActivity : ComponentActivity() {
                         onConfirmPasswordErrorTextChange = viewModel::changeConfirmPasswordErrorText,
                         onIsConfirmPasswordInputErrorChange = viewModel::changeIsConfirmPasswordInputError,
                         onConfirmPasswordVisibilityChange = viewModel::changeIsConfirmPasswordVisible,
-                        onSignUpRequested = ::doSignUp,
-                        onDismissError = viewModel::dismissError
+                        onSignUpRequested = viewModel::signUp,
+                        onDismissError = viewModel::resetToIdle
                     )
                 )
             }
         }
     }
 
-    private fun doSignUp() {
-        viewModel.signUp { signUpResult ->
-            if (signUpResult.getOrNull() != null) {
-                Log.v("signupactivity", "user is not null")
-                HomeActivity.navigateTo(this@SignUpActivity)
-                finish()
-            }
-        }
+    private fun doNavigation(userInfo: UserInfo?) {
+        if (userInfo != null)
+            HomeActivity.navigateTo(this)
     }
 }

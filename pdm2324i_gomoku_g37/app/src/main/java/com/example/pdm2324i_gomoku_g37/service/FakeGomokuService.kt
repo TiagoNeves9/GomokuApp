@@ -36,10 +36,6 @@ class FakeGomokuService : GomokuService {
         else throw Exception("User Not Found")
     }
 
-    override suspend fun fetchProfile(): String {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun fetchRankings(): String {
         return "ISTO SÃO RANKINGS"
     }
@@ -118,6 +114,8 @@ object GomokuUsers {
         get() = _tokens
 
     fun createUser(username: String, password: String): Int {
+        val user = GomokuUsers.users.firstOrNull { user -> user.username == username }
+        if (user != null) throw IllegalArgumentException("User already exists")
         val newUser = User(users.size + 1, username, password)
         _users.add(newUser)
         return newUser.id

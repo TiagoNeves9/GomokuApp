@@ -21,7 +21,6 @@ interface GomokuService {
 
     suspend fun signIn(username: String, password: String): Token
 
-    suspend fun fetchProfile():String
     suspend fun fetchRankings() : String
 }
 
