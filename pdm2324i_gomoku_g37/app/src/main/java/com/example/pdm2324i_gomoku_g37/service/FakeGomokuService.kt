@@ -35,6 +35,14 @@ class FakeGomokuService : GomokuService {
         if (user != null) return Token(generateRandomString(10))
         else throw Exception("User Not Found")
     }
+
+    override suspend fun fetchProfile(): String {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchRankings(): String {
+        return "ISTO SÃO RANKINGS"
+    }
 }
 
 private fun generateRandomString(length: Int): String {
