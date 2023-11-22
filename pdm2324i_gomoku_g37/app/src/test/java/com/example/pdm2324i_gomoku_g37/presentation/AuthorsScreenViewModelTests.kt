@@ -3,6 +3,7 @@ package com.example.pdm2324i_gomoku_g37.presentation
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsScreenViewModel
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.service.GomokuAuthors
+import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -21,47 +22,37 @@ class AuthorsScreenViewModelTests {
     @get:Rule
     val rule = MockMainDispatcherRule(UnconfinedTestDispatcher())
 
-    private val sut = AuthorsScreenViewModel()
+    private val expectedAuthors = GomokuAuthors.authors
+
+    private val service = mockk<GomokuService> {
+        coEvery { fetchAuthors() } coAnswers {
+            delay(1000)
+            expectedAuthors
+        }
+    }
+
+    private val sut = AuthorsScreenViewModel(service)
 
     @Test
     fun initially_the_authors_are_null() {
-        // Arrange
-        // Act
-        // Assert
         assertNull(sut.authors)
     }
 
     @Test
     fun fetchAuthors_triggers_call_to_service() {
         // Arrange
-        val expectedAuthors = GomokuAuthors.authors
-        val serviceMock = mockk<FakeGomokuService> {
-            coEvery { fetchAuthors() } coAnswers {
-                delay(1000)
-                expectedAuthors
-            }
-        }
-
         // Act
-        sut.fetchAuthors(serviceMock)
+        sut.fetchAuthors()
 
         // Assert
-        coVerify(exactly = 1) { serviceMock.fetchAuthors() }
+        coVerify(exactly = 1) { service.fetchAuthors() }
     }
 
     @Test
     fun fetchAuthors_publishes_authors() {
         // Arrange
-        val expectedAuthors = GomokuAuthors.authors
-        val serviceMock = mockk<FakeGomokuService> {
-            coEvery { fetchAuthors() } coAnswers {
-                delay(1000)
-                expectedAuthors
-            }
-        }
-
         // Act
-        sut.fetchAuthors(serviceMock)
+        sut.fetchAuthors()
         rule.advanceUntilIdle()
 
         // Assert
@@ -84,17 +75,10 @@ class AuthorsScreenViewModelTests {
     @Test
     fun nextIndex_publishes_new_index() {
         // Arrange
-        val expectedAuthors = GomokuAuthors.authors
         val expectedIndex = 1
-        val serviceMock = mockk<FakeGomokuService> {
-            coEvery { fetchAuthors() } coAnswers {
-                delay(1000)
-                expectedAuthors
-            }
-        }
 
         // Act
-        sut.fetchAuthors(serviceMock)
+        sut.fetchAuthors()
         rule.advanceUntilIdle()
         sut.nextIndex()
 
@@ -109,17 +93,10 @@ class AuthorsScreenViewModelTests {
     @Test
     fun prevIndex_publishes_new_index() {
         // Arrange
-        val expectedAuthors = GomokuAuthors.authors
         val expectedIndex = 2
-        val serviceMock = mockk<FakeGomokuService> {
-            coEvery { fetchAuthors() } coAnswers {
-                delay(1000)
-                expectedAuthors
-            }
-        }
 
         // Act
-        sut.fetchAuthors(serviceMock)
+        sut.fetchAuthors()
         rule.advanceUntilIdle()
         sut.prevIndex()
 
@@ -128,6 +105,6 @@ class AuthorsScreenViewModelTests {
         val actualIndex = sut.index
         assertNotNull(actualAuthors)
         assertEquals(expectedAuthors, actualAuthors)
-        assertEquals(expectedIndex, actualIndex)
+        assertEquals(expectedIndex,actualIndex)
     }
 }
