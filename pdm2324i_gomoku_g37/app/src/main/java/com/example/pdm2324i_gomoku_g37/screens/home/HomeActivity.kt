@@ -12,6 +12,7 @@ import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsActivity
 import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
+import com.example.pdm2324i_gomoku_g37.screens.rankings.RankingsActivity
 import java.lang.IllegalStateException
 
 
@@ -44,7 +45,7 @@ class HomeActivity : ComponentActivity() {
                 userInfo = viewModel.userInfo ?: throw IllegalStateException(),
                 onAuthorsRequested = { AuthorsActivity.navigateTo(origin = this) },
                 onPlayRequested = { PlayActivity.navigateTo(origin = this) },
-                onRankingsRequested = { },
+                onRankingsRequested = { RankingsActivity.navigateTo(origin = this) },
                 onAboutRequested = { }
             )
         }

@@ -34,7 +34,7 @@ class InfoActivity : ComponentActivity() {
                 InfoScreen(
                     viewModel.info,
                     navigation = NavigationHandlers(
-                        onBackRequested = { /*HomeActivity.navigateTo(origin = this)*/ }
+                        onBackRequested = { HomeActivity.navigateTo(origin = this) }
                     )
                 )
             }
