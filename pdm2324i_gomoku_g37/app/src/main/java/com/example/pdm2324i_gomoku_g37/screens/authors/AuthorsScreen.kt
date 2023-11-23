@@ -38,6 +38,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Author
+import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorCardTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorEmailButtonTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNextTestTag
@@ -68,7 +73,7 @@ data class AuthorsHandlers(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthorsScreen(
-    authors: List<Author>? = null,
+    authors: LoadState<List<Author>?> = idle(),
     index: Int,
     authorsHandlers: AuthorsHandlers = AuthorsHandlers(),
     navigation: NavigationHandlers = NavigationHandlers(),
@@ -93,7 +98,37 @@ fun AuthorsScreen(
 
             LargeCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
 
-            val author = authors?.get(index)
+            val authors = authors.getOrNull()
+
+            if (authors.isNullOrEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.activity_author_no_author_found),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(AuthorNoAuthorTestTag),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                ElevatedCard(
+                    modifier = Modifier
+                        .padding(CARD_PADDING)
+                        .testTag(AuthorCardTestTag),
+                    shape = RoundedCornerShape(DEFAULT_RADIUS),
+                    colors = CardDefaults
+                        .cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                    elevation = CardDefaults
+                        .cardElevation(defaultElevation = CARD_ELEVATION)
+                ) {
+                    DisplayAuthor(
+                        author = authors[index],
+                        authorsHandlers = authorsHandlers,
+                        onSendEmailRequested = onSendEmailRequested
+                    )
+                }
+            }
+
+            /*val author = authors?.get(index)
             if (author != null) {
                 ElevatedCard(
                     modifier = Modifier
@@ -118,7 +153,7 @@ fun AuthorsScreen(
                     .testTag(AuthorNoAuthorTestTag),
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center
-            )
+            )*/
         }
     }
 
@@ -235,8 +270,9 @@ fun AuthorsScreenPreview() {
         "a48292@alunos.isel.pt"
     )
     GomokuTheme {
+        val authors: LoadState<List<Author>?> = loaded(Result.success(listOf(author)))
         AuthorsScreen(
-            authors = listOf(author),
+            authors = authors,
             index = 0,
             AuthorsHandlers({}, {}),
             NavigationHandlers(onBackRequested = {}, onInfoRequested = {})

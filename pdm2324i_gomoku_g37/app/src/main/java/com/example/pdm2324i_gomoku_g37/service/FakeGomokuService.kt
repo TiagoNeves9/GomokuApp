@@ -11,7 +11,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Variant
 import kotlinx.coroutines.delay
 import java.util.UUID
 
-private const val FAKE_SERVICE_DELAY = 3000L
+private const val FAKE_SERVICE_DELAY = 1000L
 
 class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors

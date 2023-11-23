@@ -10,14 +10,18 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
-import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpScreenViewModel
-import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+import kotlinx.coroutines.launch
 
 
 class AuthorsActivity : ComponentActivity() {
@@ -35,17 +39,18 @@ class AuthorsActivity : ComponentActivity() {
         }
     }
 
-    override fun onStart() {
-        viewModel.fetchAuthors()
-        super.onStart()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            viewModel.fetchAuthors()
+        }
+
         setContent {
+            val currentAuthors by viewModel.authorsList.collectAsState(initial = idle())
             GomokuTheme {
                 AuthorsScreen(
-                    authors = viewModel.authors,
+                    authors = currentAuthors,
                     index = viewModel.index,
                     authorsHandlers = AuthorsHandlers(
                         { viewModel.nextIndex() },
@@ -56,8 +61,8 @@ class AuthorsActivity : ComponentActivity() {
                         onInfoRequested = { InfoActivity.navigateTo(origin = this) }
                     ),
                     onSendEmailRequested = {
-                        viewModel.authors?.get(viewModel.index)?.let { author ->
-                            openSendEmail(author.email)
+                        currentAuthors.getOrNull()?.let { authors ->
+                            openSendEmail(authors[viewModel.index].email)
                         }
                     }
                 )
