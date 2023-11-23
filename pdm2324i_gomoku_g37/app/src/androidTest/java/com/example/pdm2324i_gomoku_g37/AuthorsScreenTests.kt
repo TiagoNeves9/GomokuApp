@@ -5,6 +5,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.example.pdm2324i_gomoku_g37.domain.Author
+import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorCardTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorEmailButtonTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNextTestTag
@@ -12,6 +14,7 @@ import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorPrevT
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNoAuthorTestTag
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsHandlers
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsScreen
+import com.example.pdm2324i_gomoku_g37.service.GomokuAuthors
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import junit.framework.TestCase.assertTrue
 import org.junit.Rule
@@ -21,6 +24,8 @@ class AuthorsScreenTests {
 
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    private val authors: LoadState<List<Author>?> = loaded(Result.success(GomokuAuthors.authors))
 
     @Test
     fun screen_initial_state_does_not_display_author() {
@@ -41,9 +46,6 @@ class AuthorsScreenTests {
     @Test
     fun screen_initial_state_display_first_author() {
         // Arrange
-        val authors: List<Author> = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
         // Act
         composeTestRule.setContent {
             GomokuTheme {
@@ -60,9 +62,6 @@ class AuthorsScreenTests {
     @Test
     fun screen_initial_state_displays_next_button() {
         // Arrange
-        val authors: List<Author> = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
         // Act
         composeTestRule.setContent {
             GomokuTheme {
@@ -80,9 +79,6 @@ class AuthorsScreenTests {
     @Test
     fun screen_initial_state_displays_prev_button() {
         // Arrange
-        val authors: List<Author> = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
         // Act
         composeTestRule.setContent {
             GomokuTheme {
@@ -100,9 +96,6 @@ class AuthorsScreenTests {
     @Test
     fun click_on_next_calls_onNextRequested() {
         // Arrange
-        val authors: List<Author> = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
         var called = false
         // Act
         composeTestRule.setContent {
@@ -122,9 +115,6 @@ class AuthorsScreenTests {
     @Test
     fun click_on_prev_calls_onPrevRequested() {
         // Arrange
-        val authors: List<Author> = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
         var called = false
         // Act
         composeTestRule.setContent {
@@ -144,9 +134,6 @@ class AuthorsScreenTests {
     @Test
     fun screen_initial_state_displays_email_button() {
         // Arrange
-        val authors: List<Author> = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
         // Act
         composeTestRule.setContent {
             GomokuTheme {
@@ -163,9 +150,6 @@ class AuthorsScreenTests {
     @Test
     fun click_on_email_calls_onSendEmailRequested() {
         // Arrange
-        val authors: List<Author> = listOf(
-            Author(48292, "Tiago Neves", "O melhor programador", "img_tiago", "A48292@alunos.isel.pt"),
-        )
         var called = false
         // Act
         composeTestRule.setContent {

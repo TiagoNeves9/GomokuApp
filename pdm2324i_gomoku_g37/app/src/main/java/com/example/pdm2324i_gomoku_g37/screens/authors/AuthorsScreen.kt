@@ -62,6 +62,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.ICON_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.ROW_DEFAULT_PADDING
+import com.example.pdm2324i_gomoku_g37.service.GomokuAuthors
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
@@ -87,7 +88,7 @@ fun AuthorsScreen(
                 navigation = navigation
             )
         },
-        bottomBar = { GroupFooterView() }
+        bottomBar = { GroupFooterView(Color.White) }
     ) { padding ->
         CustomContainerView(
             modifier = Modifier
@@ -98,9 +99,9 @@ fun AuthorsScreen(
 
             LargeCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
 
-            val authors = authors.getOrNull()
+            val authorsList = authors.getOrNull()
 
-            if (authors.isNullOrEmpty()) {
+            if (authorsList.isNullOrEmpty()) {
                 Text(
                     text = stringResource(id = R.string.activity_author_no_author_found),
                     modifier = Modifier
@@ -121,39 +122,12 @@ fun AuthorsScreen(
                         .cardElevation(defaultElevation = CARD_ELEVATION)
                 ) {
                     DisplayAuthor(
-                        author = authors[index],
+                        author = authorsList[index],
                         authorsHandlers = authorsHandlers,
                         onSendEmailRequested = onSendEmailRequested
                     )
                 }
             }
-
-            /*val author = authors?.get(index)
-            if (author != null) {
-                ElevatedCard(
-                    modifier = Modifier
-                        .padding(CARD_PADDING)
-                        .testTag(AuthorCardTestTag),
-                    shape = RoundedCornerShape(DEFAULT_RADIUS),
-                    colors = CardDefaults
-                        .cardColors(containerColor = MaterialTheme.colorScheme.primary),
-                    elevation = CardDefaults
-                        .cardElevation(defaultElevation = CARD_ELEVATION)
-                ) {
-                    DisplayAuthor(
-                        author = author,
-                        authorsHandlers = authorsHandlers,
-                        onSendEmailRequested = onSendEmailRequested
-                    )
-                }
-            } else Text(
-                text = stringResource(id = R.string.activity_author_no_author_found),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(AuthorNoAuthorTestTag),
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center
-            )*/
         }
     }
 
@@ -262,15 +236,8 @@ private fun LoadImageByName(imageName: String) {
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun AuthorsScreenPreview() {
-    val author = Author(
-        48292,
-        "Tiago Neves",
-        "O melhor programador",
-        "img_tiago",
-        "a48292@alunos.isel.pt"
-    )
     GomokuTheme {
-        val authors: LoadState<List<Author>?> = loaded(Result.success(listOf(author)))
+        val authors: LoadState<List<Author>?> = loaded(Result.success(GomokuAuthors.authors))
         AuthorsScreen(
             authors = authors,
             index = 0,

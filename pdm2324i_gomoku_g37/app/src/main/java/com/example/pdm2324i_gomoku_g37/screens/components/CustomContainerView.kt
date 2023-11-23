@@ -17,9 +17,9 @@ val CUSTOM_CONT_FONT_SIZE = 20.sp
 @Composable
 fun CustomContainerView(modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) =
     Column(
-        modifier,
-        Arrangement.Center,
-        Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
         content()
     }

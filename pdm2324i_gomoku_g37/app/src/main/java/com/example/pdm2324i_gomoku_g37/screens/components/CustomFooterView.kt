@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,11 +26,12 @@ fun CustomFooterView(modifier: Modifier = Modifier, content: @Composable () -> U
     }
 
 @Composable
-fun GroupFooterView() =
+fun GroupFooterView(textColor: Color) =
     CustomFooterView {
         Text(
             text = stringResource(R.string.activity_main_footer),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = textColor
         )
     }
 

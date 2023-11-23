@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
@@ -27,7 +28,7 @@ fun ProfileScreen(
                 navigation
             )
         },
-        bottomBar = { GroupFooterView()}
+        bottomBar = { GroupFooterView(Color.White)}
     ) {padding ->
         CustomContainerView(
             modifier = Modifier

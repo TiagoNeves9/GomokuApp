@@ -1,27 +1,36 @@
 package com.example.pdm2324i_gomoku_g37.screens.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Start
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
-import com.example.pdm2324i_gomoku_g37.screens.components.CustomFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
-import com.example.pdm2324i_gomoku_g37.screens.components.SmallCustomButtonView
+import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomButtonView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_BUTTON_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
@@ -33,39 +42,60 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 fun MainScreen(
     onStartEnabled: Boolean = true,
     onStartRequested: () -> Unit = {},
-) =
+) {
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = { GroupFooterView() }
+        bottomBar = { GroupFooterView(Color.White) },
+        //modifier = Modifier.fillMaxSize()
     ) { padding ->
+        Image(
+            painter = painterResource(R.drawable.app_background),
+            contentDescription = "Background image",
+            contentScale = ContentScale.FillBounds
+        )
+
         CustomContainerView(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(padding)
         ) {
-            LargeCustomTitleView(text = "Gomoku")
+            val painter = painterResource(R.drawable.img_gomoku_icon)
+            val imageModifier = Modifier
+                .sizeIn(
+                    minWidth = 300.dp,
+                    minHeight = 300.dp,
+                    maxWidth = 400.dp,
+                    maxHeight = 400.dp
+                )
+
             Image(
-                painter = painterResource(R.drawable.img_gomoku_icon),
-                contentDescription = null
+                painter = painter,
+                contentDescription = null,
+                alignment = Alignment.TopCenter,
+                modifier = imageModifier
             )
-            DescriptionContainer()
-            SmallCustomButtonView(enabled = onStartEnabled, onClick = onStartRequested) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    /*Icon(
-                        imageVector = Icons.Default.Start,
+
+            CustomContainerView(
+                modifier = Modifier
+                    .padding(40.dp)
+                    .fillMaxWidth()
+                    .background(Color.White, shape = RoundedCornerShape(20.dp))
+                    .clip(shape = RoundedCornerShape(20.dp))
+            ) {
+                LargeCustomTitleView(text = "Gomoku")
+                DescriptionContainer()
+                LargeCustomButtonView(enabled = onStartEnabled, onClick = onStartRequested) {
+                    Icon(
+                        tint = Color.White,
+                        imageVector = Icons.Filled.ArrowForward,
                         contentDescription = "Start"
-                    )*/
-                    Text(
-                        text = stringResource(R.string.activity_main_start),
-                        fontSize = MAIN_SCREEN_BUTTON_FONT_SIZE
                     )
                 }
             }
+
         }
     }
+}
 
 @Composable
 private fun DescriptionContainer() =

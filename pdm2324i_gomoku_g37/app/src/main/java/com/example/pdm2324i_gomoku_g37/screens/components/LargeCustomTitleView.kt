@@ -5,16 +5,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.pdm2324i_gomoku_g37.R
 
 
 @Composable
-fun LargeCustomTitleView(text: String, bottomPadding: Dp = 15.dp) =
+fun LargeCustomTitleView(text: String) =
     Text(
         text = text,
-        modifier = Modifier.padding(bottom = bottomPadding),
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(vertical = 10.dp),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.titleLarge
     )
