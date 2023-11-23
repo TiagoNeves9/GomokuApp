@@ -30,7 +30,10 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onStartRequested: () -> Unit = {}) =
+fun MainScreen(
+    onStartEnabled: Boolean = true,
+    onStartRequested: () -> Unit = {},
+) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = { GroupFooterView() }
@@ -46,7 +49,7 @@ fun MainScreen(onStartRequested: () -> Unit = {}) =
                 contentDescription = null
             )
             DescriptionContainer()
-            SmallCustomButtonView(onClick = onStartRequested) {
+            SmallCustomButtonView(enabled = onStartEnabled, onClick = onStartRequested) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,

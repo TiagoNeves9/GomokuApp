@@ -5,26 +5,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
-import com.example.pdm2324i_gomoku_g37.domain.Opening
-import com.example.pdm2324i_gomoku_g37.domain.Player
-import com.example.pdm2324i_gomoku_g37.domain.Rules
-import com.example.pdm2324i_gomoku_g37.domain.Turn
-import com.example.pdm2324i_gomoku_g37.domain.User
-import com.example.pdm2324i_gomoku_g37.domain.Variant
-import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
-import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
-import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsScreenViewModel
-import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
-import com.example.pdm2324i_gomoku_g37.screens.game.GameScreen
+import com.example.pdm2324i_gomoku_g37.domain.Idle
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginActivity
-import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpActivity
-import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpScreenViewModel
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 
 class MainActivity : ComponentActivity() {
@@ -42,22 +35,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStart() {
-        viewModel.loadUserInfo()
-        super.onStart()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            viewModel.userInfoFlow.collect {
+                if (it is Loaded) {
+                    doNavigation(it.getOrNull())
+                    viewModel.resetToIdle()
+                }
+            }
+        }
+
         setContent {
+            val currentUserInfo by viewModel.userInfoFlow.collectAsState(initial = idle())
             GomokuTheme {
                 MainScreen(
-                    onStartRequested = {
-                        if (viewModel.userInfo != null) HomeActivity.navigateTo(origin = this@MainActivity)
-                        else LoginActivity.navigateTo(origin = this@MainActivity)
-                    }
+                    onStartEnabled = currentUserInfo is Idle,
+                    onStartRequested = { viewModel.fetchUserInfo() }
                 )
             }
         }
+    }
+
+    private fun doNavigation(userInfo: UserInfo?) {
+        if (userInfo == null) LoginActivity.navigateTo(this)
+        else HomeActivity.navigateTo(this)
     }
 }

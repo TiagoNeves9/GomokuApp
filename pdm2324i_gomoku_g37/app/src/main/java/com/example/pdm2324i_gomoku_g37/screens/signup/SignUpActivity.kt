@@ -50,11 +50,8 @@ class SignUpActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.userInfoFlow.collect {
-                if (it is Loaded) {
-                    doNavigation(it.getOrNull())
-                    viewModel.resetToIdle()
-                    finish()
-                }
+                if (it is Loaded && it.getOrNull() == null)
+                    HomeActivity.navigateTo(this@SignUpActivity)
             }
         }
 
@@ -98,10 +95,5 @@ class SignUpActivity : ComponentActivity() {
                 )
             }
         }
-    }
-
-    private fun doNavigation(userInfo: UserInfo?) {
-        if (userInfo != null)
-            HomeActivity.navigateTo(this)
     }
 }

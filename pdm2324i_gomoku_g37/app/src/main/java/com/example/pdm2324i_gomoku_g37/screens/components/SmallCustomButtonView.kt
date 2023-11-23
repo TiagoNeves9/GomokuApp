@@ -16,16 +16,20 @@ val LARGE_BUTTON_FONT_SIZE = 20.sp
 
 @Composable
 fun SmallCustomButtonView(
+    enabled: Boolean = true,
     onClick: () -> Unit = {},
     content: @Composable () -> Unit = {}
-) =
+) {
     ElevatedButton(
+        enabled = enabled,
         onClick = onClick,
         shape = RoundedCornerShape(BUTTON_RADIUS),
         modifier = Modifier.size(width = SMALL_BUTTON_WIDTH, height = SMALL_BUTTON_HEIGHT)
     ) {
         content()
     }
+}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
