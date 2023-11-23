@@ -55,7 +55,7 @@ class SignUpScreenViewModel(
         get() = _isUsernameInputError
 
     fun changeUsername(username: String) = viewModelScope.launch {
-        _username = username
+        _username = username.replace("\\s".toRegex(), "")
     }
 
     fun changeUsernameErrorText(error: String) = viewModelScope.launch {
@@ -91,7 +91,7 @@ class SignUpScreenViewModel(
         get() = _isPasswordVisible
 
     fun changePassword(password: String) = viewModelScope.launch {
-        _password = password
+        _password = password.replace("\\s".toRegex(), "")
     }
 
     fun changePasswordErrorText(error: String) = viewModelScope.launch {
@@ -131,7 +131,7 @@ class SignUpScreenViewModel(
         get() = _isConfirmPasswordVisible
 
     fun changeConfirmPassword(confirmPassword: String) = viewModelScope.launch {
-        _confirmPassword = confirmPassword
+        _confirmPassword = confirmPassword.replace("\\s".toRegex(), "")
     }
 
     fun changeConfirmPasswordErrorText(error: String) = viewModelScope.launch {
