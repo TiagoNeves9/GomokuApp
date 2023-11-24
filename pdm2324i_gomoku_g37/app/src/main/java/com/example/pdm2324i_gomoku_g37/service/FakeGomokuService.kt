@@ -36,7 +36,7 @@ class FakeGomokuService : GomokuService {
         else throw Exception("User Not Found")
     }
 
-    override suspend fun fetchRankings() = "ISTO SÃO RANKINGS"
+    override suspend fun fetchRankings() : GomokuRankings.Rankings = GomokuRankings.rankings.first()
 
 }
 
@@ -91,6 +91,17 @@ object GomokuLobbies {
             Rules(15, Opening.PRO, Variant.FREESTYLE)
         ),
     )
+}
+
+object GomokuRankings{
+    data class Rankings(val user: String, val nGames: Int, val score: Int)
+
+    private val _rankings: MutableList<Rankings> = mutableListOf(
+        Rankings("admin",9,666)
+    )
+
+    val rankings : List<Rankings>
+        get() = _rankings
 }
 
 object GomokuUsers {

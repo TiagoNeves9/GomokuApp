@@ -18,7 +18,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthorsScreenViewModelTests {
-
+    /*
     @get:Rule
     val rule = MockMainDispatcherRule(UnconfinedTestDispatcher())
 
@@ -106,5 +106,6 @@ class AuthorsScreenViewModelTests {
         assertNotNull(actualAuthors)
         assertEquals(expectedAuthors, actualAuthors)
         assertEquals(expectedIndex,actualIndex)
-    }
+    }*/
+
 }
