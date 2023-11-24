@@ -90,6 +90,21 @@ object GomokuLobbies {
             UUID.randomUUID(),
             Rules(15, Opening.PRO, Variant.FREESTYLE)
         ),
+        Lobby(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            Rules(19, Opening.PRO, Variant.FREESTYLE)
+        ),
+        Lobby(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            Rules(15, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
+        ),
+        Lobby(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            Rules(19, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
+        ),
     )
 }
 

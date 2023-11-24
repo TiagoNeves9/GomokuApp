@@ -8,9 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.pdm2324i_gomoku_g37.R
 
 
 @Composable
@@ -24,6 +22,21 @@ fun LargeCustomTitleView(text: String) =
         style = MaterialTheme.typography.titleLarge
     )
 
+@Composable
+fun MediumCustomTitleView(text: String) =
+    Text(
+        text = text,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(vertical = 10.dp),
+        color = MaterialTheme.colorScheme.onBackground,
+        style = MaterialTheme.typography.titleMedium
+    )
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LargeCustomTitleViewPreview() = LargeCustomTitleView(text = "Gomoku")
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun SmallCustomTitleViewPreview() = MediumCustomTitleView(text = "Gomoku")
