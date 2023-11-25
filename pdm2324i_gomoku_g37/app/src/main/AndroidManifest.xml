@@ -51,6 +51,10 @@
         <activity
             android:name=".screens.rankings.RankingsActivity"
             android:exported="false"/>
+
+        <activity
+            android:name=".screens.new_game.NewGameActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

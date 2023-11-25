@@ -82,6 +82,8 @@ class BoardDraw(positions: Map<Cell, Turn>, boardSize: Int) : Board(positions, b
 fun createBoard(firstTurn: Turn = Turn.BLACK_PIECE, boardSize: Int) =
     BoardRun(mapOf(), firstTurn, boardSize)
 
+fun Int.boardSizeString(): String = if (this == BOARD_DIM) "15x15" else "19x19"
+
 /*val exampleMap = mapOf(
     "1A".toCell(BOARD_DIM) to Turn.BLACK_PIECE,
     "5C".toCell(BOARD_DIM) to Turn.WHITE_PIECE,

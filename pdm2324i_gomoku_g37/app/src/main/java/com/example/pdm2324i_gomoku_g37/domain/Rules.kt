@@ -1,5 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.domain
 
+import com.example.pdm2324i_gomoku_g37.domain.board.BIG_BOARD_DIM
+import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.distance
@@ -37,6 +39,10 @@ enum class Opening {
     }
 }
 
+val openingsList = listOf("Freestyle", "Pro")
+
+val variantsList = listOf("Freestyle", "Swap after first")
+
 enum class Variant {
     FREESTYLE, SWAP_AFTER_FIRST;
 
@@ -69,6 +75,18 @@ fun String.toOpening(): Opening =
         else -> throw Exception()
     }
 
+val boardSizeList = listOf(BOARD_DIM, BIG_BOARD_DIM)
+
+fun Opening.toOpeningString(): String = when(this) {
+    Opening.FREESTYLE -> "Freestyle"
+    Opening.PRO -> "Pro"
+}
+
+fun Variant.toVariantString(): String = when(this) {
+    Variant.FREESTYLE -> "Freestyle"
+    Variant.SWAP_AFTER_FIRST -> "Swap after first"
+}
+
 fun String.toVariant(): Variant =
     when (this.uppercase()) {
         /** no restrictions */
@@ -79,7 +97,7 @@ fun String.toVariant(): Variant =
          *  The first player's second stone must be placed at least three intersections
          *  away from the first stone (two empty intersections in between the two stones).
          *  */
-        "SWAP_AFTER_FIRST" -> Variant.SWAP_AFTER_FIRST
+        "SWAP AFTER FIRST" -> Variant.SWAP_AFTER_FIRST
 
         /** more variants can be implemented */
         else -> throw Exception()
