@@ -49,7 +49,7 @@ fun PlayScreen(
     lobbies: List<Lobby>? = null,
     navigation: NavigationHandlers = NavigationHandlers(),
     onJoinRequest: () -> Unit = { },
-    onCreateRequest: () -> Unit = { }
+    onCreateRequested: () -> Unit = { }
 ) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -82,7 +82,7 @@ fun PlayScreen(
                     .padding(myPadding)
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = onCreateRequested,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(

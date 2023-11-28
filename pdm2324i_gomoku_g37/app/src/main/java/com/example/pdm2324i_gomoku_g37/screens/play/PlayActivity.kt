@@ -9,6 +9,7 @@ import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
+import com.example.pdm2324i_gomoku_g37.screens.new_game.NewGameActivity
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
@@ -37,7 +38,8 @@ class PlayActivity : ComponentActivity() {
                     navigation = NavigationHandlers(
                         onBackRequested = { HomeActivity.navigateTo(origin = this) },
                         onInfoRequested = { InfoActivity.navigateTo(origin = this) }
-                    )
+                    ),
+                    onCreateRequested = { NewGameActivity.navigateTo(origin = this) }
                 )
             }
         }

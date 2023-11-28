@@ -1,18 +1,13 @@
 package com.example.pdm2324i_gomoku_g37.screens.new_game
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Variant
-import com.example.pdm2324i_gomoku_g37.domain.board.BIG_BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.boardSizeString
 import com.example.pdm2324i_gomoku_g37.domain.boardSizeList
@@ -54,80 +47,126 @@ import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
+data class NewGameScreenState(
+    val selectedBoardSize: Int = BOARD_DIM,
+    val isBoardSizeInputExpanded: Boolean = false,
+    val selectedGameOpening: Opening = Opening.FREESTYLE,
+    val isGameOpeningInputExpanded: Boolean = false,
+    val selectedGameVariant: Variant = Variant.FREESTYLE,
+    val isGameVariantInputExpanded: Boolean = false
+)
+
+data class NewGameScreenFunctions(
+    val changeSelectedBoardSize: (Int) -> Unit = { },
+    val changeIsBoardSizeInputExpanded: () -> Unit = { },
+    val changeSelectedGameOpening: (Opening) -> Unit = { },
+    val changeIsGameOpeningInputExpanded: () -> Unit = { },
+    val changeSelectedGameVariant: (Variant) -> Unit = { },
+    val changeIsGameVariantInputExpanded: () -> Unit = { },
+    val createNewGameRequested: () -> Unit = { }
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewGameScreen() {
+fun NewGameScreen(
+    state: NewGameScreenState = NewGameScreenState(),
+    functions: NewGameScreenFunctions = NewGameScreenFunctions()
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = { GroupFooterView(Color.White) },
     ) { padding ->
         val customContainerModifier = Modifier
             .padding(padding)
-            .fillMaxWidth()
+            .fillMaxSize()
 
         CustomContainerView(modifier = customContainerModifier) {
             LargeCustomTitleView(text = "New Game")
-            Text("Choose your game settings")
-            BoardSizeSelect()
-            GameOpeningSelect()
-            GameVariantSelect()
+            Text(
+                text = "Choose your game settings",
+                modifier = Modifier.padding(vertical = 5.dp)
+            )
+            BoardSizeSelect(
+                selectedBoardSize = state.selectedBoardSize,
+                changeSelectedBoardSize = functions.changeSelectedBoardSize,
+                isExpanded = state.isBoardSizeInputExpanded,
+                changeIsExpanded = functions.changeIsBoardSizeInputExpanded
+            )
+            GameOpeningSelect(
+                selectedGameOpening = state.selectedGameOpening,
+                changeSelectedGameOpening = functions.changeSelectedGameOpening,
+                isExpanded = state.isGameOpeningInputExpanded,
+                changeIsExpanded = functions.changeIsGameOpeningInputExpanded
+            )
+            GameVariantSelect(
+                selectedGameVariant = state.selectedGameVariant,
+                changeSelectedGameVariant = functions.changeSelectedGameVariant,
+                isExpanded = state.isGameVariantInputExpanded,
+                changeIsExpanded = functions.changeIsGameVariantInputExpanded
+            )
+            Button(
+                onClick = functions.createNewGameRequested,
+                modifier = Modifier.padding(vertical = 10.dp)
+            ) {
+                Text(text = "Continue")
+            }
         }
     }
 }
 
 @Composable
-private fun BoardSizeSelect() {
-    var isExpanded by remember { mutableStateOf(false) }
-    var selectedBoardSize by remember { mutableIntStateOf(BOARD_DIM) }
-
+private fun BoardSizeSelect(
+    selectedBoardSize: Int = BOARD_DIM,
+    changeSelectedBoardSize: (Int) -> Unit = { },
+    isExpanded: Boolean = false,
+    changeIsExpanded: () -> Unit = { },
+) {
     GameSelect(
         value = selectedBoardSize.boardSizeString(),
         label = { Text("Board size") },
         isExpanded = isExpanded,
         dataList = boardSizeList.map { it.toString() },
-        onExpandChange = { isExpanded = !isExpanded },
-        onDismissRequest = { isExpanded = false },
+        onExpandChange = changeIsExpanded,
         onClick = { label ->
-            selectedBoardSize = label.toInt()
-            isExpanded = false
+            changeSelectedBoardSize(label.toInt())
         }
     )
 }
 
 @Composable
-private fun GameOpeningSelect() {
-    var isExpanded by remember { mutableStateOf(false) }
-    var selectedGameOpening by remember { mutableStateOf(Opening.FREESTYLE) }
-
+private fun GameOpeningSelect(
+    selectedGameOpening: Opening = Opening.FREESTYLE,
+    changeSelectedGameOpening: (Opening) -> Unit = { },
+    isExpanded: Boolean = false,
+    changeIsExpanded: () -> Unit = { },
+) {
     GameSelect(
         value = selectedGameOpening.toOpeningString(),
         label = { Text("Opening") },
         isExpanded = isExpanded,
         dataList = openingsList,
-        onExpandChange = { isExpanded = !isExpanded },
-        onDismissRequest = { isExpanded = false },
+        onExpandChange = changeIsExpanded,
         onClick = { label ->
-            selectedGameOpening = label.toOpening()
-            isExpanded = false
+            changeSelectedGameOpening(label.toOpening())
         }
     )
 }
 
 @Composable
-private fun GameVariantSelect() {
-    var isExpanded by remember { mutableStateOf(false) }
-    var selectedGameVariant by remember { mutableStateOf(Variant.FREESTYLE) }
-
+private fun GameVariantSelect(
+    selectedGameVariant: Variant = Variant.FREESTYLE,
+    changeSelectedGameVariant: (Variant) -> Unit = { },
+    isExpanded: Boolean = false,
+    changeIsExpanded: () -> Unit = { },
+) {
     GameSelect(
         value = selectedGameVariant.toVariantString(),
         label = { Text("Variant") },
         isExpanded = isExpanded,
         dataList = variantsList,
-        onExpandChange = { isExpanded = !isExpanded },
-        onDismissRequest = { isExpanded = false },
+        onExpandChange = changeIsExpanded,
         onClick = { label ->
-            selectedGameVariant = label.toVariant()
-            isExpanded = false
+            changeSelectedGameVariant(label.toVariant())
         }
     )
 }
@@ -140,7 +179,6 @@ private fun GameSelect(
     isExpanded: Boolean,
     dataList: List<String>,
     onExpandChange: () -> Unit,
-    onDismissRequest: () -> Unit,
     onClick: (String) -> Unit
 ) {
     var textFieldSize by remember { mutableStateOf(Size.Zero)}
@@ -163,13 +201,16 @@ private fun GameSelect(
 
         DropdownMenu(
             expanded = isExpanded,
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = onExpandChange,
             modifier = dropDownMenuModifier
         ) {
             dataList.forEach { label ->
                 DropdownMenuItem(
                     text = { Text(text = label) },
-                    onClick = { onClick(label) }
+                    onClick = {
+                        onExpandChange()
+                        onClick(label)
+                    }
                 )
             }
         }
