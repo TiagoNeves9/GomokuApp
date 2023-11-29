@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun doNavigation(userInfo: UserInfo?) {
-        /*if (userInfo == null)*/ LoginActivity.navigateTo(this)
-        //else HomeActivity.navigateTo(this)
+        if (userInfo == null) LoginActivity.navigateTo(this)
+        else HomeActivity.navigateTo(this)
     }
 }

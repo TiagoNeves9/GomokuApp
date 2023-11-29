@@ -43,7 +43,6 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 fun MainScreen(
     onStartEnabled: Boolean = true,
     onStartRequested: () -> Unit = {},
-    navigation: NavigationHandlers = NavigationHandlers()
 ) {
 
     Scaffold(
