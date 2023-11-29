@@ -38,6 +38,15 @@ class FakeGomokuService : GomokuService {
 
     override suspend fun fetchRankings() : GomokuRankings.Rankings = GomokuRankings.rankings.first()
 
+    override suspend fun logIn(username: String,password: String) : User {
+        delay(FAKE_SERVICE_DELAY)
+        val user = GomokuUsers.users.firstOrNull { user ->
+            user.username == username && user.encodedPassword == password
+        }
+
+        if (user != null ) return  user
+        else throw  Exception("User Not Found")
+    }
 }
 
 private fun generateRandomString(length: Int): String {

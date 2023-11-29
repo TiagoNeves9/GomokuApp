@@ -3,6 +3,7 @@ package com.example.pdm2324i_gomoku_g37.service
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.Token
+import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
 
 interface GomokuService {
@@ -22,6 +23,8 @@ interface GomokuService {
     suspend fun signIn(username: String, password: String): Token
 
     suspend fun fetchRankings() : GomokuRankings.Rankings
+
+    suspend fun logIn(username: String, password: String) : User
 }
 
 /**

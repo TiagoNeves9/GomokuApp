@@ -45,7 +45,8 @@ data class LoginScreenState(
 data class LoginScreenFunctions(
     val onUsernameChange: (String) -> Unit = { },
     val onPasswordChange: (String) -> Unit = { },
-    val onPasswordVisibilityChange: () -> Unit = { },
+    val onPasswordVisibilityChange: (Boolean) -> Unit = { },
+    val onLoginRequest: () -> Unit = { }
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

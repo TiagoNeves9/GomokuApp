@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
@@ -13,7 +14,11 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 class LoginActivity : ComponentActivity() {
-    private val viewModel by viewModels<LoginScreenViewModel>()
+    private val dependencies by lazy { application as GomokuDependenciesContainer}
+
+    private val viewModel by viewModels<LoginScreenViewModel>{
+        LoginScreenViewModel.factory(dependencies.gomokuService, dependencies.userInfoRepository)
+    }
 
     companion object {
         fun navigateTo(origin: ComponentActivity) {
@@ -41,7 +46,8 @@ class LoginActivity : ComponentActivity() {
                     functions = LoginScreenFunctions(
                         onPasswordChange = viewModel::changePassword,
                         onUsernameChange = viewModel::changeUsername,
-                        onPasswordVisibilityChange = viewModel::changePasswordVisible
+                        onPasswordVisibilityChange = viewModel::changePasswordVisible,
+                        onLoginRequest = viewModel::signIn
                     ),
                     onHomeRequested = {
                         HomeActivity.navigateTo(origin = this)
