@@ -20,15 +20,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AuthorsScreenViewModel(private val service: GomokuService) : ViewModel() {
 
+class AuthorsScreenViewModel(private val service: GomokuService) : ViewModel() {
     companion object {
         fun factory(service: GomokuService) = viewModelFactory {
             initializer { AuthorsScreenViewModel(service) }
         }
     }
 
-    private val _authorsListFlow: MutableStateFlow<LoadState<List<Author>?>> = MutableStateFlow(idle())
+    private val _authorsListFlow: MutableStateFlow<LoadState<List<Author>?>> =
+        MutableStateFlow(idle())
 
     val authorsList: Flow<LoadState<List<Author>?>>
         get() = _authorsListFlow.asStateFlow()

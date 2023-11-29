@@ -25,8 +25,9 @@ import kotlinx.coroutines.launch
 
 
 class AuthorsActivity : ComponentActivity() {
-
-    private val dependencies by lazy { application as GomokuDependenciesContainer }
+    private val dependencies by lazy {
+        application as GomokuDependenciesContainer
+    }
 
     private val viewModel by viewModels<AuthorsScreenViewModel> {
         AuthorsScreenViewModel.factory(dependencies.gomokuService)
@@ -47,7 +48,9 @@ class AuthorsActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentAuthors by viewModel.authorsList.collectAsState(initial = idle())
+            val currentAuthors by viewModel.authorsList.collectAsState(
+                initial = idle()
+            )
             GomokuTheme {
                 AuthorsScreen(
                     authors = currentAuthors,
