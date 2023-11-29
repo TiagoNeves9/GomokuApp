@@ -2,13 +2,10 @@ package com.example.pdm2324i_gomoku_g37.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,11 +25,10 @@ import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_RADIUS
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
-import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
-import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_SPACING_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
+import com.example.pdm2324i_gomoku_g37.ui.theme.BackgroundBlue
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
@@ -96,14 +92,20 @@ fun LoginScreen(
                     shape = RoundedCornerShape(BUTTON_RADIUS),
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 35.dp)
                 ) {
-                    Text(text = stringResource(id = R.string.activity_login_top_bar_title))
+                    Text(
+                        text = stringResource(id = R.string.activity_login_top_bar_title),
+                        color = BackgroundBlue
+                    )
                 }
                 ElevatedButton(
                     onClick = onSignUpRequested,
                     shape = RoundedCornerShape(BUTTON_RADIUS),
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 35.dp)
                 ) {
-                    Text(text = stringResource(id = R.string.activity_sign_up_bar_title))
+                    Text(
+                        text = stringResource(id = R.string.activity_sign_up_bar_title),
+                        color = BackgroundBlue
+                    )
                 }
             }
         }
