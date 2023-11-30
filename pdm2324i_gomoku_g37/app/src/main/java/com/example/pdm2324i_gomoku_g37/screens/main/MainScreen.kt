@@ -34,6 +34,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomButtonView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_BUTTON_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.MAIN_SCREEN_DEFAULT_PADDING
+import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 

@@ -74,7 +74,7 @@ data class AuthorsHandlers(
 @Composable
 fun AuthorsScreen(
     authors: LoadState<List<Author>?> = idle(),
-    index: Int,
+    index: Int = 0,
     authorsHandlers: AuthorsHandlers = AuthorsHandlers(),
     navigation: NavigationHandlers = NavigationHandlers(),
     onSendEmailRequested: () -> Unit = { },
