@@ -39,7 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
-import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
@@ -48,7 +47,7 @@ import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorEmail
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNextTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorPrevTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNoAuthorTestTag
-import com.example.pdm2324i_gomoku_g37.resourceMap
+import com.example.pdm2324i_gomoku_g37.utils.resourceMap
 import com.example.pdm2324i_gomoku_g37.screens.components.AUTHOR_IMAGE_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.CARD_ELEVATION

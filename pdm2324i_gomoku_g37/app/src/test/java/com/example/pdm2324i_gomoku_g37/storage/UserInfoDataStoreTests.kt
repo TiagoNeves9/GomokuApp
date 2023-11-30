@@ -1,18 +1,20 @@
 package com.example.pdm2324i_gomoku_g37.storage
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserInfoDataStoreTests {
@@ -40,7 +42,8 @@ class UserInfoDataStoreTests {
     fun getUserInfo_returns_the_previously_stored_value(): Unit = runTest {
         // Arrange
         val sut = UserInfoDataStore(testDataStore)
-        val expected = UserInfo(1, "test user", "test token")
+        sut.updateUserInfo(UserInfo(1, "first test user", "first test token"))
+        val expected = UserInfo(2, "test user", "test token")
         sut.updateUserInfo(expected)
         // Act
         val result = sut.getUserInfo()

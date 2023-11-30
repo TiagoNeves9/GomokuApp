@@ -14,7 +14,10 @@ import java.util.UUID
 private const val FAKE_SERVICE_DELAY = 1000L
 
 class FakeGomokuService : GomokuService {
-    override suspend fun fetchAuthors(): List<Author> = GomokuAuthors.authors
+    override suspend fun fetchAuthors(): List<Author> {
+        delay(FAKE_SERVICE_DELAY)
+        return GomokuAuthors.authors
+    }
 
     override suspend fun fetchLobbies(): List<Lobby> = GomokuLobbies.lobbies
 
