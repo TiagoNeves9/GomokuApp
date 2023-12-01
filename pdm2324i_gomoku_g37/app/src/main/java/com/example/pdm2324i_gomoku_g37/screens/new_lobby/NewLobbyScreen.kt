@@ -1,4 +1,4 @@
-package com.example.pdm2324i_gomoku_g37.screens.new_game
+package com.example.pdm2324i_gomoku_g37.screens.new_lobby
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,11 +31,17 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Loading
+import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.boardSizeString
 import com.example.pdm2324i_gomoku_g37.domain.boardSizeList
+import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.openingsList
 import com.example.pdm2324i_gomoku_g37.domain.toOpening
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
@@ -45,9 +51,12 @@ import com.example.pdm2324i_gomoku_g37.domain.variantsList
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
+import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
+import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 data class NewGameScreenState(
+    val lobby: LoadState<Lobby?> = idle(),
     val selectedBoardSize: Int = BOARD_DIM,
     val isBoardSizeInputExpanded: Boolean = false,
     val selectedGameOpening: Opening = Opening.FREESTYLE,
@@ -63,7 +72,8 @@ data class NewGameScreenFunctions(
     val changeIsGameOpeningInputExpanded: () -> Unit = { },
     val changeSelectedGameVariant: (Variant) -> Unit = { },
     val changeIsGameVariantInputExpanded: () -> Unit = { },
-    val createNewGameRequested: () -> Unit = { }
+    val createNewGameRequested: () -> Unit = { },
+    val onDismissError: () -> Unit = { }
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,6 +119,13 @@ fun NewGameScreen(
                 modifier = Modifier.padding(vertical = 10.dp)
             ) {
                 Text(text = "Continue")
+            }
+
+            if (state.lobby is Loading)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+
+            state.lobby.exceptionOrNull()?.let { cause ->
+                ProcessError(functions.onDismissError, cause)
             }
         }
     }

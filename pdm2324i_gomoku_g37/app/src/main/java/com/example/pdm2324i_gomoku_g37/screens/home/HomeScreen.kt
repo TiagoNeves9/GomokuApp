@@ -39,6 +39,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
+import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
@@ -175,7 +176,7 @@ private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 @Preview(showBackground = true, showSystemUi = true)
 fun HomeScreenPreview() {
     GomokuTheme {
-        val userInfo: LoadState<UserInfo?> = loaded(Result.success(UserInfo(1, "prefiew user", "ab12")))
+        val userInfo: LoadState<UserInfo?> = loaded(Result.success(UserInfo("1", "prefiew user", "ab12")))
         HomeScreen(userInfo)
     }
 }

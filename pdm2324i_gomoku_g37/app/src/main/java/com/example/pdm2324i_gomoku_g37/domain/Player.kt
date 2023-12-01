@@ -1,7 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain
 
-import java.util.*
-
 
 /**
  * Player is a Pair of
@@ -9,7 +7,7 @@ import java.util.*
  * */
 typealias Player = Pair<User, Turn>
 
-data class User(val id: Int, val username: String, val encodedPassword: String) {
+data class User(val id: String, val username: String, val encodedPassword: String) {
     /*
     fun other() =
         if (this.color == Piece.WHITE_PIECE) Piece.BLACK_PIECE

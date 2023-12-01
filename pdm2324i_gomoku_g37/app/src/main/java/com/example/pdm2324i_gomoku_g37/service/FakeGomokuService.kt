@@ -2,6 +2,7 @@ package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Lobby
+import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Token
@@ -19,11 +20,20 @@ class FakeGomokuService : GomokuService {
         return GomokuAuthors.authors
     }
 
-    override suspend fun fetchLobbies(): List<Lobby> = GomokuLobbies.lobbies
+    override suspend fun fetchLobbies(): List<Lobby> {
+        delay(FAKE_SERVICE_DELAY)
+        return GomokuLobbies.lobbies
+    }
 
-    override suspend fun fetchProfile(): String = "CHANGE THIS" //TODO
+    override suspend fun fetchProfile(): String {
+        delay(FAKE_SERVICE_DELAY)
+        return "CHANGE THIS" //TODO
+    }
 
-    override suspend fun fetchInfo(): String = "This is Gomoku Version X.X.X made by G37-53D"
+    override suspend fun fetchInfo(): String {
+        delay(FAKE_SERVICE_DELAY)
+        return "This is Gomoku Version X.X.X made by G37-53D"
+    }
 
     override suspend fun signUp(username: String, password: String): UserId {
         delay(FAKE_SERVICE_DELAY)
@@ -47,8 +57,16 @@ class FakeGomokuService : GomokuService {
             user.username == username && user.encodedPassword == password
         }
 
-        if (user != null ) return  user
-        else throw  Exception("User Not Found")
+        return user ?: throw  Exception("User Not Found")
+    }
+
+    override suspend fun startGame(token: String, rules: Rules): LobbyId {
+        val id: String? = GomokuUsers.tokens.entries.firstOrNull { (t, _) ->
+            t == token
+        }?.key
+
+        return if (id != null) LobbyId(GomokuLobbies.createLobby(id, rules))
+                else throw Exception("User Not Found")
     }
 }
 
@@ -86,38 +104,47 @@ object GomokuAuthors {
 }
 
 object GomokuLobbies {
-    val lobbies: List<Lobby> = listOf(
+    private val _lobbies: MutableList<Lobby> = mutableListOf(
         Lobby(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
+            "1",
+            "1",
             Rules(15, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
         Lobby(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
+            "2",
+            "2",
             Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
         Lobby(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
+            "3",
+            "3",
             Rules(15, Opening.PRO, Variant.FREESTYLE)
         ),
         Lobby(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
+            "4",
+            "4",
             Rules(19, Opening.PRO, Variant.FREESTYLE)
         ),
         Lobby(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
+            "5",
+            "5",
             Rules(15, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
         ),
         Lobby(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
+            "6",
+            "6",
             Rules(19, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
         ),
     )
+
+    val lobbies: List<Lobby> = _lobbies.toList()
+
+    fun createLobby(userId: String, rules: Rules): String {
+        val lobbyId = (_lobbies.size + 1).toString()
+        val lobby = Lobby(lobbyId, userId, rules)
+        _lobbies.add(lobby)
+        return lobbyId
+    }
 }
 
 object GomokuRankings{
@@ -133,28 +160,29 @@ object GomokuRankings{
 
 object GomokuUsers {
     private val _users: MutableList<User> = mutableListOf(
-        User(1, "tbmaster", "jubas"),
-        User(2, "jp", "paulinho"),
-        User(3, "noobmaster69", "qwerty")
+        User("1", "tbmaster", "jubas"),
+        User("2", "jp", "paulinho"),
+        User("3", "noobmaster69", "qwerty")
     )
 
     val users: List<User>
         get() = _users.toList()
 
-    private val _tokens: MutableMap<Int, String> = mutableMapOf(
-        1 to "123",
-        2 to "456",
-        3 to "789"
+    private val _tokens: MutableMap<String, String> = mutableMapOf(
+        "1" to "123",
+        "2" to "456",
+        "3" to "789"
     )
 
-    val tokens: Map<Int, String>
-        get() = _tokens
+    val tokens: Map<String, String>
+        get() = _tokens.toMap()
 
-    fun createUser(username: String, password: String): Int {
-        val user = GomokuUsers.users.firstOrNull { user -> user.username == username }
+    fun createUser(username: String, password: String): String {
+        val user = users.firstOrNull { user -> user.username == username }
         if (user != null) throw IllegalArgumentException("User already exists")
-        val newUser = User(users.size + 1, username, password)
+        val id: String = (users.size + 1).toString()
+        val newUser = User(id, username, password)
         _users.add(newUser)
-        return newUser.id
+        return id
     }
 }

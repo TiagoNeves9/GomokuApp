@@ -20,7 +20,7 @@ private const val USER_TOKEN_KEY = "Token"
 
 class UserInfoDataStore(private val store: DataStore<Preferences>) : UserInfoRepository {
 
-    private val idKey = intPreferencesKey(USER_ID_KEY)
+    private val idKey = stringPreferencesKey(USER_ID_KEY)
     private val usernameKey = stringPreferencesKey(USER_USERNAME_KEY)
     private val tokenKey = stringPreferencesKey(USER_TOKEN_KEY)
 
@@ -40,5 +40,4 @@ class UserInfoDataStore(private val store: DataStore<Preferences>) : UserInfoRep
             preferences[tokenKey] = userInfo.token
         }
     }
-
 }

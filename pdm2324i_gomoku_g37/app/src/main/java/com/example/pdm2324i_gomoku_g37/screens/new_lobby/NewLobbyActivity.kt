@@ -1,16 +1,22 @@
-package com.example.pdm2324i_gomoku_g37.screens.new_game
+package com.example.pdm2324i_gomoku_g37.screens.new_lobby
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
-import com.example.pdm2324i_gomoku_g37.screens.main.MainActivity
-import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpScreenViewModel
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
+import com.example.pdm2324i_gomoku_g37.domain.Lobby
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+import kotlinx.coroutines.launch
 
-class NewGameActivity : ComponentActivity() {
+class NewLobbyActivity : ComponentActivity() {
     /**
      * The application's dependency provider.
      */
@@ -19,23 +25,34 @@ class NewGameActivity : ComponentActivity() {
     /**
      * The view model for the new game screen of the Gomoku app.
      */
-    private val viewModel by viewModels<NewGameScreenViewModel> {
-        NewGameScreenViewModel.factory(dependencies.gomokuService, dependencies.userInfoRepository)
+    private val viewModel by viewModels<NewLobbyScreenViewModel> {
+        NewLobbyScreenViewModel.factory(dependencies.gomokuService, dependencies.userInfoRepository)
     }
 
     companion object {
         fun navigateTo(origin: ComponentActivity) {
-            val intent = Intent(origin, NewGameActivity::class.java)
+            val intent = Intent(origin, NewLobbyActivity::class.java)
             origin.startActivity(intent)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            viewModel.newGameFlow.collect {
+                if (it is Loaded) {
+                    doNavigation(it.getOrNull())
+                }
+            }
+        }
+
         setContent {
+            val currentNewLobby by viewModel.newGameFlow.collectAsState(initial = idle())
             GomokuTheme {
                 NewGameScreen(
                     state = NewGameScreenState(
+                        lobby = currentNewLobby,
                         selectedBoardSize = viewModel.selectedBoardSize,
                         isBoardSizeInputExpanded = viewModel.isBoardSizeInputExpanded,
                         selectedGameOpening = viewModel.selectedGameOpening,
@@ -50,10 +67,18 @@ class NewGameActivity : ComponentActivity() {
                         changeIsGameOpeningInputExpanded = viewModel::changeIsGameOpeningInputExpanded,
                         changeSelectedGameVariant = viewModel::changeSelectedGameVariant,
                         changeIsGameVariantInputExpanded = viewModel::changeIsGameVariantInputExpanded,
-                        createNewGameRequested = viewModel::createNewGame
+                        createNewGameRequested = viewModel::createNewGame,
+                        onDismissError = viewModel::resetToIdle
                     )
                 )
             }
+        }
+    }
+
+    private fun doNavigation(lobby: Lobby?) {
+        if (lobby != null) {
+            //LobbyActivity.navigateTo(this)
+            finish()
         }
     }
 }

@@ -57,4 +57,7 @@
 
     <string name="loading_home_title">Setting up your home</string>
     <string name="loading_home_message">We are getting things ready for you!</string>
+
+    <string name="loading_new_game_title">New Lobby</string>
+    <string name="loading_new_game_message">Please wait, creating lobby!</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.pdm2324i_gomoku_g37.screens.new_game
+package com.example.pdm2324i_gomoku_g37.screens.new_lobby
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -8,22 +8,33 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.pdm2324i_gomoku_g37.domain.Idle
+import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Lobby
+import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
+import com.example.pdm2324i_gomoku_g37.domain.Rules
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.UserInfoRepository
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
-import com.example.pdm2324i_gomoku_g37.screens.signup.SignUpScreenViewModel
+import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.domain.loaded
+import com.example.pdm2324i_gomoku_g37.domain.loading
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class NewGameScreenViewModel(
+class NewLobbyScreenViewModel(
     private val service: GomokuService,
     private val repository: UserInfoRepository
 ) : ViewModel() {
 
     companion object {
         fun factory(service: GomokuService, repository: UserInfoRepository) = viewModelFactory {
-            initializer { NewGameScreenViewModel(service, repository) }
+            initializer { NewLobbyScreenViewModel(service, repository) }
         }
     }
 
@@ -81,8 +92,32 @@ class NewGameScreenViewModel(
         _isGameVariantInputExpanded = !_isGameVariantInputExpanded
     }
 
-    fun createNewGame() {
+    private val _newGameFlow: MutableStateFlow<LoadState<Lobby?>> = MutableStateFlow(idle())
 
+    val newGameFlow: Flow<LoadState<Lobby?>>
+        get() = _newGameFlow.asStateFlow()
+
+    fun resetToIdle() {
+        _newGameFlow.value = idle()
+    }
+
+    fun createNewGame() {
+        if (_newGameFlow.value !is Idle)
+            throw IllegalStateException("The view model is not in the idle state.")
+        _newGameFlow.value = loading()
+        viewModelScope.launch {
+            val result = kotlin.runCatching {
+                val userInfo: UserInfo = repository.getUserInfo()
+                    ?: throw IllegalStateException("The userInfo cannot be null at this stage")
+
+                val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
+
+                val lobbyId: LobbyId = service.startGame(userInfo.token, rules)
+
+                Lobby(lobbyId.id, userInfo.id, rules)
+            }
+            _newGameFlow.value = loaded(result)
+        }
     }
 
 }

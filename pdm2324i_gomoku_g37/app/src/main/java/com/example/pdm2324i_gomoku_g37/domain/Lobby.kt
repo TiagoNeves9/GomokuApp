@@ -9,7 +9,7 @@ When the other player tries to join the lobby, we create a game and remove the l
 Now we will not have the states "selecting rules" or "waiting for other player" or "waiting for start".
  */
 class Lobby(
-    val lobbyId: UUID,
-    val hostUserId: UUID,
+    val lobbyId: String,
+    val hostUserId: String,
     val rules: Rules
 )

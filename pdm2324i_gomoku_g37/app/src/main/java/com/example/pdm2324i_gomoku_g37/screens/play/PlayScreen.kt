@@ -147,10 +147,8 @@ fun LoadingView() =
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PlayScreenPreview() {
-    val lobby0 =
-        Lobby(UUID.randomUUID(), UUID.randomUUID(), Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
-    val lobby1 =
-        Lobby(UUID.randomUUID(), UUID.randomUUID(), Rules(15, Opening.PRO, Variant.FREESTYLE))
+    val lobby0 = Lobby("1", "1", Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
+    val lobby1 = Lobby("2", "2", Rules(15, Opening.PRO, Variant.FREESTYLE))
     val lobbies = listOf(lobby0, lobby1)
 
     PlayScreen(lobbies)
