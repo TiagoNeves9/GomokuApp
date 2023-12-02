@@ -32,7 +32,7 @@ class InfoActivity : ComponentActivity() {
         setContent {
             GomokuTheme {
                 InfoScreen(
-                    viewModel.info,
+                    info = viewModel.info,
                     navigation = NavigationHandlers(
                         onBackRequested = { HomeActivity.navigateTo(origin = this) }
                     )

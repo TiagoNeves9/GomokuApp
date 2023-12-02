@@ -56,7 +56,6 @@ fun HomeScreen(
     onDismissError: () -> Unit = {}
 ) {
     Scaffold(
-
         bottomBar = { GroupFooterView(Color.White) }
     ) { padding ->
         CustomContainerView(
@@ -64,7 +63,6 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-
             if (userInfo is Loading)
                 LoadingAlert(R.string.loading_home_title, R.string.loading_home_message)
 
@@ -176,7 +174,8 @@ private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 @Preview(showBackground = true, showSystemUi = true)
 fun HomeScreenPreview() {
     GomokuTheme {
-        val userInfo: LoadState<UserInfo?> = loaded(Result.success(UserInfo("1", "prefiew user", "ab12")))
+        val userInfo: LoadState<UserInfo?> =
+            loaded(Result.success(UserInfo("1", "prefiew user", "ab12")))
         HomeScreen(userInfo)
     }
 }

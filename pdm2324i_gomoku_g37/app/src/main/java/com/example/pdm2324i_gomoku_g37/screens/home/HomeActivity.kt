@@ -13,6 +13,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.screens.authors.AuthorsActivity
+import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginActivity
 import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
 import com.example.pdm2324i_gomoku_g37.screens.rankings.RankingsActivity
@@ -20,7 +21,6 @@ import kotlinx.coroutines.launch
 
 
 class HomeActivity : ComponentActivity() {
-
     companion object {
         fun navigateTo(origin: ComponentActivity) {
             val intent = Intent(origin, HomeActivity::class.java)
@@ -45,13 +45,15 @@ class HomeActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentUserInfo by viewModel.userInfoFlow.collectAsState(initial = idle())
+            val currentUserInfo by viewModel.userInfoFlow.collectAsState(
+                initial = idle()
+            )
             HomeScreen(
                 userInfo = currentUserInfo,
                 onAuthorsRequested = { AuthorsActivity.navigateTo(origin = this) },
                 onPlayRequested = { PlayActivity.navigateTo(origin = this) },
                 onRankingsRequested = { RankingsActivity.navigateTo(origin = this) },
-                onAboutRequested = { },
+                onAboutRequested = { InfoActivity.navigateTo(origin = this) },
                 onDismissError = viewModel::resetToIdle
             )
         }

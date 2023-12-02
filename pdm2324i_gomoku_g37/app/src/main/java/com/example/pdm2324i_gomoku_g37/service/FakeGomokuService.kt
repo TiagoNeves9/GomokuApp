@@ -13,7 +13,9 @@ import com.example.pdm2324i_gomoku_g37.domain.Variant
 import kotlinx.coroutines.delay
 import java.util.UUID
 
+
 private const val FAKE_SERVICE_DELAY = 1000L
+private const val FAKE_SERVICE_APP_VERSION = "X.X.X"
 
 class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> {
@@ -33,7 +35,8 @@ class FakeGomokuService : GomokuService {
 
     override suspend fun fetchInfo(): String {
         delay(FAKE_SERVICE_DELAY)
-        return "This is Gomoku Version X.X.X made by G37-53D"
+        return "The Gomoku application is in version $FAKE_SERVICE_APP_VERSION" +
+                " and was made by Group 37 - Class 53D"
     }
 
     override suspend fun signUp(username: String, password: String): UserId {
@@ -54,15 +57,14 @@ class FakeGomokuService : GomokuService {
         else throw Exception("User Not Found")
     }
 
-    override suspend fun fetchRankings() : GomokuRankings.Rankings = GomokuRankings.rankings.first()
+    override suspend fun fetchRankings(): GomokuRankings.Rankings = GomokuRankings.rankings.first()
 
-    override suspend fun logIn(username: String,password: String) : User {
+    override suspend fun logIn(username: String, password: String): User {
         delay(FAKE_SERVICE_DELAY)
         val user = GomokuUsers.users.firstOrNull { user ->
             user.username == username && user.encodedPassword == password
         }
-
-        return user ?: throw  Exception("User Not Found")
+        return user ?: throw Exception("User Not Found")
     }
 
     override suspend fun newLobby(token: String, rules: Rules): LobbyId {
@@ -71,9 +73,8 @@ class FakeGomokuService : GomokuService {
         val id: String? = GomokuUsers.tokens.entries.firstOrNull { (_, t) ->
             t == token
         }?.key
-
         return if (id != null) LobbyId(GomokuLobbies.createLobby(id, rules))
-                else throw Exception("User Not Found")
+        else throw Exception("User Not Found")
     }
 }
 
@@ -154,14 +155,14 @@ object GomokuLobbies {
     }
 }
 
-object GomokuRankings{
+object GomokuRankings {
     data class Rankings(val user: String, val nGames: Int, val score: Int)
 
     private val _rankings: MutableList<Rankings> = mutableListOf(
-        Rankings("admin",9,666)
+        Rankings("admin", 9, 666)
     )
 
-    val rankings : List<Rankings>
+    val rankings: List<Rankings>
         get() = _rankings
 }
 

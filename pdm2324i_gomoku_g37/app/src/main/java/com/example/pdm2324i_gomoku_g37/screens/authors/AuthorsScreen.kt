@@ -58,7 +58,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_CONTENT_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.ICON_SIZE
-import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
+import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.ROW_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.service.GomokuAuthors
@@ -96,10 +96,9 @@ fun AuthorsScreen(
         ) {
             require(index >= 0) { "Index must be greater than or equal to 0" }
 
-            LargeCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
+            MediumCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
 
             val authorsList = authors.getOrNull()
-
             if (authorsList.isNullOrEmpty()) {
                 Text(
                     text = stringResource(id = R.string.activity_author_no_author_found),
@@ -112,11 +111,14 @@ fun AuthorsScreen(
             } else {
                 ElevatedCard(
                     modifier = Modifier
+                        .fillMaxSize()
                         .padding(CARD_PADDING)
                         .testTag(AuthorCardTestTag),
                     shape = RoundedCornerShape(DEFAULT_RADIUS),
                     colors = CardDefaults
-                        .cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                        .cardColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
                     elevation = CardDefaults
                         .cardElevation(defaultElevation = CARD_ELEVATION)
                 ) {
@@ -217,7 +219,6 @@ private fun AuthorNavigationButton(
 @Composable
 private fun LoadImageByName(imageName: String) {
     val resourceId = resourceMap[imageName]
-
     resourceId?.let { id ->
         val painter: Painter = painterResource(id)
         Image(
@@ -236,7 +237,8 @@ private fun LoadImageByName(imageName: String) {
 @Preview(showBackground = true, showSystemUi = true)
 fun AuthorsScreenPreview() {
     GomokuTheme {
-        val authors: LoadState<List<Author>?> = loaded(Result.success(GomokuAuthors.authors))
+        val authors: LoadState<List<Author>?> =
+            loaded(Result.success(GomokuAuthors.authors))
         AuthorsScreen(
             authors = authors,
             index = 0,
