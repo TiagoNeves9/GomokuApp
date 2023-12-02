@@ -51,9 +51,11 @@
         <activity
             android:name=".screens.rankings.RankingsActivity"
             android:exported="false"/>
-
         <activity
             android:name=".screens.new_lobby.NewLobbyActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".screens.lobby.LobbyActivity"
             android:exported="false"/>
     </application>
 

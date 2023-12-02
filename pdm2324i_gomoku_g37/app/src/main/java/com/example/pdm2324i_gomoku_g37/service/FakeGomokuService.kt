@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.service
 
+import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
@@ -45,7 +46,11 @@ class FakeGomokuService : GomokuService {
         val user = GomokuUsers.users.firstOrNull { user ->
             user.username == username && user.encodedPassword == password
         }
-        if (user != null) return Token(generateRandomString(10))
+        if (user != null) {
+            val token = Token(generateRandomString(10))
+            GomokuUsers.createToken(user.id, token.token)
+            return token
+        }
         else throw Exception("User Not Found")
     }
 
@@ -60,8 +65,10 @@ class FakeGomokuService : GomokuService {
         return user ?: throw  Exception("User Not Found")
     }
 
-    override suspend fun startGame(token: String, rules: Rules): LobbyId {
-        val id: String? = GomokuUsers.tokens.entries.firstOrNull { (t, _) ->
+    override suspend fun newLobby(token: String, rules: Rules): LobbyId {
+        Log.v("users", GomokuUsers.users.toString())
+        Log.v("tokens", GomokuUsers.tokens.entries.toString())
+        val id: String? = GomokuUsers.tokens.entries.firstOrNull { (_, t) ->
             t == token
         }?.key
 
@@ -176,6 +183,10 @@ object GomokuUsers {
 
     val tokens: Map<String, String>
         get() = _tokens.toMap()
+
+    fun createToken(userId: String, token: String) {
+        _tokens[userId] = token
+    }
 
     fun createUser(username: String, password: String): String {
         val user = users.firstOrNull { user -> user.username == username }

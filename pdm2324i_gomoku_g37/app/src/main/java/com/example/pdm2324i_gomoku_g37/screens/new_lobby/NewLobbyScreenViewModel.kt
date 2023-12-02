@@ -112,7 +112,7 @@ class NewLobbyScreenViewModel(
 
                 val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
 
-                val lobbyId: LobbyId = service.startGame(userInfo.token, rules)
+                val lobbyId: LobbyId = service.newLobby(userInfo.token, rules)
 
                 Lobby(lobbyId.id, userInfo.id, rules)
             }

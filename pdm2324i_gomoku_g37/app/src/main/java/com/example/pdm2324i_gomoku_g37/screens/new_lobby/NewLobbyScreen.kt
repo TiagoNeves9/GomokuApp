@@ -78,7 +78,7 @@ data class NewGameScreenFunctions(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewGameScreen(
+fun NewLobbyScreen(
     state: NewGameScreenState = NewGameScreenState(),
     functions: NewGameScreenFunctions = NewGameScreenFunctions()
 ) {
@@ -247,6 +247,6 @@ private fun TrailingIcon(isExpanded: Boolean, changeIsExpanded: () -> Unit) {
 @Composable
 fun NewGameScreenPreview() {
     GomokuTheme {
-        NewGameScreen()
+        NewLobbyScreen()
     }
 }

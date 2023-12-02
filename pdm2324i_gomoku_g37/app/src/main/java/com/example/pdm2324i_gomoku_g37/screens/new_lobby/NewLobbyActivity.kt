@@ -13,6 +13,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.screens.lobby.LobbyActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
 
@@ -50,7 +51,7 @@ class NewLobbyActivity : ComponentActivity() {
         setContent {
             val currentNewLobby by viewModel.newGameFlow.collectAsState(initial = idle())
             GomokuTheme {
-                NewGameScreen(
+                NewLobbyScreen(
                     state = NewGameScreenState(
                         lobby = currentNewLobby,
                         selectedBoardSize = viewModel.selectedBoardSize,
@@ -77,7 +78,7 @@ class NewLobbyActivity : ComponentActivity() {
 
     private fun doNavigation(lobby: Lobby?) {
         if (lobby != null) {
-            //LobbyActivity.navigateTo(this)
+            LobbyActivity.navigateTo(this, lobby)
             finish()
         }
     }
