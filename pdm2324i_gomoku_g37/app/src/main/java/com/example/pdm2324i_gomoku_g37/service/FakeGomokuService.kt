@@ -11,7 +11,6 @@ import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import kotlinx.coroutines.delay
-import java.util.UUID
 
 
 private const val FAKE_SERVICE_DELAY = 1000L
@@ -67,9 +66,7 @@ class FakeGomokuService : GomokuService {
         return user ?: throw Exception("User Not Found")
     }
 
-    override suspend fun newLobby(token: String, rules: Rules): LobbyId {
-        Log.v("users", GomokuUsers.users.toString())
-        Log.v("tokens", GomokuUsers.tokens.entries.toString())
+    override suspend fun createLobby(token: String, rules: Rules): LobbyId {
         val id: String? = GomokuUsers.tokens.entries.firstOrNull { (_, t) ->
             t == token
         }?.key
@@ -145,7 +142,8 @@ object GomokuLobbies {
         ),
     )
 
-    val lobbies: List<Lobby> = _lobbies.toList()
+    val lobbies: List<Lobby>
+        get() = _lobbies.toList()
 
     fun createLobby(userId: String, rules: Rules): String {
         val lobbyId = (_lobbies.size + 1).toString()

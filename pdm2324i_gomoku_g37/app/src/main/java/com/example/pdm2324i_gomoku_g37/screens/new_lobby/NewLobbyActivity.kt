@@ -41,7 +41,7 @@ class NewLobbyActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            viewModel.newGameFlow.collect {
+            viewModel.newLobbyFlow.collect {
                 if (it is Loaded) {
                     doNavigation(it.getOrNull())
                 }
@@ -49,7 +49,7 @@ class NewLobbyActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentNewLobby by viewModel.newGameFlow.collectAsState(initial = idle())
+            val currentNewLobby by viewModel.newLobbyFlow.collectAsState(initial = idle())
             GomokuTheme {
                 NewLobbyScreen(
                     state = NewGameScreenState(

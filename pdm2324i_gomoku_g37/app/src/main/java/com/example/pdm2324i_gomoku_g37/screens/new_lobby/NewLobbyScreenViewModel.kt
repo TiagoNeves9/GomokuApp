@@ -92,19 +92,19 @@ class NewLobbyScreenViewModel(
         _isGameVariantInputExpanded = !_isGameVariantInputExpanded
     }
 
-    private val _newGameFlow: MutableStateFlow<LoadState<Lobby?>> = MutableStateFlow(idle())
+    private val _newLobbyFlow: MutableStateFlow<LoadState<Lobby?>> = MutableStateFlow(idle())
 
-    val newGameFlow: Flow<LoadState<Lobby?>>
-        get() = _newGameFlow.asStateFlow()
+    val newLobbyFlow: Flow<LoadState<Lobby?>>
+        get() = _newLobbyFlow.asStateFlow()
 
     fun resetToIdle() {
-        _newGameFlow.value = idle()
+        _newLobbyFlow.value = idle()
     }
 
     fun createNewGame() {
-        if (_newGameFlow.value !is Idle)
+        if (_newLobbyFlow.value !is Idle)
             throw IllegalStateException("The view model is not in the idle state.")
-        _newGameFlow.value = loading()
+        _newLobbyFlow.value = loading()
         viewModelScope.launch {
             val result = kotlin.runCatching {
                 val userInfo: UserInfo = repository.getUserInfo()
@@ -112,11 +112,11 @@ class NewLobbyScreenViewModel(
 
                 val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
 
-                val lobbyId: LobbyId = service.newLobby(userInfo.token, rules)
+                val lobbyId: LobbyId = service.createLobby(userInfo.token, rules)
 
                 Lobby(lobbyId.id, userInfo.id, rules)
             }
-            _newGameFlow.value = loaded(result)
+            _newLobbyFlow.value = loaded(result)
         }
     }
 

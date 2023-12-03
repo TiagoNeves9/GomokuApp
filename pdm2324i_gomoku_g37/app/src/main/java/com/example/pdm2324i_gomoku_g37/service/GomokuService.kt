@@ -28,7 +28,7 @@ interface GomokuService {
 
     suspend fun logIn(username: String, password: String) : User
 
-    suspend fun newLobby(token: String, rules: Rules): LobbyId
+    suspend fun createLobby(token: String, rules: Rules): LobbyId
 }
 
 /**

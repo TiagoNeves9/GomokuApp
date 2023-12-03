@@ -7,14 +7,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 
 
 @Composable
 fun LargeCustomTitleView(text: String) =
     Text(
         text = text,
+        textAlign = TextAlign.Center,
+        lineHeight = 1.em,
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(vertical = 10.dp),
