@@ -52,6 +52,7 @@ class LobbyActivity : ComponentActivity() {
 private data class LobbyExtra(
     val lobbyId: String,
     val hostUserId: String,
+    val guestUserId: String?,
     val boardDim: Int,
     val gameOpening: Opening,
     val gameVariant: Variant
@@ -59,10 +60,13 @@ private data class LobbyExtra(
     constructor(lobby: Lobby) : this(
         lobby.lobbyId,
         lobby.hostUserId,
-        lobby.rules.boardDim, lobby.rules.opening, lobby.rules.variant
+        lobby.guestUserId,
+        lobby.rules.boardDim,
+        lobby.rules.opening,
+        lobby.rules.variant
     )
 }
 
 private fun LobbyExtra.toLobby() = Lobby(
-        lobbyId, hostUserId, Rules(boardDim, gameOpening, gameVariant)
+        lobbyId, hostUserId, guestUserId, Rules(boardDim, gameOpening, gameVariant)
     )

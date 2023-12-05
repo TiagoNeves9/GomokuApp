@@ -9,5 +9,6 @@ Now we will not have the states "selecting rules" or "waiting for other player" 
 class Lobby(
     val lobbyId: String,
     val hostUserId: String,
+    val guestUserId: String?,
     val rules: Rules
 )

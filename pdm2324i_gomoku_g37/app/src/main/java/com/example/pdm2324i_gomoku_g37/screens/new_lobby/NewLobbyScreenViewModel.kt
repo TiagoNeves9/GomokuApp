@@ -114,7 +114,7 @@ class NewLobbyScreenViewModel(
 
                 val lobbyId: LobbyId = service.createLobby(userInfo.token, rules)
 
-                Lobby(lobbyId.id, userInfo.id, rules)
+                Lobby(lobbyId.id, userInfo.id, null, rules)
             }
             _newLobbyFlow.value = loaded(result)
         }

@@ -73,6 +73,22 @@ class FakeGomokuService : GomokuService {
         return if (id != null) LobbyId(GomokuLobbies.createLobby(id, rules))
         else throw Exception("User Not Found")
     }
+
+    override suspend fun lobbyInfo(token: String, lobbyId: String): Lobby {
+        val id: String? = GomokuUsers.tokens.entries.firstOrNull { (_, t) ->
+            t == token
+        }?.key
+
+        val lobby: Lobby? = GomokuLobbies.lobbies.firstOrNull { lobby ->
+            lobby.lobbyId == lobbyId
+        }
+
+        if (id == null) throw Exception("Unauthenticated")
+
+        if (lobby == null) throw Exception("Lobby not found")
+
+        return lobby
+    }
 }
 
 private fun generateRandomString(length: Int): String {
@@ -113,31 +129,37 @@ object GomokuLobbies {
         Lobby(
             "1",
             "1",
+            null,
             Rules(15, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
         Lobby(
             "2",
             "2",
+            null,
             Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
         Lobby(
             "3",
             "3",
+            null,
             Rules(15, Opening.PRO, Variant.FREESTYLE)
         ),
         Lobby(
             "4",
             "4",
+            null,
             Rules(19, Opening.PRO, Variant.FREESTYLE)
         ),
         Lobby(
             "5",
             "5",
+            null,
             Rules(15, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
         ),
         Lobby(
             "6",
             "6",
+            null,
             Rules(19, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
         ),
     )
@@ -147,7 +169,7 @@ object GomokuLobbies {
 
     fun createLobby(userId: String, rules: Rules): String {
         val lobbyId = (_lobbies.size + 1).toString()
-        val lobby = Lobby(lobbyId, userId, rules)
+        val lobby = Lobby(lobbyId, userId, null, rules)
         _lobbies.add(lobby)
         return lobbyId
     }

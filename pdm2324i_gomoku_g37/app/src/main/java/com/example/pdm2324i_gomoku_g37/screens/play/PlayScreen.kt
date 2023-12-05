@@ -106,6 +106,8 @@ fun LobbiesList(lobbies: List<Lobby>) =
         contentPadding = PaddingValues(myPadding)
     ) {
         items(lobbies) { lobby ->
+            val guestUserId: String? = lobby.guestUserId
+            val guestUserText = if (guestUserId != null) "Guest: $guestUserId" else "Waiting for second player"
             Row(
                 Modifier.fillMaxWidth(),
                 Arrangement.Center,
@@ -122,10 +124,10 @@ fun LobbiesList(lobbies: List<Lobby>) =
                         imageVector = Icons.Default.PlayArrow,
                         contentDescription = "Join lobbyyy"
                     )
-                    Text(
-                        text = "${lobby.lobbyId}\n" +
-                                "${lobby.hostUserId}\n" +
-                                "Rules:" +
+                    Text(text = lobby.lobbyId, fontSize = BUTTON_NAME_SIZE, textAlign = TextAlign.Center)
+                    Text(text = lobby.hostUserId, fontSize = BUTTON_NAME_SIZE, textAlign = TextAlign.Center)
+                    Text(text = guestUserText, fontSize = BUTTON_NAME_SIZE, textAlign = TextAlign.Center)
+                    Text(text = "Rules:" +
                                 "\tBoard dimension - $boardDim x $boardDim\n" +
                                 "\tOpening - ${lobby.rules.opening}\n" +
                                 "\tVariant - ${lobby.rules.variant}",
@@ -147,8 +149,8 @@ fun LoadingView() =
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PlayScreenPreview() {
-    val lobby0 = Lobby("1", "1", Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
-    val lobby1 = Lobby("2", "2", Rules(15, Opening.PRO, Variant.FREESTYLE))
+    val lobby0 = Lobby("1", "1", null, Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
+    val lobby1 = Lobby("2", "2", "1", Rules(15, Opening.PRO, Variant.FREESTYLE))
     val lobbies = listOf(lobby0, lobby1)
 
     PlayScreen(lobbies)
