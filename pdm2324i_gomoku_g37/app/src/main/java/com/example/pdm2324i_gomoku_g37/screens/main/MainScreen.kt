@@ -107,8 +107,9 @@ private fun DescriptionContainer() =
     ) {
         Text(
             text = stringResource(R.string.activity_main_description),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium
         )
     }
 

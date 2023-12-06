@@ -37,9 +37,14 @@ fun UsernameTextFieldView(
         label = { Text(text = stringResource(R.string.activity_login_sign_up_input_username)) },
         singleLine = true,
         isError = isError,
-        supportingText = { SupportingText(isError = isError, errorText = errorText) },
+        supportingText = {
+            SupportingText(isError = isError, errorText = errorText)
+        },
         leadingIcon = {
-            Icon(imageVector = Icons.Default.Person, contentDescription = stringResource(R.string.activity_login_sign_up_input_username))
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = stringResource(R.string.activity_login_sign_up_input_username)
+            )
         },
         trailingIcon = { TrailingIcon(isError = isError) }
     )
@@ -61,7 +66,9 @@ fun PasswordTextFieldView(
         label = { PasswordLabel(isRepeatPassword) },
         singleLine = true,
         isError = isError,
-        supportingText = { SupportingText(isError = isError, errorText = errorText) },
+        supportingText = {
+            SupportingText(isError = isError, errorText = errorText)
+        },
         visualTransformation = onVisualTransformation(passwordVisibility),
         leadingIcon = {
             Icon(
@@ -72,7 +79,10 @@ fun PasswordTextFieldView(
         trailingIcon = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TrailingIcon(isError = isError)
-                PasswordVisibilityView(passwordVisibility, enablePasswordVisibility)
+                PasswordVisibilityView(
+                    passwordVisibility,
+                    enablePasswordVisibility
+                )
             }
         }
     )
@@ -90,7 +100,10 @@ private fun SupportingText(isError: Boolean, errorText: String) {
 @Composable
 private fun TrailingIcon(isError: Boolean) {
     if (isError)
-        Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
+        Icon(
+            Icons.Filled.Error, "error",
+            tint = MaterialTheme.colorScheme.error
+        )
 }
 
 @Composable
@@ -99,12 +112,17 @@ private fun PasswordLabel(isRepeatPassword: Boolean) =
     else Text(text = stringResource(R.string.activity_login_sign_up_input_password))
 
 @Composable
-private fun PasswordVisibilityView(passwordVisibility: Boolean, onClick: (Boolean) -> Unit = {}) {
-    val image = if (passwordVisibility) R.drawable.password_hide
-                else R.drawable.password_show
+private fun PasswordVisibilityView(
+    passwordVisibility: Boolean,
+    onClick: (Boolean) -> Unit = { }
+) {
+    val image =
+        if (passwordVisibility) R.drawable.password_hide
+        else R.drawable.password_show
 
-    val descriptor = if (passwordVisibility) stringResource(id = R.string.activity_sign_up_hide_password)
-                     else stringResource(id = R.string.activity_sign_up_show_password)
+    val descriptor =
+        if (passwordVisibility) stringResource(id = R.string.activity_sign_up_hide_password)
+        else stringResource(id = R.string.activity_sign_up_show_password)
     IconButton(onClick = { onClick(!passwordVisibility) }) {
         Image(
             painter = painterResource(image),

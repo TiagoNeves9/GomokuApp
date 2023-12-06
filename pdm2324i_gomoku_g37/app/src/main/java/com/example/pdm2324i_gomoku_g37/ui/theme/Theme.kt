@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginScreen
+import com.example.pdm2324i_gomoku_g37.screens.main.MainScreen
 
 
 private val darkColorScheme = darkColorScheme(
