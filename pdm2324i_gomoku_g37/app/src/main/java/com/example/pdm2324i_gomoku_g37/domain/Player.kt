@@ -7,17 +7,7 @@ package com.example.pdm2324i_gomoku_g37.domain
  * */
 typealias Player = Pair<User, Turn>
 
-data class User(val id: String, val username: String, val encodedPassword: String) {
-    /*
-    fun other() =
-        if (this.color == Piece.WHITE_PIECE) Piece.BLACK_PIECE
-        else Piece.WHITE_PIECE
-
-    fun piece(): Piece =
-        if (this.color == Piece.BLACK_PIECE) Piece.BLACK_PIECE
-        else Piece.WHITE_PIECE
-    */
-}
+data class User(val id: String, val username: String)
 
 enum class Turn {
     BLACK_PIECE, WHITE_PIECE;

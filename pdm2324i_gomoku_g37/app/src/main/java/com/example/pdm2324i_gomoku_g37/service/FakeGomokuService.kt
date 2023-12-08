@@ -2,6 +2,7 @@ package com.example.pdm2324i_gomoku_g37.service
 
 import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
+import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
@@ -10,7 +11,9 @@ import com.example.pdm2324i_gomoku_g37.domain.Token
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
 import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 
 
 private const val FAKE_SERVICE_DELAY = 1000L
@@ -88,6 +91,22 @@ class FakeGomokuService : GomokuService {
         if (lobby == null) throw Exception("Lobby not found")
 
         return lobby
+    }
+
+    override suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun leaveLobby(token: String, lobbyId: String): LobbyId {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun userInfo(token: String, userId: String): User {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game {
+        TODO("Not yet implemented")
     }
 }
 

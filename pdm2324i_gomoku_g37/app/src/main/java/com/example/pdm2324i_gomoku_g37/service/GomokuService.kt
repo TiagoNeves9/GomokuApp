@@ -8,6 +8,8 @@ import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Token
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserId
+import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
+import kotlinx.coroutines.flow.Flow
 
 interface GomokuService {
     /**
@@ -32,6 +34,14 @@ interface GomokuService {
     suspend fun createLobby(token: String, rules: Rules): LobbyId
 
     suspend fun lobbyInfo(token: String, lobbyId: String): Lobby
+
+    suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby>
+
+    suspend fun leaveLobby(token: String, lobbyId: String): LobbyId
+
+    suspend fun userInfo(token: String, userId: String): User
+
+    suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game
 }
 
 /**

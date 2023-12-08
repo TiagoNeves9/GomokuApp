@@ -56,7 +56,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 data class NewGameScreenState(
-    val lobby: LoadState<Lobby?> = idle(),
+    val lobby:  State<LoadState<Game?>> = idle(),
     val selectedBoardSize: Int = BOARD_DIM,
     val isBoardSizeInputExpanded: Boolean = false,
     val selectedGameOpening: Opening = Opening.FREESTYLE,

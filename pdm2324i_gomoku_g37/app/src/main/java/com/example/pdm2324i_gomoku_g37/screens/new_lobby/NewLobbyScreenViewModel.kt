@@ -8,16 +8,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
+import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Idle
+import com.example.pdm2324i_gomoku_g37.domain.InsideLobby
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.Lobby
+import com.example.pdm2324i_gomoku_g37.domain.LobbyAccessError
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
+import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
 import com.example.pdm2324i_gomoku_g37.domain.Opening
+import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
+import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.Rules
+import com.example.pdm2324i_gomoku_g37.domain.Turn
+import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
-import com.example.pdm2324i_gomoku_g37.domain.UserInfoRepository
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.domain.loading
@@ -29,12 +39,12 @@ import kotlinx.coroutines.launch
 
 class NewLobbyScreenViewModel(
     private val service: GomokuService,
-    private val repository: UserInfoRepository
+    private val userInfo: UserInfo
 ) : ViewModel() {
 
     companion object {
-        fun factory(service: GomokuService, repository: UserInfoRepository) = viewModelFactory {
-            initializer { NewLobbyScreenViewModel(service, repository) }
+        fun factory(service: GomokuService, userInfo: UserInfo) = viewModelFactory {
+            initializer { NewLobbyScreenViewModel(service, userInfo) }
         }
     }
 
@@ -101,15 +111,12 @@ class NewLobbyScreenViewModel(
         _newLobbyFlow.value = idle()
     }
 
-    fun createNewGame() {
+    private fun createNewLobby() {
         if (_newLobbyFlow.value !is Idle)
             throw IllegalStateException("The view model is not in the idle state.")
         _newLobbyFlow.value = loading()
         viewModelScope.launch {
             val result = kotlin.runCatching {
-                val userInfo: UserInfo = repository.getUserInfo()
-                    ?: throw IllegalStateException("The userInfo cannot be null at this stage")
-
                 val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
 
                 val lobbyId: LobbyId = service.createLobby(userInfo.token, rules)
@@ -120,4 +127,62 @@ class NewLobbyScreenViewModel(
         }
     }
 
+    /**
+     * new section
+     */
+
+    private val _newGameFlow: MutableStateFlow<LoadState<Game?>> = MutableStateFlow(idle())
+
+    val newGameFlow: Flow<LoadState<Game?>>
+        get() = _newGameFlow.asStateFlow()
+
+    private val _screenStateFlow: MutableStateFlow<LobbyScreenState> = MutableStateFlow(OutsideLobby)
+
+    val screenState: Flow<LobbyScreenState>
+        get() = _screenStateFlow.asStateFlow()
+
+    fun createLobbyAndWaitForPlayer() {
+        _newGameFlow.value = loading()
+        createNewLobby()
+        check(_screenStateFlow.value is OutsideLobby) { "Cannot enter lobby twice" }
+        _screenStateFlow.value = EnteringLobby
+        viewModelScope.launch {
+
+            _newLobbyFlow.asStateFlow().collect {
+                val newLobby = it.getOrNull()
+                if (it is Loaded && newLobby != null) {
+                    while (_screenStateFlow.value !is InsideLobby) {
+                        try {
+                            service.enterLobby(userInfo.token, newLobby.lobbyId).collect { evt ->
+                                if (evt.hostUserId == userInfo.id && evt.lobbyId == newLobby.lobbyId && evt.guestUserId != null) {
+                                    val hostPlayer = Player(User(userInfo.id, userInfo.username), Turn.BLACK_PIECE)
+                                    val guestUserInfo = service.userInfo(userInfo.token, evt.guestUserId)
+                                    val guestPlayer = Player(guestUserInfo, Turn.WHITE_PIECE)
+                                    _screenStateFlow.value = InsideLobby(evt.lobbyId, hostPlayer, guestPlayer, evt.rules)
+
+                                    val newGame: Result<Game> = kotlin.runCatching {
+                                        service.createGame(userInfo.token, evt.lobbyId, hostPlayer.first, guestPlayer.first)
+                                    }
+                                    _newGameFlow.value = loaded(newGame)
+                                }
+                            }
+                        } catch (cause: Throwable) {
+                            _screenStateFlow.value = LobbyAccessError(cause)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun leaveLobby(lobbyId: String) {
+        check(_screenStateFlow.value !is OutsideLobby) { "Cannot leave lobby twice" }
+        _screenStateFlow.value = OutsideLobby
+        viewModelScope.launch {
+            kotlin.runCatching {
+                if (_newLobbyFlow.value is Loaded) //use lobbyId from newLobby
+                    service.leaveLobby(userInfo.token, lobbyId)
+            }
+        }
+    }
 }
