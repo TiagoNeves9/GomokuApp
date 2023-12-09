@@ -15,6 +15,6 @@ class InfoScreenViewModel : ViewModel() {
 
     fun fetchInfo(services: GomokuService) =
         viewModelScope.launch {
-            info = services.fetchInfo()
+            info = services.fetchApiInfo()
         }
 }

@@ -48,9 +48,7 @@ class AuthorsActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentAuthors by viewModel.authorsList.collectAsState(
-                initial = idle()
-            )
+            val currentAuthors by viewModel.authorsList.collectAsState(initial = idle())
             GomokuTheme {
                 AuthorsScreen(
                     authors = currentAuthors,

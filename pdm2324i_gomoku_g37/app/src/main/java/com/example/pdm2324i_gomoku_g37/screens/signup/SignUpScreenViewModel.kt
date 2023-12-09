@@ -170,10 +170,9 @@ class SignUpScreenViewModel(
                     confirmPassword.isBlank() -> Result.failure(EmptyConfirmPassword())
                     password != confirmPassword -> Result.failure(UnmatchedPasswords())
                     else -> kotlin.runCatching {
-                        val userId = service.signUp(username, password)
-                        val token = service.signIn(username, password)
-                        repository.updateUserInfo(UserInfo(userId.id, username, token.token))
-                        UserInfo(userId.id, username, token.token)
+                        val userInfo = service.signUp(username, password)
+                        repository.updateUserInfo(userInfo)
+                        userInfo
                     }
                 }
                 _userInfoFlow.value = loaded(result)

@@ -79,10 +79,9 @@ class LoginScreenViewModel(
                     username.isBlank() -> Result.failure(EmptyUsername())
                     password.isBlank() -> Result.failure(EmptyPassword())
                     else -> kotlin.runCatching {
-                        val token = service.signIn(username,password)
-                        val user = service.logIn(username,password)
-                        repository.updateUserInfo(UserInfo(user.id, username, token.token))
-                        UserInfo(user.id, username, token.token)
+                        val userInfo = service.login(username, password)
+                        repository.updateUserInfo(userInfo)
+                        userInfo
                     }
                 }
                 _userInfoFlow.value = loaded(result)

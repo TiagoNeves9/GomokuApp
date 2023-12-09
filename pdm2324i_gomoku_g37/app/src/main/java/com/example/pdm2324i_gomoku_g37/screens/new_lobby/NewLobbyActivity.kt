@@ -6,20 +6,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
-import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
 import com.example.pdm2324i_gomoku_g37.domain.Game
-import com.example.pdm2324i_gomoku_g37.domain.InsideLobby
 import com.example.pdm2324i_gomoku_g37.domain.Loaded
-import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
-import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
-import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
-import com.example.pdm2324i_gomoku_g37.screens.lobby.LobbyActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
 
@@ -55,11 +48,11 @@ class NewLobbyActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentNewGameState = viewModel.newGameFlow.collectAsState(idle())
+            val currentNewGameState = viewModel.newGameFlow.collectAsState(initial = idle()).value
             GomokuTheme {
                 NewLobbyScreen(
                     state = NewGameScreenState(
-                        lobby = currentNewGameState,
+                        game = currentNewGameState,
                         selectedBoardSize = viewModel.selectedBoardSize,
                         isBoardSizeInputExpanded = viewModel.isBoardSizeInputExpanded,
                         selectedGameOpening = viewModel.selectedGameOpening,

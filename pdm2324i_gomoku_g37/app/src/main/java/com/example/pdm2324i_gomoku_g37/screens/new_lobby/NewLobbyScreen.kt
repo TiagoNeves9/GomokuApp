@@ -32,9 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.Loading
-import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
@@ -56,7 +56,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 data class NewGameScreenState(
-    val lobby:  State<LoadState<Game?>> = idle(),
+    val game: LoadState<Game?> = idle(),
     val selectedBoardSize: Int = BOARD_DIM,
     val isBoardSizeInputExpanded: Boolean = false,
     val selectedGameOpening: Opening = Opening.FREESTYLE,
@@ -121,10 +121,10 @@ fun NewLobbyScreen(
                 Text(text = "Continue")
             }
 
-            if (state.lobby is Loading)
+            if (state.game is Loading)
                 LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
 
-            state.lobby.exceptionOrNull()?.let { cause ->
+            state.game.exceptionOrNull()?.let { cause ->
                 ProcessError(functions.onDismissError, cause)
             }
         }

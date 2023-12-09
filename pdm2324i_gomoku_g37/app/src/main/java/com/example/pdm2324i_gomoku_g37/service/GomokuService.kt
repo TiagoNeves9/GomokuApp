@@ -7,8 +7,7 @@ import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Token
 import com.example.pdm2324i_gomoku_g37.domain.User
-import com.example.pdm2324i_gomoku_g37.domain.UserId
-import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import kotlinx.coroutines.flow.Flow
 
 interface GomokuService {
@@ -19,27 +18,23 @@ interface GomokuService {
 
     suspend fun fetchLobbies(): List<Lobby>
 
-    suspend fun fetchProfile(): String
+    suspend fun fetchApiInfo(): String
 
-    suspend fun fetchInfo(): String
+    suspend fun signUp(username: String, password: String): UserInfo
 
-    suspend fun signUp(username: String, password: String): UserId
-
-    suspend fun signIn(username: String, password: String): Token
+    suspend fun login(username: String, password: String): UserInfo
 
     suspend fun fetchRankings() : GomokuRankings.Rankings
 
-    suspend fun logIn(username: String, password: String): User
-
-    suspend fun createLobby(token: String, rules: Rules): LobbyId
+    suspend fun createLobby(token: String, rules: Rules): Flow<Lobby>
 
     suspend fun lobbyInfo(token: String, lobbyId: String): Lobby
 
-    suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby>
+    suspend fun enterLobby(token: String, lobbyId: String): Game
 
     suspend fun leaveLobby(token: String, lobbyId: String): LobbyId
 
-    suspend fun userInfo(token: String, userId: String): User
+    suspend fun fetchUser(token: String, userId: String): User
 
     suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game
 }

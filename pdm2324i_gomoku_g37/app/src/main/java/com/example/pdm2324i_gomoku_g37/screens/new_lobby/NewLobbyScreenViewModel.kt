@@ -111,22 +111,6 @@ class NewLobbyScreenViewModel(
         _newLobbyFlow.value = idle()
     }
 
-    private fun createNewLobby() {
-        if (_newLobbyFlow.value !is Idle)
-            throw IllegalStateException("The view model is not in the idle state.")
-        _newLobbyFlow.value = loading()
-        viewModelScope.launch {
-            val result = kotlin.runCatching {
-                val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
-
-                val lobbyId: LobbyId = service.createLobby(userInfo.token, rules)
-
-                Lobby(lobbyId.id, userInfo.id, null, rules)
-            }
-            _newLobbyFlow.value = loaded(result)
-        }
-    }
-
     /**
      * new section
      */
@@ -141,34 +125,32 @@ class NewLobbyScreenViewModel(
     val screenState: Flow<LobbyScreenState>
         get() = _screenStateFlow.asStateFlow()
 
+
     fun createLobbyAndWaitForPlayer() {
-        _newGameFlow.value = loading()
-        createNewLobby()
+        check(_newLobbyFlow.value !is Idle) { "The view model is not in the idle state." }
         check(_screenStateFlow.value is OutsideLobby) { "Cannot enter lobby twice" }
+        _newGameFlow.value = loading()
         _screenStateFlow.value = EnteringLobby
+
+        val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
+
         viewModelScope.launch {
-
-            _newLobbyFlow.asStateFlow().collect {
-                val newLobby = it.getOrNull()
-                if (it is Loaded && newLobby != null) {
-                    while (_screenStateFlow.value !is InsideLobby) {
-                        try {
-                            service.enterLobby(userInfo.token, newLobby.lobbyId).collect { evt ->
-                                if (evt.hostUserId == userInfo.id && evt.lobbyId == newLobby.lobbyId && evt.guestUserId != null) {
-                                    val hostPlayer = Player(User(userInfo.id, userInfo.username), Turn.BLACK_PIECE)
-                                    val guestUserInfo = service.userInfo(userInfo.token, evt.guestUserId)
-                                    val guestPlayer = Player(guestUserInfo, Turn.WHITE_PIECE)
-                                    _screenStateFlow.value = InsideLobby(evt.lobbyId, hostPlayer, guestPlayer, evt.rules)
-
-                                    val newGame: Result<Game> = kotlin.runCatching {
-                                        service.createGame(userInfo.token, evt.lobbyId, hostPlayer.first, guestPlayer.first)
-                                    }
-                                    _newGameFlow.value = loaded(newGame)
-                                }
+            service.createLobby(userInfo.token, rules).collect { newLobby ->
+                while (_screenStateFlow.value !is InsideLobby) {
+                    try {
+                        val lobbyInfo = service.lobbyInfo(userInfo.token, newLobby.lobbyId)
+                        if (lobbyInfo.guestUserId != null) {
+                            val hostPlayer = Player(User(userInfo.id, userInfo.username), Turn.BLACK_PIECE)
+                            val guestUserInfo = service.fetchUser(userInfo.token, lobbyInfo.guestUserId)
+                            val guestPlayer = Player(guestUserInfo, Turn.WHITE_PIECE)
+                            _screenStateFlow.value = InsideLobby(newLobby.lobbyId, hostPlayer, guestPlayer, newLobby.rules)
+                            val newGame: Result<Game> = kotlin.runCatching {
+                                service.createGame(userInfo.token, newLobby.lobbyId, hostPlayer.first, guestPlayer.first)
                             }
-                        } catch (cause: Throwable) {
-                            _screenStateFlow.value = LobbyAccessError(cause)
+                            _newGameFlow.value = loaded(newGame)
                         }
+                    } catch (cause: Throwable) {
+                        _screenStateFlow.value = LobbyAccessError(cause)
                     }
                 }
             }

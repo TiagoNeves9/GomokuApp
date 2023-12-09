@@ -1,23 +1,23 @@
 package com.example.pdm2324i_gomoku_g37.service
 
-import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Lobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Rules
-import com.example.pdm2324i_gomoku_g37.domain.Token
 import com.example.pdm2324i_gomoku_g37.domain.User
-import com.example.pdm2324i_gomoku_g37.domain.UserId
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.Variant
-import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 
 private const val FAKE_SERVICE_DELAY = 1000L
-private const val FAKE_SERVICE_APP_VERSION = "X.X.X"
+private const val FAKE_SERVICE_APP_VERSION = "1.0.0"
+private const val FAKE_SERVICE_API_INFO = "The Gomoku application is in version $FAKE_SERVICE_APP_VERSION and was made by Group 37 - Class 53D"
+private const val FAKE_USER_TOKEN_LENGTH = 10
 
 class FakeGomokuService : GomokuService {
     override suspend fun fetchAuthors(): List<Author> {
@@ -30,70 +30,41 @@ class FakeGomokuService : GomokuService {
         return GomokuLobbies.lobbies
     }
 
-    override suspend fun fetchProfile(): String {
+    override suspend fun fetchApiInfo(): String {
         delay(FAKE_SERVICE_DELAY)
-        return "CHANGE THIS" //TODO
+        return FAKE_SERVICE_API_INFO
     }
 
-    override suspend fun fetchInfo(): String {
+    override suspend fun signUp(username: String, password: String): UserInfo {
         delay(FAKE_SERVICE_DELAY)
-        return "The Gomoku application is in version $FAKE_SERVICE_APP_VERSION" +
-                " and was made by Group 37 - Class 53D"
+        return GomokuUsers.createUser(username, password) ?: throw FetchGomokuException("Username already exists")
     }
 
-    override suspend fun signUp(username: String, password: String): UserId {
+    override suspend fun login(username: String, password: String): UserInfo {
         delay(FAKE_SERVICE_DELAY)
-        return UserId(GomokuUsers.createUser(username, password))
+        val user = GomokuUsers.validateLogIn(username, password) ?: throw FetchGomokuException("Incorrect login information")
+        return GomokuUsers.createToken(user.id, username)
     }
 
-    override suspend fun signIn(username: String, password: String): Token {
+    override suspend fun fetchRankings(): GomokuRankings.Rankings {
         delay(FAKE_SERVICE_DELAY)
-        val user = GomokuUsers.users.firstOrNull { user ->
-            user.username == username && user.encodedPassword == password
-        }
-        if (user != null) {
-            val token = Token(generateRandomString(10))
-            GomokuUsers.createToken(user.id, token.token)
-            return token
-        }
-        else throw Exception("User Not Found")
+        return GomokuRankings.rankings.first()
     }
 
-    override suspend fun fetchRankings(): GomokuRankings.Rankings = GomokuRankings.rankings.first()
-
-    override suspend fun logIn(username: String, password: String): User {
-        delay(FAKE_SERVICE_DELAY)
-        val user = GomokuUsers.users.firstOrNull { user ->
-            user.username == username && user.encodedPassword == password
-        }
-        return user ?: throw Exception("User Not Found")
-    }
-
-    override suspend fun createLobby(token: String, rules: Rules): LobbyId {
-        val id: String? = GomokuUsers.tokens.entries.firstOrNull { (_, t) ->
-            t == token
-        }?.key
-        return if (id != null) LobbyId(GomokuLobbies.createLobby(id, rules))
-        else throw Exception("User Not Found")
+    override suspend fun createLobby(token: String, rules: Rules): Flow<Lobby> = callbackFlow {
+        val user = GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required")
+        LobbyId(GomokuLobbies.createLobby(user.id, rules))
     }
 
     override suspend fun lobbyInfo(token: String, lobbyId: String): Lobby {
-        val id: String? = GomokuUsers.tokens.entries.firstOrNull { (_, t) ->
-            t == token
-        }?.key
+        val user = GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required")
 
-        val lobby: Lobby? = GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId
-        }
-
-        if (id == null) throw Exception("Unauthenticated")
-
-        if (lobby == null) throw Exception("Lobby not found")
-
-        return lobby
+        return GomokuLobbies.lobbies.firstOrNull { lobby ->
+            lobby.lobbyId == lobbyId  && lobby.hostUserId == user.id
+        } ?: throw FetchGomokuException("Lobby not found")
     }
 
-    override suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby> {
+    override suspend fun enterLobby(token: String, lobbyId: String): Game {
         TODO("Not yet implemented")
     }
 
@@ -101,20 +72,15 @@ class FakeGomokuService : GomokuService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun userInfo(token: String, userId: String): User {
-        TODO("Not yet implemented")
+    override suspend fun fetchUser(token: String, userId: String): User {
+        delay(FAKE_SERVICE_DELAY)
+        GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required") //depende da api
+        return GomokuUsers.users.firstOrNull { it.id == userId } ?: throw FetchGomokuException("User not found")
     }
 
     override suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game {
         TODO("Not yet implemented")
     }
-}
-
-private fun generateRandomString(length: Int): String {
-    val charset = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-    return (1..length)
-        .map { charset.random() }
-        .joinToString("")
 }
 
 object GomokuAuthors {
@@ -202,18 +168,37 @@ object GomokuRankings {
     )
 
     val rankings: List<Rankings>
-        get() = _rankings
+        get() = _rankings.toList()
 }
 
 object GomokuUsers {
     private val _users: MutableList<User> = mutableListOf(
-        User("1", "tbmaster", "jubas"),
-        User("2", "jp", "paulinho"),
-        User("3", "noobmaster69", "qwerty")
+        User("1", "tbmaster"),
+        User("2", "jp"),
+        User("3", "noobmaster69")
     )
 
     val users: List<User>
         get() = _users.toList()
+
+    private val _passwords: MutableMap<String, String> = mutableMapOf(
+        "1" to "jubas",
+        "2" to "paulinho",
+        "3" to "qwerty"
+    )
+
+    val passwords: Map<String, String>
+        get() = _passwords.toMap()
+
+    fun validateLogIn(username: String, password: String): User? =
+        _users.firstOrNull { user ->
+            user.username == username && _passwords[user.id] == password
+        }
+
+    private fun generateRandomToken(): String =
+        (1..FAKE_USER_TOKEN_LENGTH)
+            .map { ('a'..'z') + ('A'..'Z') + ('0'..'9').random() }
+            .joinToString("")
 
     private val _tokens: MutableMap<String, String> = mutableMapOf(
         "1" to "123",
@@ -224,16 +209,26 @@ object GomokuUsers {
     val tokens: Map<String, String>
         get() = _tokens.toMap()
 
-    fun createToken(userId: String, token: String) {
+    fun createToken(userId: String, username: String): UserInfo {
+        val token = generateRandomToken()
         _tokens[userId] = token
+        return UserInfo(userId, username, token)
     }
 
-    fun createUser(username: String, password: String): String {
-        val user = users.firstOrNull { user -> user.username == username }
-        if (user != null) throw IllegalArgumentException("User already exists")
-        val id: String = (users.size + 1).toString()
-        val newUser = User(id, username, password)
-        _users.add(newUser)
-        return id
+    fun getUserByToken(token: String): User? {
+        val id: String? = _tokens.entries.firstOrNull { (_, v) ->
+            v == token
+        }?.key
+        return _users.firstOrNull { it.id == id }
+    }
+
+    fun createUser(username: String, password: String): UserInfo? {
+        if (users.firstOrNull { it.username == username } != null) return null
+        val userId: String = (users.size + 1).toString()
+        val token = generateRandomToken()
+        _users.add(User(userId, username))
+        _passwords[userId] = password
+        _tokens[userId] = token
+        return UserInfo(userId, username, token)
     }
 }
