@@ -75,8 +75,7 @@ class SignUpActivity : ComponentActivity() {
                         confirmPasswordVisible = viewModel.isConfirmPasswordVisible
                     ),
                     navigation = NavigationHandlers(
-                        onBackRequested = { MainActivity.navigateTo(origin = this) },
-                        onInfoRequested = { InfoActivity.navigateTo(origin = this) }
+                        onBackRequested = { MainActivity.navigateTo(origin = this) }
                     ),
                     functions = SignUpScreenFunctions(
                         onUsernameChange = viewModel::changeUsername,
@@ -100,7 +99,7 @@ class SignUpActivity : ComponentActivity() {
 
     private fun doNavigation(userInfo: UserInfo?) {
         if (userInfo != null) {
-            HomeActivity.navigateTo(this)
+            HomeActivity.navigateTo(this, userInfo = userInfo)
             finish()
         }
     }

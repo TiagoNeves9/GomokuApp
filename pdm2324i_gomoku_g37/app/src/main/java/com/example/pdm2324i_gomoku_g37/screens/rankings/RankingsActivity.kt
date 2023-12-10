@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.rankings
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,9 +10,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
+import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
+import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
+import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
+import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
@@ -23,10 +30,22 @@ class RankingsActivity : ComponentActivity(){
     }
 
     companion object{
-        fun navigateTo(origin: ComponentActivity){
-            val intent = Intent(origin, RankingsActivity::class.java)
-            origin.startActivity(intent)
+        fun navigateTo(origin: Context, userInfo: UserInfo) {
+            origin.startActivity(createIntent(origin, userInfo))
         }
+
+        private fun createIntent(ctx: Context, userInfo: UserInfo): Intent {
+            val intent = Intent(ctx, RankingsActivity::class.java)
+            intent.putExtra(USER_INFO_EXTRA, UserInfoExtra(userInfo))
+            return intent
+        }
+    }
+
+    /**
+     * Helper method to get the user info extra from the intent.
+     */
+    private val userInfoExtra: UserInfo by lazy {
+        checkNotNull(getUserInfoExtra(intent)).toUserInfo()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +61,7 @@ class RankingsActivity : ComponentActivity(){
                 RankingsScreen(
                     rankings = currentRankings,
                     navigation = NavigationHandlers(
-                        onBackRequested = { HomeActivity.navigateTo(origin = this)}
+                        onBackRequested = { HomeActivity.navigateTo(origin = this, userInfo = userInfoExtra)}
                     )
                 )
             }

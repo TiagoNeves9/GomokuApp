@@ -32,16 +32,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.example.pdm2324i_gomoku_g37.R
-import com.example.pdm2324i_gomoku_g37.domain.Game
-import com.example.pdm2324i_gomoku_g37.domain.LoadState
-import com.example.pdm2324i_gomoku_g37.domain.Loading
+import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
+import com.example.pdm2324i_gomoku_g37.domain.LobbyAccessError
+import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
 import com.example.pdm2324i_gomoku_g37.domain.Opening
+import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
+import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.boardSizeString
 import com.example.pdm2324i_gomoku_g37.domain.boardSizeList
-import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
-import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.openingsList
 import com.example.pdm2324i_gomoku_g37.domain.toOpening
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
@@ -52,11 +53,10 @@ import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
-import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 data class NewGameScreenState(
-    val game: LoadState<Game?> = idle(),
+    val lobbyScreenState: LobbyScreenState = OutsideLobby,
     val selectedBoardSize: Int = BOARD_DIM,
     val isBoardSizeInputExpanded: Boolean = false,
     val selectedGameOpening: Opening = Opening.FREESTYLE,
@@ -121,12 +121,18 @@ fun NewLobbyScreen(
                 Text(text = "Continue")
             }
 
-            if (state.game is Loading)
+            if (state.lobbyScreenState is EnteringLobby)
                 LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
 
-            state.game.exceptionOrNull()?.let { cause ->
-                ProcessError(functions.onDismissError, cause)
-            }
+            if (state.lobbyScreenState is WaitingLobby)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+
+            if (state.lobbyScreenState is ReadyLobby)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+
+            if (state.lobbyScreenState is LobbyAccessError)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.new_lobby
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,15 +9,38 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
-import com.example.pdm2324i_gomoku_g37.domain.Game
-import com.example.pdm2324i_gomoku_g37.domain.Loaded
+import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
+import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
+import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
-import com.example.pdm2324i_gomoku_g37.domain.getOrNull
-import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
+import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
+import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
+import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
 
 class NewLobbyActivity : ComponentActivity() {
+
+    companion object{
+        fun navigateTo(origin: Context, userInfo: UserInfo) {
+            origin.startActivity(createIntent(origin, userInfo))
+        }
+
+        private fun createIntent(ctx: Context, userInfo: UserInfo): Intent {
+            val intent = Intent(ctx, NewLobbyActivity::class.java)
+            intent.putExtra(USER_INFO_EXTRA, UserInfoExtra(userInfo))
+            return intent
+        }
+    }
+
+    /**
+     * Helper method to get the user info extra from the intent.
+     */
+    private val userInfoExtra: UserInfo by lazy {
+        checkNotNull(getUserInfoExtra(intent)).toUserInfo()
+    }
+
     /**
      * The application's dependency provider.
      */
@@ -26,33 +50,26 @@ class NewLobbyActivity : ComponentActivity() {
      * The view model for the new game screen of the Gomoku app.
      */
     private val viewModel by viewModels<NewLobbyScreenViewModel> {
-        NewLobbyScreenViewModel.factory(dependencies.gomokuService, UserInfo("1", "bla", "123"))
-    }
-
-    companion object {
-        fun navigateTo(origin: ComponentActivity) {
-            val intent = Intent(origin, NewLobbyActivity::class.java)
-            origin.startActivity(intent)
-        }
+        NewLobbyScreenViewModel.factory(dependencies.gomokuService, userInfoExtra)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            viewModel.newGameFlow.collect {
-                if (it is Loaded) {
-                    doNavigation(it.getOrNull())
+            viewModel.screenState.collect {
+                if (it is ReadyLobby) {
+                    //GameActivity.navigateTo(it.game)
                 }
             }
         }
 
         setContent {
-            val currentNewGameState = viewModel.newGameFlow.collectAsState(initial = idle()).value
+            val currentLobbyState: LobbyScreenState = viewModel.screenState.collectAsState(OutsideLobby).value
             GomokuTheme {
                 NewLobbyScreen(
                     state = NewGameScreenState(
-                        game = currentNewGameState,
+                        lobbyScreenState = currentLobbyState,
                         selectedBoardSize = viewModel.selectedBoardSize,
                         isBoardSizeInputExpanded = viewModel.isBoardSizeInputExpanded,
                         selectedGameOpening = viewModel.selectedGameOpening,
@@ -73,10 +90,5 @@ class NewLobbyActivity : ComponentActivity() {
                 )
             }
         }
-    }
-
-    private fun doNavigation(game: Game?) {
-        //if (game != null)
-            //GameActivity.navigateTo(game)
     }
 }

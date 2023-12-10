@@ -48,7 +48,7 @@ val BUTTON_NAME_SIZE = 12.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    userInfo: LoadState<UserInfo?> = idle(),
+    userInfo: UserInfo,
     onAuthorsRequested: () -> Unit = { },
     onPlayRequested: () -> Unit = { },
     onRankingsRequested: () -> Unit = { },
@@ -63,16 +63,8 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            if (userInfo is Loading)
-                LoadingAlert(R.string.loading_home_title, R.string.loading_home_message)
 
-            userInfo.exceptionOrNull()?.let { cause ->
-                ProcessError(onDismissError, cause)
-            }
-
-            userInfo.getOrNull()?.let { user ->
-                Text("User: ${user.username}")
-            }
+            Text("User: ${userInfo.username}")
 
             LargeCustomTitleView(text = stringResource(id = R.string.activity_menu_title))
 
@@ -174,8 +166,6 @@ private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 @Preview(showBackground = true, showSystemUi = true)
 fun HomeScreenPreview() {
     GomokuTheme {
-        val userInfo: LoadState<UserInfo?> =
-            loaded(Result.success(UserInfo("1", "prefiew user", "ab12")))
-        HomeScreen(userInfo)
+        HomeScreen(UserInfo("1", "prefiew user", "ab12"))
     }
 }

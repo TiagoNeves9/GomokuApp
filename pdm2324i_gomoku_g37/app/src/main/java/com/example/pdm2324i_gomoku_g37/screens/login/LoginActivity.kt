@@ -50,7 +50,7 @@ class LoginActivity : ComponentActivity() {
                         onLoginRequest = viewModel::signIn
                     ),
                     onHomeRequested = {
-                        HomeActivity.navigateTo(origin = this)
+                        //HomeActivity.navigateTo(origin = this)
                     },
                     onSignUpRequested = {
                         SignUpActivity.navigateTo(origin = this)

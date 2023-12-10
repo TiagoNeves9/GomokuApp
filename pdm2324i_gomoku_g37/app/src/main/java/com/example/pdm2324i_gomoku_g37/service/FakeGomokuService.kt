@@ -2,7 +2,7 @@ package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
-import com.example.pdm2324i_gomoku_g37.domain.Lobby
+import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Rules
@@ -25,7 +25,7 @@ class FakeGomokuService : GomokuService {
         return GomokuAuthors.authors
     }
 
-    override suspend fun fetchLobbies(): List<Lobby> {
+    override suspend fun fetchLobbies(): List<WaitingLobby> {
         delay(FAKE_SERVICE_DELAY)
         return GomokuLobbies.lobbies
     }
@@ -51,12 +51,12 @@ class FakeGomokuService : GomokuService {
         return GomokuRankings.rankings.first()
     }
 
-    override suspend fun createLobby(token: String, rules: Rules): Flow<Lobby> = callbackFlow {
+    override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = callbackFlow {
         val user = GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required")
         LobbyId(GomokuLobbies.createLobby(user.id, rules))
     }
 
-    override suspend fun lobbyInfo(token: String, lobbyId: String): Lobby {
+    override suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby {
         val user = GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required")
 
         return GomokuLobbies.lobbies.firstOrNull { lobby ->
@@ -110,38 +110,38 @@ object GomokuAuthors {
 }
 
 object GomokuLobbies {
-    private val _lobbies: MutableList<Lobby> = mutableListOf(
-        Lobby(
+    private val _lobbies: MutableList<WaitingLobby> = mutableListOf(
+        WaitingLobby(
             "1",
             "1",
             null,
             Rules(15, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
-        Lobby(
+        WaitingLobby(
             "2",
             "2",
             null,
             Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
-        Lobby(
+        WaitingLobby(
             "3",
             "3",
             null,
             Rules(15, Opening.PRO, Variant.FREESTYLE)
         ),
-        Lobby(
+        WaitingLobby(
             "4",
             "4",
             null,
             Rules(19, Opening.PRO, Variant.FREESTYLE)
         ),
-        Lobby(
+        WaitingLobby(
             "5",
             "5",
             null,
             Rules(15, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
         ),
-        Lobby(
+        WaitingLobby(
             "6",
             "6",
             null,
@@ -149,13 +149,13 @@ object GomokuLobbies {
         ),
     )
 
-    val lobbies: List<Lobby>
+    val lobbies: List<WaitingLobby>
         get() = _lobbies.toList()
 
     fun createLobby(userId: String, rules: Rules): String {
         val lobbyId = (_lobbies.size + 1).toString()
-        val lobby = Lobby(lobbyId, userId, null, rules)
-        _lobbies.add(lobby)
+        val waitingLobby = WaitingLobby(lobbyId, userId, null, rules)
+        _lobbies.add(waitingLobby)
         return lobbyId
     }
 }

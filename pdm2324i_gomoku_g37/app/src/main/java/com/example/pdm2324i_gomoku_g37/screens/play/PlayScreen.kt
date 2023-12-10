@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
-import com.example.pdm2324i_gomoku_g37.domain.Lobby
+import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Variant
@@ -37,8 +37,6 @@ import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.home.BUTTON_NAME_SIZE
-import com.example.pdm2324i_gomoku_g37.screens.home.MenuButton
-import java.util.UUID
 
 
 val myPadding = 10.dp
@@ -46,7 +44,7 @@ val myPadding = 10.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayScreen(
-    lobbies: List<Lobby>? = null,
+    lobbies: List<WaitingLobby>? = null,
     navigation: NavigationHandlers = NavigationHandlers(),
     onJoinRequest: () -> Unit = { },
     onCreateRequested: () -> Unit = { }
@@ -100,7 +98,7 @@ fun PlayScreen(
     }
 
 @Composable
-fun LobbiesList(lobbies: List<Lobby>) =
+fun LobbiesList(lobbies: List<WaitingLobby>) =
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(myPadding)
@@ -149,9 +147,9 @@ fun LoadingView() =
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PlayScreenPreview() {
-    val lobby0 = Lobby("1", "1", null, Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
-    val lobby1 = Lobby("2", "2", "1", Rules(15, Opening.PRO, Variant.FREESTYLE))
-    val lobbies = listOf(lobby0, lobby1)
+    val waitingLobby0 = WaitingLobby("1", "1", null, Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
+    val waitingLobby1 = WaitingLobby("2", "2", "1", Rules(15, Opening.PRO, Variant.FREESTYLE))
+    val lobbies = listOf(waitingLobby0, waitingLobby1)
 
     PlayScreen(lobbies)
 }
