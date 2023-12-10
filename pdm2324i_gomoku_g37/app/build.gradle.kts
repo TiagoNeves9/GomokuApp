@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.pdm2324i_gomoku_g37"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

@@ -11,42 +11,34 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginScreen
-import com.example.pdm2324i_gomoku_g37.screens.main.MainScreen
-
 
 private val darkColorScheme = darkColorScheme(
-    primary = Blue30, //Default button/notification bar color
-    secondary = Blue40,
-    tertiary = Grey20,
-    background = BackgroundBlue,
-    onBackground = Grey20,
-    onPrimaryContainer = Grey20,
-    surfaceVariant = Blue80
+    primary = Color(0xFF0081A7), // Default button/notification bar color
+    secondary = Color(0xFF036994),
+    tertiary = Color(0xFF5880A4),
+    background = Color(0xFF303646),
+    onBackground = Color(0xFFFFFFFF),
+    onPrimaryContainer = Color(0xFFFFFFFF),
+    surfaceVariant = Color(0xFF2B2929),
+    error = Color(0xFFE43850)
 )
 
 private val lightColorScheme = lightColorScheme(
-    primary = PrimaryBlue, //Default button/notification bar color
-    secondary = SecondaryBlue,
-    tertiary = TertiaryBlue,
-    background = PrimaryBlue,
-    onBackground = Grey10,
-    onPrimaryContainer = Grey10
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = Color(0xFF0081A7), // Default button/notification bar color
+    secondary = Color(0xFF00A8C5),
+    tertiary = Color(0xFFA5D3F6),
+    background = Color(0xFF7CE9FF), // Softer blue background color
+    onBackground = Color(0xFF2B2929), // Slightly darker text color for better contrast
+    surfaceVariant = Color(0xFFFFFFFF),
+    onPrimaryContainer = Color(0xFF00223D),
+    error = Color(0xFFE43850)
 )
 
 val JokesAppIcons = Icons.Outlined

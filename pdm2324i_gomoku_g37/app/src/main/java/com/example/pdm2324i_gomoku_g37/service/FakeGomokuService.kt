@@ -5,13 +5,18 @@ import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
+import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.Rules
+import com.example.pdm2324i_gomoku_g37.domain.Turn
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.board.Board
+import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.time.Instant
 
 
 private const val FAKE_SERVICE_DELAY = 1000L
@@ -57,19 +62,36 @@ class FakeGomokuService : GomokuService {
     }
 
     override suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby {
-        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+        GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         return GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId  && lobby.hostUserId == user.id
+            lobby.lobbyId == lobbyId
         } ?: throw UnknownLobby()
     }
 
-    override suspend fun enterLobby(token: String, lobbyId: String): Game {
-        TODO("Not yet implemented")
+    override suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby> = callbackFlow {
+        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+
+        val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
+            lobby.lobbyId == lobbyId && lobby.guestUserId == null
+        } ?: throw UnknownLobby()
+
+        GomokuLobbies.updateGuestUser(user.id, lobby)
     }
 
     override suspend fun leaveLobby(token: String, lobbyId: String): LobbyId {
-        TODO("Not yet implemented")
+        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+
+        val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
+            lobby.lobbyId == lobbyId && (lobby.guestUserId == user.id || lobby.hostUserId == user.id)
+        } ?: throw UnknownLobby()
+
+        return if (lobby.guestUserId == user.id) {
+            LobbyId(GomokuLobbies.updateGuestUser(user.id, lobby).lobbyId)
+        } else {
+            //apagar lobby porque é o host
+            GomokuLobbies.deleteLobby(lobby)
+        }
     }
 
     override suspend fun fetchUser(token: String, userId: String): User {
@@ -79,7 +101,18 @@ class FakeGomokuService : GomokuService {
     }
 
     override suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game {
-        TODO("Not yet implemented")
+        GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+
+        val hostPlayer = Player(host, Turn.BLACK_PIECE)
+        val guestPlayer = Player(joined, Turn.WHITE_PIECE)
+
+        val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
+            lobby.lobbyId == lobbyId && lobby.hostUserId == host.id && lobby.guestUserId != null
+        } ?: throw UnknownLobby()
+
+        val board = createBoard(boardSize = lobby.rules.boardDim)
+
+        return GomokuGames.createGame(Pair(hostPlayer, guestPlayer), board, hostPlayer, 0, Instant.now(), lobby.rules)
     }
 }
 
@@ -153,9 +186,22 @@ object GomokuLobbies {
         get() = _lobbies.toList()
 
     fun createLobby(userId: String, rules: Rules): String {
-        val lobbyId = (_lobbies.size + 1).toString()
+        val lobbyId = generateRandomString()
         val waitingLobby = WaitingLobby(lobbyId, userId, null, rules)
         _lobbies.add(waitingLobby)
+        return lobbyId
+    }
+
+    fun updateGuestUser(userId: String?, lobby: WaitingLobby): WaitingLobby {
+        val newLobby = WaitingLobby(lobby.lobbyId, lobby.hostUserId, userId, lobby.rules)
+        _lobbies.remove(lobby)
+        _lobbies.add(newLobby)
+        return newLobby
+    }
+
+    fun deleteLobby(lobby: WaitingLobby): LobbyId {
+        val lobbyId = LobbyId(lobby.lobbyId)
+        _lobbies.remove(lobby)
         return lobbyId
     }
 }
@@ -195,11 +241,6 @@ object GomokuUsers {
             user.username == username && _passwords[user.id] == password
         }
 
-    private fun generateRandomToken(): String =
-        (1..FAKE_USER_TOKEN_LENGTH)
-            .map { ('a'..'z') + ('A'..'Z') + ('0'..'9').random() }
-            .joinToString("")
-
     private val _tokens: MutableMap<String, String> = mutableMapOf(
         "1" to "123",
         "2" to "456",
@@ -210,7 +251,7 @@ object GomokuUsers {
         get() = _tokens.toMap()
 
     fun createToken(userId: String, username: String): UserInfo {
-        val token = generateRandomToken()
+        val token = generateRandomString()
         _tokens[userId] = token
         return UserInfo(userId, username, token)
     }
@@ -224,11 +265,35 @@ object GomokuUsers {
 
     fun createUser(username: String, password: String): UserInfo? {
         if (users.firstOrNull { it.username == username } != null) return null
-        val userId: String = (users.size + 1).toString()
-        val token = generateRandomToken()
+        val userId: String = generateRandomString()
+        val token = generateRandomString()
         _users.add(User(userId, username))
         _passwords[userId] = password
         _tokens[userId] = token
         return UserInfo(userId, username, token)
     }
 }
+
+object GomokuGames {
+    private val _games: MutableList<Game> = mutableListOf()
+
+    val games: List<Game>
+        get() = _games.toList()
+
+    fun createGame(
+        users: Pair<Player, Player>,
+        board: Board,
+        currentPlayer: Player,
+        score: Int,
+        now: Instant,
+        rules: Rules
+    ): Game {
+        val gameId = generateRandomString()
+        return Game(gameId, users, board, currentPlayer, score, now, rules)
+    }
+}
+
+private fun generateRandomString(): String =
+    (1..FAKE_USER_TOKEN_LENGTH)
+        .map { ('a'..'z') + ('A'..'Z') + ('0'..'9').random() }
+        .joinToString("")

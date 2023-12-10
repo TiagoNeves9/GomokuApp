@@ -80,14 +80,14 @@ fun MainScreen(
                 modifier = Modifier
                     .padding(40.dp)
                     .fillMaxWidth()
-                    .background(Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(20.dp))
                     .clip(shape = RoundedCornerShape(20.dp))
             ) {
                 LargeCustomTitleView(text = "Gomoku")
                 DescriptionContainer()
                 LargeCustomButtonView(enabled = onStartEnabled, onClick = onStartRequested) {
                     Icon(
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.surfaceVariant,
                         imageVector = Icons.Filled.ArrowForward,
                         contentDescription = "Start"
                     )
@@ -107,7 +107,7 @@ private fun DescriptionContainer() =
     ) {
         Text(
             text = stringResource(R.string.activity_main_description),
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium
         )

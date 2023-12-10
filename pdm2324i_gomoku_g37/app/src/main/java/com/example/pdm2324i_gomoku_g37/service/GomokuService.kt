@@ -29,7 +29,7 @@ interface GomokuService {
 
     suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby
 
-    suspend fun enterLobby(token: String, lobbyId: String): Game
+    suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby>
 
     suspend fun leaveLobby(token: String, lobbyId: String): LobbyId
 
