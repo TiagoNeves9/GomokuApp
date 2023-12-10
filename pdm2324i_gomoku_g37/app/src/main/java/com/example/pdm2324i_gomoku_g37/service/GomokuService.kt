@@ -43,5 +43,13 @@ interface GomokuService {
  * @param message The error message
  * @param cause The cause of the error, if any
  */
-class FetchGomokuException(message: String, cause: Throwable? = null)
+abstract class FetchGomokuException(message: String, cause: Throwable? = null)
     : Exception(message, cause)
+
+class UserAlreadyExists : FetchGomokuException("user already exists")
+
+class InvalidLogin : FetchGomokuException("invalid credentials")
+
+class UnknownLobby : FetchGomokuException("Lobby not found")
+
+class UnknownUser : FetchGomokuException("User not found")

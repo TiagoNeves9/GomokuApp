@@ -165,10 +165,10 @@ class SignUpScreenViewModel(
             _userInfoFlow.value = loading()
             viewModelScope.launch {
                 val result: Result<UserInfo> = when {
-                    username.isBlank() -> Result.failure(EmptyUsername())
-                    password.isBlank() -> Result.failure(EmptyPassword())
-                    confirmPassword.isBlank() -> Result.failure(EmptyConfirmPassword())
-                    password != confirmPassword -> Result.failure(UnmatchedPasswords())
+                    username.isBlank() -> Result.failure(EmptyUsername)
+                    password.isBlank() -> Result.failure(EmptyPassword)
+                    confirmPassword.isBlank() -> Result.failure(EmptyConfirmPassword)
+                    password != confirmPassword -> Result.failure(UnmatchedPasswords)
                     else -> kotlin.runCatching {
                         val userInfo = service.signUp(username, password)
                         repository.updateUserInfo(userInfo)

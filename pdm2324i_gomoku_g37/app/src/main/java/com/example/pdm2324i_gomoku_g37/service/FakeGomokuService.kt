@@ -37,12 +37,12 @@ class FakeGomokuService : GomokuService {
 
     override suspend fun signUp(username: String, password: String): UserInfo {
         delay(FAKE_SERVICE_DELAY)
-        return GomokuUsers.createUser(username, password) ?: throw FetchGomokuException("Username already exists")
+        return GomokuUsers.createUser(username, password) ?: throw UserAlreadyExists()
     }
 
     override suspend fun login(username: String, password: String): UserInfo {
         delay(FAKE_SERVICE_DELAY)
-        val user = GomokuUsers.validateLogIn(username, password) ?: throw FetchGomokuException("Incorrect login information")
+        val user = GomokuUsers.validateLogIn(username, password) ?: throw InvalidLogin()
         return GomokuUsers.createToken(user.id, username)
     }
 
@@ -52,16 +52,16 @@ class FakeGomokuService : GomokuService {
     }
 
     override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = callbackFlow {
-        val user = GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required")
+        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
         LobbyId(GomokuLobbies.createLobby(user.id, rules))
     }
 
     override suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby {
-        val user = GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required")
+        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         return GomokuLobbies.lobbies.firstOrNull { lobby ->
             lobby.lobbyId == lobbyId  && lobby.hostUserId == user.id
-        } ?: throw FetchGomokuException("Lobby not found")
+        } ?: throw UnknownLobby()
     }
 
     override suspend fun enterLobby(token: String, lobbyId: String): Game {
@@ -74,8 +74,8 @@ class FakeGomokuService : GomokuService {
 
     override suspend fun fetchUser(token: String, userId: String): User {
         delay(FAKE_SERVICE_DELAY)
-        GomokuUsers.getUserByToken(token) ?: throw FetchGomokuException("Authentication required") //depende da api
-        return GomokuUsers.users.firstOrNull { it.id == userId } ?: throw FetchGomokuException("User not found")
+        GomokuUsers.getUserByToken(token) ?: throw InvalidLogin() //depende da api
+        return GomokuUsers.users.firstOrNull { it.id == userId } ?: throw UnknownUser()
     }
 
     override suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game {

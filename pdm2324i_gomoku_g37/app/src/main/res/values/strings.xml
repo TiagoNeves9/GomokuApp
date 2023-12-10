@@ -50,10 +50,18 @@
     <string name="error_api_title">Error accessing the server</string>
     <string name="error_could_not_reach_api">Please check if the device is connected to the internet</string>
 
+    <string name="error_general_title">Error</string>
+    <string name="error_bad_login">Error invalid login</string>
+
+    <string name="error_bad_signup">Error user already exists</string>
+
     <string name="error_retry_button_text">Retry</string>
 
     <string name="loading_sign_up_title">Create account</string>
     <string name="loading_sign_up_message">We are creating your account!</string>
+
+    <string name="loading_login_title">Login</string>
+    <string name="loading_login_message">We are logging you in!</string>
 
     <string name="loading_home_title">Setting up your home</string>
     <string name="loading_home_message">We are getting things ready for you!</string>

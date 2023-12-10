@@ -29,55 +29,89 @@ class LoginScreenViewModel(
 ) : ViewModel() {
     companion object{
         fun factory(service: GomokuService, repository: UserInfoRepository) = viewModelFactory {
-            initializer { LoginScreenViewModel(service,repository) }
+            initializer { LoginScreenViewModel(service, repository) }
         }
     }
 
-    var _username by mutableStateOf("")
+    private var _username by mutableStateOf("")
 
     val username: String
         get() = _username
-    fun changeUsername(username: String) =
-        viewModelScope.launch {
-            _username = username.replace("\\s".toRegex(),"")
-        }
+
+    private var _usernameErrorText by mutableStateOf("")
+
+    val usernameErrorText: String
+        get() = _usernameErrorText
+
+    private var _isUsernameInputError by mutableStateOf(false)
+
+    val isUsernameInputError: Boolean
+        get() = _isUsernameInputError
+
+    fun changeUsername(username: String) = viewModelScope.launch {
+        _username = username.replace("\\s".toRegex(),"")
+    }
+
+    fun changeUsernameErrorText(error: String) = viewModelScope.launch {
+        _usernameErrorText = error
+    }
+
+    fun changeIsUsernameInputError(isError: Boolean) = viewModelScope.launch {
+        _isUsernameInputError = isError
+    }
 
     private var _password by mutableStateOf("")
 
     val password: String
         get() = _password
 
-    fun changePassword(password: String) =
-        viewModelScope.launch {
-            _password = password.replace("\\s".toRegex(),"")
-        }
+    private var _passwordErrorText by mutableStateOf("")
 
-    private var _passwordVisible by mutableStateOf(false)
+    val passwordErrorText: String
+        get() = _passwordErrorText
 
-    val passwordVisible: Boolean
-        get() = _passwordVisible
+    private var _isPasswordInputError by mutableStateOf(false)
 
-    fun changePasswordVisible(visible: Boolean) =
-        viewModelScope.launch {
-            _passwordVisible = visible
-        }
+    val isPasswordInputError: Boolean
+        get() = _isPasswordInputError
+
+    private var _isPasswordVisible by mutableStateOf(false)
+
+    val isPasswordVisible: Boolean
+        get() = _isPasswordVisible
+
+    fun changePassword(password: String) = viewModelScope.launch {
+        _password = password.replace("\\s".toRegex(),"")
+    }
+
+    fun changePasswordErrorText(error: String) = viewModelScope.launch {
+        _passwordErrorText = error
+    }
+
+    fun changeIsPasswordInputError(isError: Boolean) = viewModelScope.launch {
+        _isPasswordInputError = isError
+    }
+
+    fun changeIsPasswordVisible(visible: Boolean) = viewModelScope.launch {
+        _isPasswordVisible = visible
+    }
 
     private val _userInfoFlow: MutableStateFlow<LoadState<UserInfo?>> = MutableStateFlow(idle())
 
     val userInfoFlow: Flow<LoadState<UserInfo?>>
         get() = _userInfoFlow.asStateFlow()
 
-    fun resetToIdle(){
+    fun resetToIdle() {
         _userInfoFlow.value = idle()
     }
 
-    fun signIn(){
-        if(_userInfoFlow.value is Idle){
+    fun signIn() {
+        if(_userInfoFlow.value is Idle) {
             _userInfoFlow.value = loading()
             viewModelScope.launch {
                 val result: Result<UserInfo> = when {
-                    username.isBlank() -> Result.failure(EmptyUsername())
-                    password.isBlank() -> Result.failure(EmptyPassword())
+                    username.isBlank() -> Result.failure(EmptyUsername)
+                    password.isBlank() -> Result.failure(EmptyPassword)
                     else -> kotlin.runCatching {
                         val userInfo = service.login(username, password)
                         repository.updateUserInfo(userInfo)
@@ -88,5 +122,4 @@ class LoginScreenViewModel(
             }
         }
     }
-
 }

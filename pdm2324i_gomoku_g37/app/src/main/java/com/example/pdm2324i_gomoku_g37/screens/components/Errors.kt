@@ -16,14 +16,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.service.FetchGomokuException
+import com.example.pdm2324i_gomoku_g37.service.InvalidLogin
+import com.example.pdm2324i_gomoku_g37.service.UserAlreadyExists
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 abstract class InputException : Exception()
 
-class EmptyUsername : InputException()
-class EmptyPassword : InputException()
-class EmptyConfirmPassword : InputException()
-class UnmatchedPasswords : InputException()
+object EmptyUsername : InputException()
+object EmptyPassword : InputException()
+object EmptyConfirmPassword : InputException()
+object UnmatchedPasswords : InputException()
 
 const val ErrorAlertTestTag = "ErrorAlertTestTag"
 
@@ -35,6 +38,8 @@ fun ProcessError(dismissError: () -> Unit, cause: Throwable) {
         is EmptyPassword -> Pair(R.string.error_password_title, R.string.password_is_blank_input_error)
         is EmptyConfirmPassword -> Pair(R.string.error_confirm_password_title, R.string.repeat_password_is_blank_input_error)
         is UnmatchedPasswords -> Pair(R.string.error_confirm_password_title, R.string.repeat_password_and_password_not_equal_input_error)
+        is InvalidLogin -> Pair(R.string.error_general_title, R.string.error_bad_login)
+        is UserAlreadyExists -> Pair(R.string.error_general_title, R.string.error_bad_signup)
         else -> Pair(R.string.error_api_title, R.string.error_could_not_reach_api)
     }
 
