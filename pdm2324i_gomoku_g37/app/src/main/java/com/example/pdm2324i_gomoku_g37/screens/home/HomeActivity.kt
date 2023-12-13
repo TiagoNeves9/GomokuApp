@@ -15,6 +15,7 @@ import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
+import com.example.pdm2324i_gomoku_g37.screens.profile.ProfileActivity
 import com.example.pdm2324i_gomoku_g37.screens.rankings.RankingsActivity
 
 
@@ -52,6 +53,7 @@ class HomeActivity : ComponentActivity() {
                 onPlayRequested = { PlayActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
                 onRankingsRequested = { RankingsActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
                 onAboutRequested = { InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
+                onProfileRequest = { ProfileActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
                 onDismissError = viewModel::resetToIdle
             )
         }

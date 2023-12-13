@@ -14,6 +14,7 @@ import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.Loading
 import com.example.pdm2324i_gomoku_g37.domain.User
+import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
@@ -27,7 +28,8 @@ import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    userProfile: LoadState<User?> = idle(),
+    userInfo: UserInfo,
+    //userProfile: LoadState<User?> = idle(),
     onDismissError: () -> Unit = {},
     navigation: NavigationHandlers = NavigationHandlers()
 ) =
@@ -46,7 +48,11 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            if (userProfile is Loading)
+
+            Text(
+                "User: ${userInfo.username}")
+
+            /*if (userProfile is Loading)
                 LoadingAlert(R.string.loading_home_title, R.string.loading_home_message)
 
             userProfile.exceptionOrNull()?.let { cause ->
@@ -56,7 +62,7 @@ fun ProfileScreen(
             userProfile.getOrNull()?.let { user ->
                 Text("User: ${user.username}")
                 //dar display das stats
-            }
+            }*/
         }
 
     }

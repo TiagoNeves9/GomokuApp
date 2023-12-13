@@ -10,8 +10,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.PermIdentity
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -53,6 +56,8 @@ fun HomeScreen(
     onPlayRequested: () -> Unit = { },
     onRankingsRequested: () -> Unit = { },
     onAboutRequested: () -> Unit = { },
+    onProfileRequest : () -> Unit = { },
+    onLogoutRequest: () -> Unit = { },
     onDismissError: () -> Unit = {}
 ) {
     Scaffold(
@@ -63,6 +68,13 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            Button(onClick = onLogoutRequest,Modifier) {
+                Icon(
+                    imageVector = Icons.Default.Logout,
+                    contentDescription = "logout"
+                )
+
+            }
 
             Text("User: ${userInfo.username}")
 
@@ -138,6 +150,27 @@ fun HomeScreen(
                             fontSize = 12.sp,
                             textAlign = TextAlign.Center
                         )
+                    }
+                }
+            }
+            Row(
+                Modifier,
+                Arrangement.Center
+            ){
+                MenuButton(onProfileRequest) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector =  Icons.Default.PermIdentity,
+                            contentDescription = "Profile"
+                        )
+                        Text(
+                            text = "Profile",
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+
                     }
                 }
             }

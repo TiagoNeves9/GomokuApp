@@ -24,8 +24,8 @@ import kotlinx.coroutines.launch
 class ProfileActivity : ComponentActivity() {
 
     companion object{
-        fun navigateTo(ctx: Context, userInfo: UserInfo) {
-            ctx.startActivity(createIntent(ctx, userInfo))
+        fun navigateTo(origin: Context, userInfo: UserInfo) {
+            origin.startActivity(createIntent(origin, userInfo))
         }
 
         private fun createIntent(ctx: Context, userInfo: UserInfo): Intent {
@@ -58,7 +58,7 @@ class ProfileActivity : ComponentActivity() {
         setContent{
             val currentUserProfile by viewModel.userProfileFlow.collectAsState(initial = idle())
             GomokuTheme {
-                ProfileScreen(currentUserProfile)
+                ProfileScreen(userInfoExtra)
             }
         }
     }
