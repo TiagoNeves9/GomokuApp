@@ -26,14 +26,12 @@ import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
-import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
 
 
 class AuthorsActivity : ComponentActivity() {
-
-    companion object{
+    companion object {
         fun navigateTo(origin: Context, userInfo: UserInfo) {
             origin.startActivity(createIntent(origin, userInfo))
         }

@@ -21,7 +21,7 @@ class InfoActivity : ComponentActivity() {
     private val viewModel by viewModels<InfoScreenViewModel>()
     private val services = FakeGomokuService()
 
-    companion object{
+    companion object {
         fun navigateTo(origin: Context, userInfo: UserInfo) {
             origin.startActivity(createIntent(origin, userInfo))
         }
@@ -53,7 +53,6 @@ class InfoActivity : ComponentActivity() {
                     info = viewModel.info,
                     navigation = NavigationHandlers(
                         onBackRequested = { finish() }
-                    )
                 )
             }
         }

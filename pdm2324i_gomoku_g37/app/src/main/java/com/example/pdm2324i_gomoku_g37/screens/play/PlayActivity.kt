@@ -22,7 +22,7 @@ class PlayActivity : ComponentActivity() {
     private val viewModel by viewModels<PlayScreenViewModel>()
     private val services = FakeGomokuService()
 
-    companion object{
+    companion object {
         fun navigateTo(origin: Context, userInfo: UserInfo) {
             origin.startActivity(createIntent(origin, userInfo))
         }
@@ -53,10 +53,25 @@ class PlayActivity : ComponentActivity() {
                 PlayScreen(
                     lobbies = viewModel.lobbies,
                     navigation = NavigationHandlers(
-                        onBackRequested = { HomeActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
-                        onInfoRequested = { InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
+                        onBackRequested = {
+                            HomeActivity.navigateTo(
+                                origin = this,
+                                userInfo = userInfoExtra
+                            )
+                        },
+                        onInfoRequested = {
+                            InfoActivity.navigateTo(
+                                origin = this,
+                                userInfo = userInfoExtra
+                            )
+                        }
                     ),
-                    onCreateRequested = { NewLobbyActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
+                    onCreateRequested = {
+                        NewLobbyActivity.navigateTo(
+                            origin = this,
+                            userInfo = userInfoExtra
+                        )
+                    }
                 )
             }
         }

@@ -92,16 +92,19 @@ fun AuthorsScreen(
         CustomContainerView(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-        ) {
-            require(index >= 0) { "Index must be greater than or equal to 0" }
+                .padding(padding),
+
+            ) {
+            require(index >= 0) {
+                "Index must be greater than or equal to 0"
+            }
 
             MediumCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
 
             val authorsList = authors.getOrNull()
             if (authorsList.isNullOrEmpty()) {
                 Text(
-                    text = stringResource(id = R.string.activity_author_no_author_found),
+                    text = stringResource(R.string.activity_author_no_author_found),
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag(AuthorNoAuthorTestTag),
@@ -109,16 +112,15 @@ fun AuthorsScreen(
                     textAlign = TextAlign.Center
                 )
             } else {
+                val primaryColor = MaterialTheme.colorScheme.primary
                 ElevatedCard(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth() //TODO VERIFICAR
                         .padding(CARD_PADDING)
                         .testTag(AuthorCardTestTag),
                     shape = RoundedCornerShape(DEFAULT_RADIUS),
                     colors = CardDefaults
-                        .cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
+                        .cardColors(containerColor = primaryColor),
                     elevation = CardDefaults
                         .cardElevation(defaultElevation = CARD_ELEVATION)
                 ) {
@@ -141,8 +143,8 @@ fun DisplayAuthor(
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(ROW_DEFAULT_PADDING),
-        Arrangement.Center
+            .padding(DEFAULT_CONTENT_PADDING),
+        Arrangement.Center,
     ) {
         LoadImageByName(author.img)
     }
@@ -162,7 +164,7 @@ fun DisplayAuthor(
         ) {
             Icon(
                 imageVector = Icons.Default.Email,
-                contentDescription = stringResource(id = R.string.activity_authors_email),
+                contentDescription = stringResource(R.string.activity_authors_email),
                 modifier = Modifier.size(ICON_SIZE)
             )
         }
@@ -233,9 +235,10 @@ private fun LoadImageByName(imageName: String) {
     }
 }
 
+
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun AuthorsScreenPreview() {
+fun AuthorsScreenPreview() =
     GomokuTheme {
         val authors: LoadState<List<Author>?> =
             loaded(Result.success(GomokuAuthors.authors))
@@ -246,4 +249,3 @@ fun AuthorsScreenPreview() {
             NavigationHandlers(onBackRequested = {}, onInfoRequested = {})
         )
     }
-}
