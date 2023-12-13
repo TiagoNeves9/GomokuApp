@@ -78,7 +78,7 @@ class AuthorsActivity : ComponentActivity() {
                         { viewModel.prevIndex() }
                     ),
                     navigation = NavigationHandlers(
-                        onBackRequested = { HomeActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
+                        onBackRequested = { finish() },
                         onInfoRequested = { InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
                     ),
                     onSendEmailRequested = {

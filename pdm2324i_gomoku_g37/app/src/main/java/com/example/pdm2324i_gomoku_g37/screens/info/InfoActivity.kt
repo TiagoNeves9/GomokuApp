@@ -52,7 +52,7 @@ class InfoActivity : ComponentActivity() {
                 InfoScreen(
                     info = viewModel.info,
                     navigation = NavigationHandlers(
-                        onBackRequested = { HomeActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
+                        onBackRequested = { finish() }
                     )
                 )
             }
