@@ -38,7 +38,7 @@ class InfoActivity : ComponentActivity() {
      */
     private val userInfoExtra: UserInfo by lazy {
         checkNotNull(getUserInfoExtra(intent)).toUserInfo()
-    }
+    }   //TODO is this val necessary?
 
     override fun onStart() {
         viewModel.fetchInfo(services)
@@ -53,6 +53,7 @@ class InfoActivity : ComponentActivity() {
                     info = viewModel.info,
                     navigation = NavigationHandlers(
                         onBackRequested = { finish() }
+                    )
                 )
             }
         }

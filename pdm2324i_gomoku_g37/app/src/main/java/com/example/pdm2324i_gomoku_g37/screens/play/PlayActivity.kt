@@ -12,11 +12,11 @@ import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
-import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.new_lobby.NewLobbyActivity
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+
 
 class PlayActivity : ComponentActivity() {
     private val viewModel by viewModels<PlayScreenViewModel>()
@@ -53,12 +53,7 @@ class PlayActivity : ComponentActivity() {
                 PlayScreen(
                     lobbies = viewModel.lobbies,
                     navigation = NavigationHandlers(
-                        onBackRequested = {
-                            HomeActivity.navigateTo(
-                                origin = this,
-                                userInfo = userInfoExtra
-                            )
-                        },
+                        onBackRequested = { finish() },
                         onInfoRequested = {
                             InfoActivity.navigateTo(
                                 origin = this,

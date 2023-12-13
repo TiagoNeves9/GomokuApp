@@ -56,10 +56,10 @@ fun HomeScreen(
     onPlayRequested: () -> Unit = { },
     onRankingsRequested: () -> Unit = { },
     onAboutRequested: () -> Unit = { },
-    onProfileRequest : () -> Unit = { },
+    onProfileRequest: () -> Unit = { },
     onLogoutRequest: () -> Unit = { },
-    onDismissError: () -> Unit = {}
-) {
+    onDismissError: () -> Unit = {} //TODO is this needed?
+) =
     Scaffold(
         bottomBar = { GroupFooterView(Color.White) }
     ) { padding ->
@@ -68,12 +68,11 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Button(onClick = onLogoutRequest,Modifier) {
+            Button(onClick = onLogoutRequest, Modifier) {
                 Icon(
                     imageVector = Icons.Default.Logout,
                     contentDescription = "logout"
                 )
-
             }
 
             Text("User: ${userInfo.username}")
@@ -153,16 +152,17 @@ fun HomeScreen(
                     }
                 }
             }
+
             Row(
                 Modifier,
                 Arrangement.Center
-            ){
+            ) {
                 MenuButton(onProfileRequest) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            imageVector =  Icons.Default.PermIdentity,
+                            imageVector = Icons.Default.PermIdentity,
                             contentDescription = "Profile"
                         )
                         Text(
@@ -176,7 +176,6 @@ fun HomeScreen(
             }
         }
     }
-}
 
 @Composable
 fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
@@ -191,14 +190,14 @@ fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
         content()
     }
 
+
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun HomeScreenPreview() {
+fun HomeScreenPreview() =
     GomokuTheme {
         HomeScreen(UserInfo("1", "prefiew user", "ab12"))
     }
-}
