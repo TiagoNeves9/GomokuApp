@@ -16,14 +16,14 @@ import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
-import com.example.pdm2324i_gomoku_g37.screens.login.LoginScreenViewModel
-import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
+import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
+import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
 
-class ProfileActivity : ComponentActivity() {
 
-    companion object{
+class ProfileActivity : ComponentActivity() {
+    companion object {
         fun navigateTo(origin: Context, userInfo: UserInfo) {
             origin.startActivity(createIntent(origin, userInfo))
         }
@@ -44,21 +44,33 @@ class ProfileActivity : ComponentActivity() {
 
     private val dependencies by lazy { application as GomokuDependenciesContainer }
 
-    private val viewModel by viewModels<ProfileScreenViewModel>{
+    private val viewModel by viewModels<ProfileScreenViewModel> {
         ProfileScreenViewModel.factory(dependencies.gomokuService, userInfoExtra)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?){
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
             viewModel.fetchUser()
         }
 
-        setContent{
-            val currentUserProfile by viewModel.userProfileFlow.collectAsState(initial = idle())
+        setContent {
+            /*val currentUserProfile by viewModel.userProfileFlow
+                .collectAsState(initial = idle())*/
             GomokuTheme {
-                ProfileScreen(userInfoExtra)
+                ProfileScreen(
+                    userInfo =userInfoExtra,
+                    navigation = NavigationHandlers(
+                        onBackRequested = { finish() },
+                        onInfoRequested = {
+                            InfoActivity.navigateTo(
+                                origin = this,
+                                userInfo = userInfoExtra
+                            )
+                        }
+                    )
+                )
             }
         }
     }

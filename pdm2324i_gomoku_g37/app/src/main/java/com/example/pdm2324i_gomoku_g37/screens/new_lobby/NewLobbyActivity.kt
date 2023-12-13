@@ -20,9 +20,9 @@ import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
 
-class NewLobbyActivity : ComponentActivity() {
 
-    companion object{
+class NewLobbyActivity : ComponentActivity() {
+    companion object {
         fun navigateTo(origin: Context, userInfo: UserInfo) {
             origin.startActivity(createIntent(origin, userInfo))
         }
@@ -44,7 +44,9 @@ class NewLobbyActivity : ComponentActivity() {
     /**
      * The application's dependency provider.
      */
-    private val dependencies by lazy { application as GomokuDependenciesContainer }
+    private val dependencies by lazy {
+        application as GomokuDependenciesContainer
+    }
 
     /**
      * The view model for the new game screen of the Gomoku app.
@@ -60,32 +62,49 @@ class NewLobbyActivity : ComponentActivity() {
             viewModel.screenState.collect {
                 if (it is ReadyLobby) {
                     //GameActivity.navigateTo(it.game)
+                    TODO()
                 }
             }
         }
 
         setContent {
-            val currentLobbyState: LobbyScreenState = viewModel.screenState.collectAsState(OutsideLobby).value
+            val currentLobbyState: LobbyScreenState =
+                viewModel.screenState.collectAsState(OutsideLobby).value
             GomokuTheme {
                 NewLobbyScreen(
                     state = NewGameScreenState(
-                        lobbyScreenState = currentLobbyState,
-                        selectedBoardSize = viewModel.selectedBoardSize,
-                        isBoardSizeInputExpanded = viewModel.isBoardSizeInputExpanded,
-                        selectedGameOpening = viewModel.selectedGameOpening,
-                        isGameOpeningInputExpanded = viewModel.isGameOpeningInputExpanded,
-                        selectedGameVariant = viewModel.selectedGameVariant,
-                        isGameVariantInputExpanded = viewModel.isGameVariantInputExpanded
+                        lobbyScreenState =
+                        currentLobbyState,
+                        selectedBoardSize =
+                        viewModel.selectedBoardSize,
+                        isBoardSizeInputExpanded =
+                        viewModel.isBoardSizeInputExpanded,
+                        selectedGameOpening =
+                        viewModel.selectedGameOpening,
+                        isGameOpeningInputExpanded =
+                        viewModel.isGameOpeningInputExpanded,
+                        selectedGameVariant =
+                        viewModel.selectedGameVariant,
+                        isGameVariantInputExpanded =
+                        viewModel.isGameVariantInputExpanded
                     ),
                     functions = NewGameScreenFunctions(
-                        changeSelectedBoardSize = viewModel::changeSelectedBoardSize,
-                        changeIsBoardSizeInputExpanded = viewModel::changeIsBoardSizeInputExpanded,
-                        changeSelectedGameOpening = viewModel::changeSelectedGameOpening,
-                        changeIsGameOpeningInputExpanded = viewModel::changeIsGameOpeningInputExpanded,
-                        changeSelectedGameVariant = viewModel::changeSelectedGameVariant,
-                        changeIsGameVariantInputExpanded = viewModel::changeIsGameVariantInputExpanded,
-                        createNewGameRequested = viewModel::createLobbyAndWaitForPlayer,
-                        onDismissError = viewModel::resetToIdle
+                        changeSelectedBoardSize =
+                        viewModel::changeSelectedBoardSize,
+                        changeIsBoardSizeInputExpanded =
+                        viewModel::changeIsBoardSizeInputExpanded,
+                        changeSelectedGameOpening =
+                        viewModel::changeSelectedGameOpening,
+                        changeIsGameOpeningInputExpanded =
+                        viewModel::changeIsGameOpeningInputExpanded,
+                        changeSelectedGameVariant =
+                        viewModel::changeSelectedGameVariant,
+                        changeIsGameVariantInputExpanded =
+                        viewModel::changeIsGameVariantInputExpanded,
+                        createNewGameRequested =
+                        viewModel::createLobbyAndWaitForPlayer,
+                        onDismissError =
+                        viewModel::resetToIdle
                     )
                 )
             }

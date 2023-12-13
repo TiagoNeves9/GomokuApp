@@ -61,6 +61,7 @@ class PlayActivity : ComponentActivity() {
                             )
                         }
                     ),
+                    onJoinRequest = { TODO() },
                     onCreateRequested = {
                         NewLobbyActivity.navigateTo(
                             origin = this,

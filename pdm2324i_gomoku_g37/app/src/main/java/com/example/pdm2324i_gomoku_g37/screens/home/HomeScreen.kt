@@ -39,14 +39,13 @@ import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.HOME_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
-
-val BUTTON_NAME_SIZE = 12.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +76,7 @@ fun HomeScreen(
 
             Text("User: ${userInfo.username}")
 
-            LargeCustomTitleView(text = stringResource(id = R.string.activity_menu_title))
+            LargeCustomTitleView(text = stringResource(R.string.activity_menu_title))
 
             Row(
                 Modifier,
@@ -93,7 +92,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Play",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -109,7 +108,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Rankings",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -130,7 +129,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Authors",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -146,7 +145,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "About",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -167,7 +166,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Profile",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
 

@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
@@ -54,6 +55,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+
 
 data class NewGameScreenState(
     val lobbyScreenState: LobbyScreenState = OutsideLobby,
@@ -81,7 +83,7 @@ data class NewGameScreenFunctions(
 fun NewLobbyScreen(
     state: NewGameScreenState = NewGameScreenState(),
     functions: NewGameScreenFunctions = NewGameScreenFunctions()
-) {
+) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = { GroupFooterView(Color.White) },
@@ -89,13 +91,14 @@ fun NewLobbyScreen(
         val customContainerModifier = Modifier
             .padding(padding)
             .fillMaxSize()
-
         CustomContainerView(modifier = customContainerModifier) {
             LargeCustomTitleView(text = "New Game")
+
             Text(
                 text = "Choose your game settings",
-                modifier = Modifier.padding(vertical = 5.dp)
+                fontSize = 15.sp
             )
+
             BoardSizeSelect(
                 selectedBoardSize = state.selectedBoardSize,
                 changeSelectedBoardSize = functions.changeSelectedBoardSize,
@@ -132,10 +135,8 @@ fun NewLobbyScreen(
 
             if (state.lobbyScreenState is LobbyAccessError)
                 LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
-
         }
     }
-}
 
 @Composable
 private fun BoardSizeSelect(
@@ -204,9 +205,11 @@ private fun GameSelect(
     onExpandChange: () -> Unit,
     onClick: (String) -> Unit
 ) {
-    var textFieldSize by remember { mutableStateOf(Size.Zero)}
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
     val textFieldModifier = Modifier
-        .onGloballyPositioned { coordinates -> textFieldSize = coordinates.size.toSize() }
+        .onGloballyPositioned { coordinates ->
+            textFieldSize = coordinates.size.toSize()
+        }
         .padding(vertical = 15.dp)
 
     val dropDownMenuModifier = Modifier
@@ -249,10 +252,10 @@ private fun TrailingIcon(isExpanded: Boolean, changeIsExpanded: () -> Unit) {
     }
 }
 
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun NewGameScreenPreview() {
+fun NewGameScreenPreview() =
     GomokuTheme {
         NewLobbyScreen()
     }
-}

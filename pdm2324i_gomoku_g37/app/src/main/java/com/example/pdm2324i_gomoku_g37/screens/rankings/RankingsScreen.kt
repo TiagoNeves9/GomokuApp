@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
@@ -33,7 +34,7 @@ fun RankingsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CustomBar(
-                text = stringResource(id = R.string.activity_rankings_top_bar_title),
+                text = stringResource(R.string.activity_rankings_top_bar_title),
                 navigation = navigation
             )
         },
@@ -67,3 +68,8 @@ fun RankingsScreen(
             }
         }
     }
+
+
+@Preview
+@Composable
+fun RankingsScreenPreview() = RankingsScreen()

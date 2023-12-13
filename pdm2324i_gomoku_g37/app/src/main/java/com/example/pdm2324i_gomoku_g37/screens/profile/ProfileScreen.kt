@@ -25,6 +25,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -41,16 +42,14 @@ fun ProfileScreen(
                 navigation
             )
         },
-        bottomBar = { GroupFooterView(Color.White)}
+        bottomBar = { GroupFooterView(Color.White) }
     ) { padding ->
         CustomContainerView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-
-            Text(
-                "User: ${userInfo.username}")
+            Text("User: ${userInfo.username}")
 
             /*if (userProfile is Loading)
                 LoadingAlert(R.string.loading_home_title, R.string.loading_home_message)
@@ -64,5 +63,4 @@ fun ProfileScreen(
                 //dar display das stats
             }*/
         }
-
     }
