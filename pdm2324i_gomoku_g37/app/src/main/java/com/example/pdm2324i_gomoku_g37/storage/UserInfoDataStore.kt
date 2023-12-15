@@ -40,4 +40,10 @@ class UserInfoDataStore(private val store: DataStore<Preferences>) : UserInfoRep
             preferences[tokenKey] = userInfo.token
         }
     }
+
+    override suspend fun clearUserInfo() {
+        store.edit { preferences ->
+            preferences.clear()
+        }
+    }
 }

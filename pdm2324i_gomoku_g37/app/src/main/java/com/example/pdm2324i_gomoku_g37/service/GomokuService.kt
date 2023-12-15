@@ -4,6 +4,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
+import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
@@ -29,7 +30,7 @@ interface GomokuService {
 
     suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby
 
-    suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby>
+    suspend fun enterLobby(token: String, lobbyId: String): Flow<ReadyLobby>
 
     suspend fun leaveLobby(token: String, lobbyId: String): LobbyId
 

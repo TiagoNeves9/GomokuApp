@@ -25,11 +25,13 @@ const val LoadingAlertTestTag = "LoadingAlertTestTag"
 @Composable
 fun LoadingAlert(
     @StringRes title: Int,
-    @StringRes message: Int
+    @StringRes message: Int,
+    onDismiss: () -> Unit = { }
 ) {
     LoadingAlertImpl(
         stringResource(id = title),
         stringResource(id = message),
+        onDismiss
     )
 }
 
@@ -37,9 +39,10 @@ fun LoadingAlert(
 fun LoadingAlertImpl(
     title: String,
     message: String,
+    onDismiss: () -> Unit = { }
 ) {
     AlertDialog(
-        onDismissRequest = { },
+        onDismissRequest = onDismiss,
         confirmButton = { },
         title = { Text(text = title) },
         text = {

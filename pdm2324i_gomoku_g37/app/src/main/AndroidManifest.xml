@@ -55,7 +55,7 @@
             android:name=".screens.new_lobby.NewLobbyActivity"
             android:exported="false"/>
         <activity
-            android:name=".screens.lobby.LobbyActivity"
+            android:name=".screens.game.GameActivity"
             android:exported="false"/>
     </application>
 

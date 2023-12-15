@@ -85,7 +85,8 @@ class NewLobbyActivity : ComponentActivity() {
                         changeSelectedGameVariant = viewModel::changeSelectedGameVariant,
                         changeIsGameVariantInputExpanded = viewModel::changeIsGameVariantInputExpanded,
                         createNewGameRequested = viewModel::createLobbyAndWaitForPlayer,
-                        onDismissError = viewModel::resetToIdle
+                        onDismissError = viewModel::resetToIdle,
+                        onDismissLobby = viewModel::leaveLobby
                     )
                 )
             }

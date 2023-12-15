@@ -73,7 +73,8 @@ data class NewGameScreenFunctions(
     val changeSelectedGameVariant: (Variant) -> Unit = { },
     val changeIsGameVariantInputExpanded: () -> Unit = { },
     val createNewGameRequested: () -> Unit = { },
-    val onDismissError: () -> Unit = { }
+    val onDismissError: () -> Unit = { },
+    val onDismissLobby: () -> Unit = { }
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +126,7 @@ fun NewLobbyScreen(
                 LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
 
             if (state.lobbyScreenState is WaitingLobby)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, functions.onDismissLobby)
 
             if (state.lobbyScreenState is ReadyLobby)
                 LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)

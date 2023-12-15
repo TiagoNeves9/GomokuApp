@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.Rules
@@ -47,12 +48,14 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
+import com.example.pdm2324i_gomoku_g37.service.GomokuGames
 import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+import java.time.Instant
 
 
 @Composable
-fun GameScreen(game: GameActivity) {
+fun GameScreen(game: Game) {
     var currentGame by remember { mutableStateOf(game) }
 
     val modifier = Modifier
@@ -67,7 +70,7 @@ fun GameScreen(game: GameActivity) {
                 Alignment.CenterHorizontally
             ) {
                 DrawBoard(currentGame.board) { cell ->
-                    currentGame = currentGame.computeNewGame(cell)
+                    //currentGame = currentGame.computeNewGame(cell)
                 }
 
                 Spacer(Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
@@ -270,6 +273,6 @@ fun GameScreenPreview() {
     )
     val board = createBoard(playerB.second, BOARD_DIM)
     val rules = Rules(board.boardSize, Opening.FREESTYLE, Variant.FREESTYLE)
-    val game = GameActivity(Pair(playerB.first, playerW.first), board, playerB, rules)
+    val game = GomokuGames.games.first()
     GameScreen(game)
 }

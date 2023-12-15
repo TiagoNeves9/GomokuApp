@@ -1,21 +1,28 @@
 package com.example.pdm2324i_gomoku_g37.service
 
+import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Turn
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
+import com.example.pdm2324i_gomoku_g37.domain.toGameDto
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import java.time.Instant
 
 
@@ -69,14 +76,20 @@ class FakeGomokuService : GomokuService {
         } ?: throw UnknownLobby()
     }
 
-    override suspend fun enterLobby(token: String, lobbyId: String): Flow<WaitingLobby> = callbackFlow {
-        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+    override suspend fun enterLobby(token: String, lobbyId: String): Flow<ReadyLobby> = flow {
+        /*val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
             lobby.lobbyId == lobbyId && lobby.guestUserId == null
         } ?: throw UnknownLobby()
 
         GomokuLobbies.updateGuestUser(user.id, lobby)
+
+        val game = GomokuGames.games.firstOrNull { game ->
+            game.users.second.first.id == user.id
+        } ?: throw UnknownLobby()*/
+        val game = GomokuGames.games.first()
+        emit(ReadyLobby(game))
     }
 
     override suspend fun leaveLobby(token: String, lobbyId: String): LobbyId {
@@ -241,11 +254,7 @@ object GomokuUsers {
             user.username == username && _passwords[user.id] == password
         }
 
-    private val _tokens: MutableMap<String, String> = mutableMapOf(
-        "1" to "123",
-        "2" to "456",
-        "3" to "789"
-    )
+    private val _tokens: MutableMap<String, String> = mutableMapOf()
 
     val tokens: Map<String, String>
         get() = _tokens.toMap()
@@ -275,7 +284,17 @@ object GomokuUsers {
 }
 
 object GomokuGames {
-    private val _games: MutableList<Game> = mutableListOf()
+    private val _games: MutableList<Game> = mutableListOf(
+        Game(
+            gameId = "1",
+            users = Pair(Player(User("2", "jp"), Turn.BLACK_PIECE), Player(User("1", "tbmaster"), Turn.WHITE_PIECE)),
+            board = createBoard(boardSize = 19),
+            currentPlayer = Player(User("2", "jp"), Turn.BLACK_PIECE),
+            0,
+            now = Instant.now(),
+            rules = Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
+        )
+    )
 
     val games: List<Game>
         get() = _games.toList()

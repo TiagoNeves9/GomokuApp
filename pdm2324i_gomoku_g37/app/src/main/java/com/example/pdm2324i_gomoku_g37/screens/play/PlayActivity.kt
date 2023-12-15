@@ -3,24 +3,44 @@ package com.example.pdm2324i_gomoku_g37.screens.play
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
+import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.domain.toGameDto
 import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
+import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.new_lobby.NewLobbyActivity
+import com.example.pdm2324i_gomoku_g37.screens.new_lobby.NewLobbyScreenViewModel
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class PlayActivity : ComponentActivity() {
-    private val viewModel by viewModels<PlayScreenViewModel>()
-    private val services = FakeGomokuService()
+
+    private val dependencies by lazy { application as GomokuDependenciesContainer }
+
+    private val viewModel by viewModels<PlayScreenViewModel> {
+        PlayScreenViewModel.factory(dependencies.gomokuService, userInfoExtra)
+    }
 
     companion object{
         fun navigateTo(origin: Context, userInfo: UserInfo) {
@@ -41,21 +61,33 @@ class PlayActivity : ComponentActivity() {
         checkNotNull(getUserInfoExtra(intent)).toUserInfo()
     }
 
-    override fun onStart() {
-        viewModel.fetchLobbies(services)
-        super.onStart()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.fetchLobbies()
+
+                viewModel.screenState.collect {
+                    if (it is ReadyLobby) {
+                        Log.v("test_game_ready", it.toString())
+                        GameActivity.navigateTo(this@PlayActivity, userInfoExtra, it.game.toGameDto())
+                        finish()
+                    }
+                }
+            }
+        }
+
         setContent {
+            val currentLobbies by viewModel.lobbiesFlow.collectAsState(initial = idle())
             GomokuTheme {
                 PlayScreen(
-                    lobbies = viewModel.lobbies,
+                    lobbies = currentLobbies,
                     navigation = NavigationHandlers(
                         onBackRequested = { HomeActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
                         onInfoRequested = { InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
                     ),
+                    onJoinRequested = viewModel::enterLobby,
                     onCreateRequested = { NewLobbyActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
                 )
             }

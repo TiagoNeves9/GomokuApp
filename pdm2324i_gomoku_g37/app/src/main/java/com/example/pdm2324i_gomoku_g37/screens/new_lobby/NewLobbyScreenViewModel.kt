@@ -23,6 +23,7 @@ import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
+import com.example.pdm2324i_gomoku_g37.domain.toGameDto
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -129,18 +130,21 @@ class NewLobbyScreenViewModel(
                 }
             } catch (cause: Throwable) {
                 if (_screenStateFlow.value is WaitingLobby) {
-                    leaveLobby((_screenStateFlow.value as WaitingLobby).lobbyId)
+                    leaveLobby()
                 }
                 _screenStateFlow.value = LobbyAccessError(cause)
             }
         }
     }
 
-    fun leaveLobby(lobbyId: String) {
-        check(_screenStateFlow.value !is OutsideLobby) { "Cannot leave lobby twice" }
+    fun leaveLobby() {
+        check(_screenStateFlow.value is WaitingLobby) { "Cannot leave lobby" }
+
+        val lobby = _screenStateFlow.value as WaitingLobby
+
         _screenStateFlow.value = OutsideLobby
         viewModelScope.launch {
-            kotlin.runCatching { service.leaveLobby(userInfo.token, lobbyId) }
+            kotlin.runCatching { service.leaveLobby(userInfo.token, lobby.lobbyId) }
         }
     }
 }

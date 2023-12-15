@@ -27,10 +27,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
@@ -44,9 +48,9 @@ val myPadding = 10.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayScreen(
-    lobbies: List<WaitingLobby>? = null,
+    lobbies: LoadState<List<WaitingLobby>?> = idle(),
     navigation: NavigationHandlers = NavigationHandlers(),
-    onJoinRequest: () -> Unit = { },
+    onJoinRequested: (lobby: WaitingLobby) -> Unit = { },
     onCreateRequested: () -> Unit = { }
 ) =
     Scaffold(
@@ -70,7 +74,8 @@ fun PlayScreen(
             Row(
                 Modifier.fillMaxHeight(0.85F)
             ) {
-                if (lobbies != null) LobbiesList(lobbies = lobbies)
+                val lobbiesList = lobbies.getOrNull()
+                if (lobbiesList != null) LobbiesList(lobbies = lobbiesList, onJoinRequested)
                 else LoadingView()
             }
 
@@ -98,7 +103,7 @@ fun PlayScreen(
     }
 
 @Composable
-fun LobbiesList(lobbies: List<WaitingLobby>) =
+fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLobby) -> Unit) =
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(myPadding)
@@ -113,7 +118,7 @@ fun LobbiesList(lobbies: List<WaitingLobby>) =
             ) {
                 val boardDim = lobby.rules.boardDim
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { onJoinRequested(lobby) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = myPadding)
@@ -149,7 +154,7 @@ fun LoadingView() =
 fun PlayScreenPreview() {
     val waitingLobby0 = WaitingLobby("1", "1", null, Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
     val waitingLobby1 = WaitingLobby("2", "2", "1", Rules(15, Opening.PRO, Variant.FREESTYLE))
-    val lobbies = listOf(waitingLobby0, waitingLobby1)
+    val lobbies = loaded(Result.success(listOf(waitingLobby0, waitingLobby1)))
 
     PlayScreen(lobbies)
 }
