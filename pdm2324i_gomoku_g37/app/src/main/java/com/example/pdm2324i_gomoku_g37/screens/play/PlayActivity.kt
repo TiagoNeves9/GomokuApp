@@ -13,10 +13,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
-import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
-import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.toGameDto
 import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
@@ -25,14 +23,11 @@ import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.game.GameActivity
-import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.new_lobby.NewLobbyActivity
-import com.example.pdm2324i_gomoku_g37.screens.new_lobby.NewLobbyScreenViewModel
-import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+
 
 class PlayActivity : ComponentActivity() {
 
@@ -42,7 +37,7 @@ class PlayActivity : ComponentActivity() {
         PlayScreenViewModel.factory(dependencies.gomokuService, userInfoExtra)
     }
 
-    companion object{
+    companion object {
         fun navigateTo(origin: Context, userInfo: UserInfo) {
             origin.startActivity(createIntent(origin, userInfo))
         }
@@ -84,8 +79,13 @@ class PlayActivity : ComponentActivity() {
                 PlayScreen(
                     lobbies = currentLobbies,
                     navigation = NavigationHandlers(
-                        onBackRequested = { HomeActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
-                        onInfoRequested = { InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
+                        onBackRequested = { finish() },
+                        onInfoRequested = {
+                            InfoActivity.navigateTo(
+                                origin = this,
+                                userInfo = userInfoExtra
+                            )
+                        }
                     ),
                     onJoinRequested = viewModel::enterLobby,
                     onCreateRequested = { NewLobbyActivity.navigateTo(origin = this, userInfo = userInfoExtra) }

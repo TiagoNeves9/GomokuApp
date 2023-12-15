@@ -21,7 +21,7 @@ class InfoActivity : ComponentActivity() {
     private val viewModel by viewModels<InfoScreenViewModel>()
     private val services = FakeGomokuService()
 
-    companion object{
+    companion object {
         fun navigateTo(origin: Context, userInfo: UserInfo) {
             origin.startActivity(createIntent(origin, userInfo))
         }
@@ -38,7 +38,7 @@ class InfoActivity : ComponentActivity() {
      */
     private val userInfoExtra: UserInfo by lazy {
         checkNotNull(getUserInfoExtra(intent)).toUserInfo()
-    }
+    }   //TODO is this val necessary?
 
     override fun onStart() {
         viewModel.fetchInfo(services)
@@ -52,7 +52,7 @@ class InfoActivity : ComponentActivity() {
                 InfoScreen(
                     info = viewModel.info,
                     navigation = NavigationHandlers(
-                        onBackRequested = { HomeActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
+                        onBackRequested = { finish() }
                     )
                 )
             }

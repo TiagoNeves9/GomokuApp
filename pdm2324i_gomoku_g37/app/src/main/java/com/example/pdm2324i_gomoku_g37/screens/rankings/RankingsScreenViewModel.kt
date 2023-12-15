@@ -1,8 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.screens.rankings
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -19,21 +16,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class RankingsScreenViewModel(private val service: GomokuService) : ViewModel(){
 
-    companion object{
+class RankingsScreenViewModel(private val service: GomokuService) : ViewModel() {
+    companion object {
         fun factory(service: GomokuService) = viewModelFactory {
             initializer { RankingsScreenViewModel(service) }
         }
     }
 
-    private val _rankingsFlow: MutableStateFlow<LoadState<GomokuRankings.Rankings>> = MutableStateFlow(idle())
-    val rankings : Flow<LoadState<GomokuRankings.Rankings>>
+    private val _rankingsFlow: MutableStateFlow<LoadState<GomokuRankings.Rankings>> =
+        MutableStateFlow(idle())
+    val rankings: Flow<LoadState<GomokuRankings.Rankings>>
         get() = _rankingsFlow.asStateFlow()
 
 
-    fun fetchRankings(){
-        if (_rankingsFlow.value is Idle){
+    fun fetchRankings() {
+        if (_rankingsFlow.value is Idle) {
             _rankingsFlow.value = loading()
             viewModelScope.launch {
                 val result = runCatching { service.fetchRankings() }

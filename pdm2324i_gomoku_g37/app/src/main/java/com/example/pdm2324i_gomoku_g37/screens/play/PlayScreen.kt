@@ -35,12 +35,12 @@ import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
+import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_NAME_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
-import com.example.pdm2324i_gomoku_g37.screens.home.BUTTON_NAME_SIZE
 
 
 val myPadding = 10.dp
@@ -68,7 +68,6 @@ fun PlayScreen(
                 .fillMaxWidth()
                 .padding(padding)
         ) {
-
             MediumCustomTitleView(text = "List of lobbies:")
 
             Row(
@@ -110,7 +109,9 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
     ) {
         items(lobbies) { lobby ->
             val guestUserId: String? = lobby.guestUserId
-            val guestUserText = if (guestUserId != null) "Guest: $guestUserId" else "Waiting for second player"
+            val guestUserText =
+                if (guestUserId != null) "\t\t\t\tGuest ID: $guestUserId"
+                else "Waiting for a\n\tsecond player"
             Row(
                 Modifier.fillMaxWidth(),
                 Arrangement.Center,
@@ -125,12 +126,17 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
                 ) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Join lobbyyy"
+                        contentDescription = "Join lobby"
                     )
-                    Text(text = lobby.lobbyId, fontSize = BUTTON_NAME_SIZE, textAlign = TextAlign.Center)
-                    Text(text = lobby.hostUserId, fontSize = BUTTON_NAME_SIZE, textAlign = TextAlign.Center)
-                    Text(text = guestUserText, fontSize = BUTTON_NAME_SIZE, textAlign = TextAlign.Center)
-                    Text(text = "Rules:" +
+                    Text(
+                        text = "Lobby ID ${lobby.lobbyId}\n" +
+                                "Host ID${lobby.hostUserId}\n" +
+                                "$guestUserText\t\t",
+                        fontSize = BUTTON_NAME_SIZE,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Rules:\n" +
                                 "\tBoard dimension - $boardDim x $boardDim\n" +
                                 "\tOpening - ${lobby.rules.opening}\n" +
                                 "\tVariant - ${lobby.rules.variant}",
@@ -145,7 +151,7 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
 @Composable
 fun LoadingView() =
     Column {
-        Text(text = "Loading...")
+        Text(text = "Loading lobbies...")
     }
 
 
@@ -155,6 +161,5 @@ fun PlayScreenPreview() {
     val waitingLobby0 = WaitingLobby("1", "1", null, Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
     val waitingLobby1 = WaitingLobby("2", "2", "1", Rules(15, Opening.PRO, Variant.FREESTYLE))
     val lobbies = loaded(Result.success(listOf(waitingLobby0, waitingLobby1)))
-
     PlayScreen(lobbies)
 }

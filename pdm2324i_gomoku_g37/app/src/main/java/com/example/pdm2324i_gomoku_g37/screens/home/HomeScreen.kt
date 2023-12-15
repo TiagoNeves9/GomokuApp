@@ -10,8 +10,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.PermIdentity
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,14 +39,13 @@ import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.HOME_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
-
-val BUTTON_NAME_SIZE = 12.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,8 +55,10 @@ fun HomeScreen(
     onPlayRequested: () -> Unit = { },
     onRankingsRequested: () -> Unit = { },
     onAboutRequested: () -> Unit = { },
-    onDismissError: () -> Unit = {}
-) {
+    onProfileRequest: () -> Unit = { },
+    onLogoutRequest: () -> Unit = { },
+    onDismissError: () -> Unit = {} //TODO is this needed?
+) =
     Scaffold(
         bottomBar = { GroupFooterView(Color.White) }
     ) { padding ->
@@ -63,10 +67,16 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            Button(onClick = onLogoutRequest, Modifier) {
+                Icon(
+                    imageVector = Icons.Default.Logout,
+                    contentDescription = "logout"
+                )
+            }
 
             Text("User: ${userInfo.username}")
 
-            LargeCustomTitleView(text = stringResource(id = R.string.activity_menu_title))
+            LargeCustomTitleView(text = stringResource(R.string.activity_menu_title))
 
             Row(
                 Modifier,
@@ -82,7 +92,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Play",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -98,7 +108,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Rankings",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -119,7 +129,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Authors",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -135,15 +145,36 @@ fun HomeScreen(
                         )
                         Text(
                             text = "About",
-                            fontSize = 12.sp,
+                            fontSize = HOME_FONT_SIZE,
                             textAlign = TextAlign.Center
                         )
                     }
                 }
             }
+
+            Row(
+                Modifier,
+                Arrangement.Center
+            ) {
+                MenuButton(onProfileRequest) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PermIdentity,
+                            contentDescription = "Profile"
+                        )
+                        Text(
+                            text = "Profile",
+                            fontSize = HOME_FONT_SIZE,
+                            textAlign = TextAlign.Center
+                        )
+
+                    }
+                }
+            }
         }
     }
-}
 
 @Composable
 fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
@@ -158,14 +189,14 @@ fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
         content()
     }
 
+
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun HomeScreenPreview() {
+fun HomeScreenPreview() =
     GomokuTheme {
         HomeScreen(UserInfo("1", "prefiew user", "ab12"))
     }
-}

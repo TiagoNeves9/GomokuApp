@@ -100,7 +100,7 @@ class FakeGomokuService : GomokuService {
         } ?: throw UnknownLobby()
 
         return if (lobby.guestUserId == user.id) {
-            LobbyId(GomokuLobbies.updateGuestUser(user.id, lobby).lobbyId)
+            LobbyId(GomokuLobbies.updateGuestUser(null, lobby).lobbyId)
         } else {
             //apagar lobby porque é o host
             GomokuLobbies.deleteLobby(lobby)
