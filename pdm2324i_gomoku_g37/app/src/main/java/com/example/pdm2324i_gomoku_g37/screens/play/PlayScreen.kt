@@ -27,9 +27,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.LobbyAccessError
+import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.Opening
+import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
+import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
@@ -39,6 +44,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_NAME_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
+import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
 
@@ -49,9 +55,11 @@ val myPadding = 10.dp
 @Composable
 fun PlayScreen(
     lobbies: LoadState<List<WaitingLobby>?> = idle(),
+    lobbyScreenState: LobbyScreenState = OutsideLobby,
     navigation: NavigationHandlers = NavigationHandlers(),
     onJoinRequested: (lobby: WaitingLobby) -> Unit = { },
-    onCreateRequested: () -> Unit = { }
+    onCreateRequested: () -> Unit = { },
+    onDismissLobby: () -> Unit = { }
 ) =
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -97,6 +105,15 @@ fun PlayScreen(
                         textAlign = TextAlign.Center
                     )
                 }
+
+                if (lobbyScreenState is WaitingLobby)
+                    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissLobby)
+
+                if (lobbyScreenState is ReadyLobby)
+                    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+
+                if (lobbyScreenState is LobbyAccessError)
+                    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
             }
         }
     }

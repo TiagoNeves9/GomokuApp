@@ -156,6 +156,7 @@ class NewLobbyScreenViewModel(
     }
 
     fun leaveLobby() {
+        check(_screenStateFlow.value !is OutsideLobby) { "you must be in a lobby first" }
         check(_screenStateFlow.value is WaitingLobby) { "Cannot leave lobby" }
 
         val lobby = _screenStateFlow.value as WaitingLobby

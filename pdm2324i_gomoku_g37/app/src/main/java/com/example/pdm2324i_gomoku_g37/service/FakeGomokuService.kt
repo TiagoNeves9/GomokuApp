@@ -63,9 +63,11 @@ class FakeGomokuService : GomokuService {
         return GomokuRankings.rankings.first()
     }
 
-    override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = callbackFlow {
+    override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = flow {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
-        LobbyId(GomokuLobbies.createLobby(user.id, rules))
+        val lobbyId = GomokuLobbies.createLobby(user.id, rules)
+        val lobby = WaitingLobby(lobbyId, user.id, null, rules)
+        emit(lobby)
     }
 
     override suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby {
@@ -77,7 +79,7 @@ class FakeGomokuService : GomokuService {
     }
 
     override suspend fun enterLobby(token: String, lobbyId: String): Flow<ReadyLobby> = flow {
-        /*val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
             lobby.lobbyId == lobbyId && lobby.guestUserId == null
@@ -87,8 +89,8 @@ class FakeGomokuService : GomokuService {
 
         val game = GomokuGames.games.firstOrNull { game ->
             game.users.second.first.id == user.id
-        } ?: throw UnknownLobby()*/
-        val game = GomokuGames.games.first()
+        } ?: throw UnknownLobby()
+
         emit(ReadyLobby(game))
     }
 
@@ -159,37 +161,37 @@ object GomokuLobbies {
     private val _lobbies: MutableList<WaitingLobby> = mutableListOf(
         WaitingLobby(
             "1",
-            "1",
+            "4",
             null,
             Rules(15, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
         WaitingLobby(
             "2",
-            "2",
+            "5",
             null,
             Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
         ),
         WaitingLobby(
             "3",
-            "3",
+            "6",
             null,
             Rules(15, Opening.PRO, Variant.FREESTYLE)
         ),
         WaitingLobby(
             "4",
-            "4",
+            "7",
             null,
             Rules(19, Opening.PRO, Variant.FREESTYLE)
         ),
         WaitingLobby(
             "5",
-            "5",
+            "8",
             null,
             Rules(15, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
         ),
         WaitingLobby(
             "6",
-            "6",
+            "9",
             null,
             Rules(19, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
         ),

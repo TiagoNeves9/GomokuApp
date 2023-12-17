@@ -54,3 +54,5 @@ class InvalidLogin : FetchGomokuException("invalid credentials")
 class UnknownLobby : FetchGomokuException("Lobby not found")
 
 class UnknownUser : FetchGomokuException("User not found")
+
+class ApiErrorException(message: String, cause: Throwable? = null) : FetchGomokuException(message, cause)

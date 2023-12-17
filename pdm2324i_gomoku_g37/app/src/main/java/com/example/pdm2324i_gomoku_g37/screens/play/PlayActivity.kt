@@ -13,6 +13,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
+import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
+import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.idle
@@ -75,9 +77,11 @@ class PlayActivity : ComponentActivity() {
 
         setContent {
             val currentLobbies by viewModel.lobbiesFlow.collectAsState(initial = idle())
+            val currentScreenState: LobbyScreenState = viewModel.screenState.collectAsState(OutsideLobby).value
             GomokuTheme {
                 PlayScreen(
                     lobbies = currentLobbies,
+                    lobbyScreenState = currentScreenState,
                     navigation = NavigationHandlers(
                         onBackRequested = { finish() },
                         onInfoRequested = {
@@ -88,7 +92,8 @@ class PlayActivity : ComponentActivity() {
                         }
                     ),
                     onJoinRequested = viewModel::enterLobby,
-                    onCreateRequested = { NewLobbyActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
+                    onCreateRequested = { NewLobbyActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
+                    onDismissLobby = viewModel::leaveLobby
                 )
             }
         }
