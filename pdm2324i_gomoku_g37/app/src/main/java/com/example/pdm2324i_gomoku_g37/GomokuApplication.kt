@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.pdm2324i_gomoku_g37.domain.UserInfoRepository
 import com.example.pdm2324i_gomoku_g37.service.FakeGomokuService
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
+import com.example.pdm2324i_gomoku_g37.service.RealGomokuService
 import com.example.pdm2324i_gomoku_g37.storage.UserInfoDataStore
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
@@ -52,7 +53,8 @@ class GomokuApplication : Application(), GomokuDependenciesContainer {
      * The HTTP client used to perform HTTP requests
      */
     override val httpClient: OkHttpClient =
-        OkHttpClient.Builder()
+        OkHttpClient
+            .Builder()
             .callTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
             .build()
 
@@ -64,8 +66,8 @@ class GomokuApplication : Application(), GomokuDependenciesContainer {
     /**
      * The service used for the gomoku app
      */
-    override val gomokuService: GomokuService =
-        FakeGomokuService()
+    //override val gomokuService: GomokuService = FakeGomokuService()
+    override val gomokuService: GomokuService = RealGomokuService(httpClient, gson)
 
     /**
      * The UserInfo repository

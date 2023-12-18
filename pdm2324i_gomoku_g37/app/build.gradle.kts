@@ -80,8 +80,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
     testImplementation("io.mockk:mockk-android:1.13.8")

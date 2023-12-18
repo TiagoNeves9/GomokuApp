@@ -8,7 +8,9 @@ import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.service.utils.ProblemJson
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType
 
 interface GomokuService {
     /**
@@ -55,4 +57,14 @@ class UnknownLobby : FetchGomokuException("Lobby not found")
 
 class UnknownUser : FetchGomokuException("User not found")
 
-class ApiErrorException(message: String, cause: Throwable? = null) : FetchGomokuException(message, cause)
+class FetchGomokuError(message: String, cause: Throwable) : FetchGomokuException(message, cause)
+
+class UnexpectedResponseException(
+    contentType: MediaType? = null,
+) : FetchGomokuException(message = "Unexpected content type [$contentType] response from the API.")
+
+class ApiUnauthorizedException() : FetchGomokuException("Unauthorized Access")
+
+class ApiErrorException(
+    val problemJson: ProblemJson
+) : FetchGomokuException(message = problemJson.detail ?: "Something went wrong")

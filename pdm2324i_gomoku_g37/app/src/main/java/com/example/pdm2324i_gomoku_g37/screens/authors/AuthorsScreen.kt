@@ -146,13 +146,12 @@ fun DisplayAuthor(
             .padding(DEFAULT_CONTENT_PADDING),
         Arrangement.Center,
     ) {
-        LoadImageByName(author.img)
+        LoadImageByNumber(author.number)
     }
 
     CustomContainerView {
         Text(
-            text = "\t${author.number}\t-\t${author.name}\n" +
-                    "\t${author.desc}\n",
+            text = "\t${author.number}\t-\t${author.name}\n",
             modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
@@ -219,8 +218,8 @@ private fun AuthorNavigationButton(
     }
 
 @Composable
-private fun LoadImageByName(imageName: String) {
-    val resourceId = resourceMap[imageName]
+private fun LoadImageByNumber(imageNumber: Int) {
+    val resourceId = resourceMap[imageNumber]
     resourceId?.let { id ->
         val painter: Painter = painterResource(id)
         Image(

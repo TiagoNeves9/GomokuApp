@@ -1,17 +1,29 @@
 package com.example.pdm2324i_gomoku_g37.service.utils
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import org.springframework.http.HttpMethod
+import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.internal.http.HttpMethod
 import java.net.URI
 
+private const val APPLICATION_TYPE = "application"
+private const val SIREN_SUBTYPE = "vnd.siren+json"
+
+val SirenMediaType = "$APPLICATION_TYPE/$SIREN_SUBTYPE".toMediaType()
+
 data class SirenModel<T>(
-    @get:JsonProperty("class")
+    @SerializedName("class")
     val clazz: List<String>,
     val properties: T,
     val links: List<LinkModel>,
     val entities: List<EntityModel<*>>,
     val actions: List<ActionModel>
-)
+) {
+    companion object {
+        inline fun <reified T> getType(): TypeToken<SirenModel<T>> =
+            object : TypeToken<SirenModel<T>>() { }
+    }
+}
 
 data class LinkModel(
     val rel: List<String>,
@@ -106,7 +118,7 @@ class ActionBuilderScope(
     fun hiddenField(name: String, value: String) =
         fields.add(FieldModel(name, "hidden", value))
 
-    fun build() = ActionModel(name, href.toASCIIString(), method.name(), type, fields)
+    fun build() = ActionModel(name, href.toASCIIString(), method.toString(), type, fields)
 }
 
 fun <T> siren(value: T, block: SirenBuilderScope<T>.() -> Unit): SirenModel<T> {

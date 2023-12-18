@@ -136,22 +136,16 @@ object GomokuAuthors {
         Author(
             48292,
             "Tiago Neves",
-            "O melhor programador",
-            "img_tiago",
             "a48292@alunos.isel.pt"
         ),
         Author(
             48333,
             "Tomás Barroso",
-            "O programador mediano",
-            "img_tomas",
             "a48333@alunos.isel.pt"
         ),
         Author(
             48264,
             "João Pereira",
-            "O pior programador",
-            "img_joao",
             "a48264@alunos.isel.pt"
         )
     )
