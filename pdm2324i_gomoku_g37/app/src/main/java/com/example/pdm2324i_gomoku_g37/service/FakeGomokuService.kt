@@ -13,6 +13,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Turn
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
@@ -61,9 +62,10 @@ class FakeGomokuService : GomokuService {
         return GomokuUsers.createToken(user.id, username)
     }
 
-    override suspend fun fetchRankings(): GomokuRankings.Rankings {
+    override suspend fun fetchRankings(): List<UserStatistics> {
         delay(FAKE_SERVICE_DELAY)
-        return GomokuRankings.rankings.first()
+        //TODO FIX
+        return emptyList()
     }
 
     override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = flow {

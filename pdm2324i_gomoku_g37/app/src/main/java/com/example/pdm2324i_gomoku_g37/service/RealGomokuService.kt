@@ -1,32 +1,40 @@
 package com.example.pdm2324i_gomoku_g37.service
 
-import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
-import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.GameInfo
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
+import com.example.pdm2324i_gomoku_g37.domain.dtos.AboutDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.AboutDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AuthorsDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AuthorsDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbiesDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbiesDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.toUserInfo
+import com.example.pdm2324i_gomoku_g37.domain.dtos.toWaitingLobby
+import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
+import com.example.pdm2324i_gomoku_g37.domain.toVariantString
 import com.example.pdm2324i_gomoku_g37.service.utils.PathTemplate
 import com.example.pdm2324i_gomoku_g37.service.utils.ProblemJson
-import com.example.pdm2324i_gomoku_g37.service.utils.SirenMediaType
-import com.example.pdm2324i_gomoku_g37.service.utils.SirenModel
 import com.example.pdm2324i_gomoku_g37.service.utils.plus
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -53,6 +61,39 @@ class RealGomokuService(
         buildRequest(url = baseRequestUrl + URI(PathTemplate.LOBBIES))
     }
 
+    private val apiInfoRequest by lazy {
+        buildRequest(url = baseRequestUrl + URI(PathTemplate.ABOUT))
+    }
+
+    private fun createSignUpRequest(username: String, password: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + URI(PathTemplate.CREATE_USER),
+            method = "POST",
+            body = makeSignUpLoginBody(username, password)
+        )
+    }
+
+    private fun createLoginRequest(username: String, password: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + URI(PathTemplate.LOGIN),
+            method = "POST",
+            body = makeSignUpLoginBody(username, password)
+        )
+    }
+
+    private val rankingsRequest by lazy {
+        buildRequest(url = baseRequestUrl + URI(PathTemplate.RANKINGS))
+    }
+
+    private fun createLobbyRequest(token: String, rules: Rules) = lazy {
+        buildRequest(
+            url = baseRequestUrl + URI(PathTemplate.START),
+            method = "POST",
+            body = makeCreateLobbyBody(rules.boardDim, rules.opening.toOpeningString(), rules.variant.toVariantString()),
+            token = token
+        )
+    }
+
     override suspend fun fetchAuthors(): List<Author> = authorsRequest.send { body ->
         gson.fromJson<AuthorsDto>(body.string(), AuthorsDtoType.type)
     }.properties.authors
@@ -61,24 +102,29 @@ class RealGomokuService(
         gson.fromJson<LobbiesDto>(body.string(), LobbiesDtoType.type)
     }.properties.lobbyList
 
-    override suspend fun fetchApiInfo(): String {
-        TODO("Not yet implemented")
-    }
+    override suspend fun fetchApiInfo(): String = apiInfoRequest.send { body ->
+        gson.fromJson<AboutDto>(body.string(), AboutDtoType.type)
+    }.properties.version
 
-    override suspend fun signUp(username: String, password: String): UserInfo {
-        TODO("Not yet implemented")
-    }
+    override suspend fun signUp(username: String, password: String): UserInfo =
+        createSignUpRequest(username, password).value.send { body ->
+            gson.fromJson<UserInfoDto>(body.string(), UserInfoDtoType.type)
+        }.properties.toUserInfo()
 
-    override suspend fun login(username: String, password: String): UserInfo {
-        TODO("Not yet implemented")
-    }
+    override suspend fun login(username: String, password: String): UserInfo =
+        createLoginRequest(username, password).value.send { body ->
+            gson.fromJson<UserInfoDto>(body.string(), UserInfoDtoType.type)
+        }.properties.toUserInfo()
 
-    override suspend fun fetchRankings(): GomokuRankings.Rankings {
-        TODO("Not yet implemented")
-    }
+    override suspend fun fetchRankings(): List<UserStatistics> = rankingsRequest.send { body ->
+        gson.fromJson<RankingsDto>(body.string(), RankingsDtoType.type)
+    }.properties.rankingList
 
-    override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> {
-        TODO("Not yet implemented")
+    override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = flow {
+        val result = createLobbyRequest(token, rules).value.send { body ->
+            gson.fromJson<LobbyDto>(body.string(), LobbyDtoType.type)
+        }.properties.toWaitingLobby()
+        emit(result)
     }
 
     override suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby {

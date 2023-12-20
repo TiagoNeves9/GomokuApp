@@ -9,6 +9,7 @@ import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.service.utils.ProblemJson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType
@@ -27,7 +28,7 @@ interface GomokuService {
 
     suspend fun login(username: String, password: String): UserInfo
 
-    suspend fun fetchRankings() : GomokuRankings.Rankings
+    suspend fun fetchRankings(): List<UserStatistics>
 
     suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby>
 
