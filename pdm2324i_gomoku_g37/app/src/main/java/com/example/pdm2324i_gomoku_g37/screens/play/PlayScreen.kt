@@ -47,6 +47,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
+import com.example.pdm2324i_gomoku_g37.service.GomokuLobbies
 
 
 val myPadding = 10.dp
@@ -125,16 +126,12 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
         contentPadding = PaddingValues(myPadding)
     ) {
         items(lobbies) { lobby ->
-            val guestUserId: String? = lobby.guestUserId
-            val guestUserText =
-                if (guestUserId != null) "\t\t\t\tGuest ID: $guestUserId"
-                else "Waiting for a\n\tsecond player"
             Row(
                 Modifier.fillMaxWidth(),
                 Arrangement.Center,
                 Alignment.CenterVertically
             ) {
-                val boardDim = lobby.rules.boardDim
+                val boardDim = lobby.boardDim
                 Button(
                     onClick = { onJoinRequested(lobby) },
                     modifier = Modifier
@@ -147,16 +144,15 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
                     )
                     Text(
                         text = "Lobby ID ${lobby.lobbyId}\n" +
-                                "Host ID${lobby.hostUserId}\n" +
-                                "$guestUserText\t\t",
+                                "Host ID${lobby.hostUserId}\n",
                         fontSize = BUTTON_NAME_SIZE,
                         textAlign = TextAlign.Center
                     )
                     Text(
                         text = "Rules:\n" +
                                 "\tBoard dimension - $boardDim x $boardDim\n" +
-                                "\tOpening - ${lobby.rules.opening}\n" +
-                                "\tVariant - ${lobby.rules.variant}",
+                                "\tOpening - ${lobby.opening}\n" +
+                                "\tVariant - ${lobby.variant}",
                         fontSize = BUTTON_NAME_SIZE,
                         textAlign = TextAlign.Center
                     )
@@ -175,8 +171,8 @@ fun LoadingView() =
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun PlayScreenPreview() {
-    val waitingLobby0 = WaitingLobby("1", "1", null, Rules(15, Opening.FREESTYLE, Variant.FREESTYLE))
-    val waitingLobby1 = WaitingLobby("2", "2", "1", Rules(15, Opening.PRO, Variant.FREESTYLE))
+    val waitingLobby0 = GomokuLobbies.lobbies[0]
+    val waitingLobby1 = GomokuLobbies.lobbies[1]
     val lobbies = loaded(Result.success(listOf(waitingLobby0, waitingLobby1)))
     PlayScreen(lobbies)
 }

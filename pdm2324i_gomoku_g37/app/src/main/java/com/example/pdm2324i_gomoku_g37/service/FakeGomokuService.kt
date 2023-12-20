@@ -3,6 +3,7 @@ package com.example.pdm2324i_gomoku_g37.service
 import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
+import com.example.pdm2324i_gomoku_g37.domain.GameInfo
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
@@ -17,6 +18,8 @@ import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.domain.toGameDto
+import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
+import com.example.pdm2324i_gomoku_g37.domain.toVariantString
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.delay
@@ -66,7 +69,10 @@ class FakeGomokuService : GomokuService {
     override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = flow {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
         val lobbyId = GomokuLobbies.createLobby(user.id, rules)
-        val lobby = WaitingLobby(lobbyId, user.id, null, rules)
+        val lobby = WaitingLobby(
+            lobbyId, user.id, rules.boardDim,
+            rules.opening.toOpeningString(), rules.variant.toVariantString()
+        )
         emit(lobby)
     }
 
@@ -78,14 +84,16 @@ class FakeGomokuService : GomokuService {
         } ?: throw UnknownLobby()
     }
 
-    override suspend fun enterLobby(token: String, lobbyId: String): Flow<ReadyLobby> = flow {
+    override suspend fun enterLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> = flow {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
-        val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId && lobby.guestUserId == null
+        val lobby = GomokuLobbies.lobbies.firstOrNull { l ->
+            l.lobbyId == lobby.lobbyId
         } ?: throw UnknownLobby()
 
-        GomokuLobbies.updateGuestUser(user.id, lobby)
+        //GomokuLobbies.updateGuestUser(user.id, lobby)
+
+        //TODO apagar lobby e criar jogo
 
         val game = GomokuGames.games.firstOrNull { game ->
             game.users.second.first.id == user.id
@@ -98,15 +106,10 @@ class FakeGomokuService : GomokuService {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId && (lobby.guestUserId == user.id || lobby.hostUserId == user.id)
+            lobby.lobbyId == lobbyId && lobby.hostUserId == user.id
         } ?: throw UnknownLobby()
 
-        return if (lobby.guestUserId == user.id) {
-            LobbyId(GomokuLobbies.updateGuestUser(null, lobby).lobbyId)
-        } else {
-            //apagar lobby porque é o host
-            GomokuLobbies.deleteLobby(lobby)
-        }
+        return GomokuLobbies.deleteLobby(lobby)
     }
 
     override suspend fun fetchUser(token: String, userId: String): User {
@@ -115,19 +118,12 @@ class FakeGomokuService : GomokuService {
         return GomokuUsers.users.firstOrNull { it.id == userId } ?: throw UnknownUser()
     }
 
-    override suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game {
-        GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+    override suspend fun isGameCreated(token: String, lobbyId: String): String {
+        TODO("Not yet implemented")
+    }
 
-        val hostPlayer = Player(host, Turn.BLACK_PIECE)
-        val guestPlayer = Player(joined, Turn.WHITE_PIECE)
-
-        val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId && lobby.hostUserId == host.id && lobby.guestUserId != null
-        } ?: throw UnknownLobby()
-
-        val board = createBoard(boardSize = lobby.rules.boardDim)
-
-        return GomokuGames.createGame(Pair(hostPlayer, guestPlayer), board, hostPlayer, 0, Instant.now(), lobby.rules)
+    override suspend fun getGameById(token: String, gameId: String): GameInfo {
+        TODO("Not yet implemented")
     }
 }
 
@@ -156,38 +152,44 @@ object GomokuLobbies {
         WaitingLobby(
             "1",
             "4",
-            null,
-            Rules(15, Opening.FREESTYLE, Variant.FREESTYLE)
+            15,
+            Opening.FREESTYLE.toOpeningString(),
+            Variant.FREESTYLE.toVariantString()
         ),
         WaitingLobby(
             "2",
             "5",
-            null,
-            Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
+            19,
+            Opening.FREESTYLE.toOpeningString(),
+            Variant.FREESTYLE.toVariantString()
         ),
         WaitingLobby(
             "3",
             "6",
-            null,
-            Rules(15, Opening.PRO, Variant.FREESTYLE)
+            15,
+            Opening.PRO.toOpeningString(),
+            Variant.FREESTYLE.toVariantString()
         ),
         WaitingLobby(
             "4",
             "7",
-            null,
-            Rules(19, Opening.PRO, Variant.FREESTYLE)
+            19,
+            Opening.PRO.toOpeningString(),
+            Variant.FREESTYLE.toVariantString()
         ),
         WaitingLobby(
             "5",
             "8",
-            null,
-            Rules(15, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
+            15,
+            Opening.FREESTYLE.toOpeningString(),
+            Variant.SWAP_AFTER_FIRST.toVariantString()
         ),
         WaitingLobby(
             "6",
             "9",
-            null,
-            Rules(19, Opening.FREESTYLE, Variant.SWAP_AFTER_FIRST)
+            19,
+            Opening.FREESTYLE.toOpeningString(),
+            Variant.SWAP_AFTER_FIRST.toVariantString()
         ),
     )
 
@@ -196,16 +198,9 @@ object GomokuLobbies {
 
     fun createLobby(userId: String, rules: Rules): String {
         val lobbyId = generateRandomString()
-        val waitingLobby = WaitingLobby(lobbyId, userId, null, rules)
+        val waitingLobby = WaitingLobby(lobbyId, userId, rules.boardDim, rules.opening.toOpeningString(), rules.variant.toVariantString())
         _lobbies.add(waitingLobby)
         return lobbyId
-    }
-
-    fun updateGuestUser(userId: String?, lobby: WaitingLobby): WaitingLobby {
-        val newLobby = WaitingLobby(lobby.lobbyId, lobby.hostUserId, userId, lobby.rules)
-        _lobbies.remove(lobby)
-        _lobbies.add(newLobby)
-        return newLobby
     }
 
     fun deleteLobby(lobby: WaitingLobby): LobbyId {

@@ -2,6 +2,7 @@ package com.example.pdm2324i_gomoku_g37.domain
 
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.Column
 import com.example.pdm2324i_gomoku_g37.domain.board.Row
@@ -24,6 +25,31 @@ data class Game(
     val now: Instant,
     val rules: Rules
 )
+
+data class GameInfo(
+    val id: String,
+    val userB: User,
+    val userW: User,
+    val turn: String,
+    val rules: Rules,
+    val boardCells: Map<Cell, Turn>,
+    val boardState: String
+)
+
+fun GameInfo.toGame(): Game {
+    val players = Pair(Player(userB, Turn.BLACK_PIECE), Player(userW, Turn.WHITE_PIECE))
+    val currentPlayer: Player = if (userB.username == turn) Player(userB, Turn.BLACK_PIECE)
+                        else Player(userW, Turn.WHITE_PIECE)
+    return Game(
+        id,
+        players,
+        BoardRun(boardCells, currentPlayer.second, rules.boardDim),
+        currentPlayer,
+        0,
+        Instant.now(),
+        rules
+    )
+}
 
 fun GameDto.toGame(): Game = Game(
     gameId = gameId,

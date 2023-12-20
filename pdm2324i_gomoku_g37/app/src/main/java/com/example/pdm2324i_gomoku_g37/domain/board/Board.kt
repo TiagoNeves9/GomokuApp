@@ -1,10 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
-import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
-import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Turn
-import com.example.pdm2324i_gomoku_g37.domain.Variant
 
 
 const val BOARD_DIM = 15
@@ -22,28 +19,88 @@ sealed class Board(val positions: Map<Cell, Turn>, val boardSize: Int) {
 
         //TODO: Catch do error em vez de throw
         return if (cell.rowIndex !in 0 until boardSize || cell.colIndex !in 0 until boardSize)
-            throw IllegalArgumentException("Invalid cell (outside of the board dimensions)!")
+            throw Exceptions.PlayNotAllowedException("Invalid cell (outside of the board dimensions)!")
         else if (cell.toString() in this.positions.map { it.key.toString() })
-            throw IllegalArgumentException("Square already occupied!")
+            throw Exceptions.WrongPlayException("Square already occupied!")
         else {
             val newMap: Map<Cell, Turn> = this.positions + mapOf(cell to this.turn)
             BoardRun(newMap, this.turn.other(), boardSize)
         }
     }
+
+    /**
+     *      Serialize Board positions to a string.
+     * This function turns Board positions from a Map<Cell, Turn>
+     * to a string representation of the board.
+     */
+    fun positionsToString(): String {
+        var str = ""
+        positions.forEach {
+            val key = if (it.key.rowIndex <= 9) "0${it.key}" else "${it.key}"
+            str += if (it.value == Turn.BLACK_PIECE) "${key}B"
+            else "${key}W"
+        }
+        return str
+    }
+
+    /**
+     *     Serialize Board type to a string.
+     * This function turns Board type (run, draw or winner)
+     * to a string representation of the board's type.
+     */
+    fun typeToString(): String {
+        return when (this) {
+            is BoardRun -> "RUNNING"
+            is BoardDraw -> "DRAW"
+            is BoardWin -> {
+                if (this.winner.second == Turn.BLACK_PIECE) "BLACK_WON"
+                else "WHITE_WON"
+            }
+        }
+    }
 }
 
-class BoardRun(positions: Map<Cell, Turn>, val turn: Turn, boardSize: Int) :
-    Board(positions, boardSize) {
+/**
+ *    Deserialize Board positions from a string.
+ * This function turns Board positions from a String
+ * to a Map<Cell, Piece>.
+ */
+fun String.stringToPositions(boardSize: Int): Map<Cell, Turn> {
+    check(this.length % 4 == 0) { "Invalid string length." }
+    val map = mutableMapOf<Cell, Turn>()
+    var i = 0
+    while (i + 3 < this.length) {
+        val row = (this[i].toString() + this[i + 1].toString())
+        val col = this[i + 2].toString()
+        val cell = (row + col).toCell(boardSize)
+        val piece = if (this[i + 3] == 'B') Turn.BLACK_PIECE else Turn.WHITE_PIECE
+        map += mapOf(cell to piece)
+        i += 4  //each cell-piece pair is represented by 4 chars
+    }
+    return map
+}
+
+/**
+ *    Deserialize Board type from a string.
+ * This function turn a string representation of the board's type
+ * to a Board type (BoardRun, BoardDraw or BoardWin).
+ */
+fun String.stringToType(lastBoard: Board, lastPlayer: Player): Board {
+    return when (this) {
+        "RUNNING" -> BoardRun(lastBoard.positions, lastPlayer.second, lastBoard.boardSize)
+        "DRAW" -> BoardDraw(lastBoard.positions, lastBoard.boardSize)
+        "BLACK_WON" -> BoardWin(lastBoard.positions, lastPlayer, lastBoard.boardSize)
+        "WHITE_WON" -> BoardWin(lastBoard.positions, lastPlayer, lastBoard.boardSize)
+        else -> throw IllegalArgumentException("Invalid board type.")
+    }
+}
+
+class BoardRun(positions: Map<Cell, Turn>, val turn: Turn, boardSize: Int) : Board(positions, boardSize) {
     fun checkWin(lastMove: Cell): Boolean =
         positions.size >= 2 * N_ON_ROW - 1 && (
                 checkWinInDir(lastMove, Direction.UP, Direction.DOWN, boardSize) ||
                         checkWinInDir(lastMove, Direction.LEFT, Direction.RIGHT, boardSize) ||
-                        checkWinInDir(
-                            lastMove,
-                            Direction.UP_LEFT,
-                            Direction.DOWN_RIGHT,
-                            boardSize
-                        ) ||
+                        checkWinInDir(lastMove, Direction.UP_LEFT, Direction.DOWN_RIGHT, boardSize) ||
                         checkWinInDir(lastMove, Direction.UP_RIGHT, Direction.DOWN_LEFT, boardSize)
                 )
 
@@ -74,13 +131,11 @@ class BoardRun(positions: Map<Cell, Turn>, val turn: Turn, boardSize: Int) :
     }
 }
 
-class BoardWin(positions: Map<Cell, Turn>, val winner: Player, boardSize: Int) :
-    Board(positions, boardSize)
+class BoardWin(positions: Map<Cell, Turn>, val winner: Player, boardSize: Int) : Board(positions, boardSize)
 
 class BoardDraw(positions: Map<Cell, Turn>, boardSize: Int) : Board(positions, boardSize)
 
-fun createBoard(firstTurn: Turn = Turn.BLACK_PIECE, boardSize: Int) =
-    BoardRun(mapOf(), firstTurn, boardSize)
+fun createBoard(firstTurn: Turn = Turn.BLACK_PIECE, boardSize: Int) = BoardRun(mapOf(), firstTurn, boardSize)
 
 fun Int.boardSizeString(): String = if (this == BOARD_DIM) "15x15" else "19x19"
 

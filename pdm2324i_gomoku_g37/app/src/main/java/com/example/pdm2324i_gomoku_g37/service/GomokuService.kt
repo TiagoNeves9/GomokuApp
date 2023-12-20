@@ -2,6 +2,7 @@ package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
+import com.example.pdm2324i_gomoku_g37.domain.GameInfo
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
@@ -32,13 +33,15 @@ interface GomokuService {
 
     suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby
 
-    suspend fun enterLobby(token: String, lobbyId: String): Flow<ReadyLobby>
+    suspend fun enterLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby>
 
     suspend fun leaveLobby(token: String, lobbyId: String): LobbyId
 
     suspend fun fetchUser(token: String, userId: String): User
 
-    suspend fun createGame(token: String, lobbyId: String, host: User, joined: User): Game
+    suspend fun isGameCreated(token: String, lobbyId: String): String
+
+    suspend fun getGameById(token: String, gameId: String): GameInfo
 }
 
 /**
@@ -57,7 +60,7 @@ class UnknownLobby : FetchGomokuException("Lobby not found")
 
 class UnknownUser : FetchGomokuException("User not found")
 
-class FetchGomokuError(message: String, cause: Throwable) : FetchGomokuException(message, cause)
+class FetchGomokuError(message: String, cause: Throwable?) : FetchGomokuException(message, cause)
 
 class UnexpectedResponseException(
     contentType: MediaType? = null,

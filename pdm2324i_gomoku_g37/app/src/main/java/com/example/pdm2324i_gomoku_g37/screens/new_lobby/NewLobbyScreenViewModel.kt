@@ -23,6 +23,7 @@ import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
+import com.example.pdm2324i_gomoku_g37.domain.toGame
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -112,34 +113,16 @@ class NewLobbyScreenViewModel(
             "Cannot enter lobby twice"
         }
 
-        val rules =
-            Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
+        val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
 
         viewModelScope.launch {
             try {
                 service.createLobby(userInfo.token, rules).collect { newLobby ->
                     _screenStateFlow.value = EnteringLobby
                     while (_screenStateFlow.value !is ReadyLobby) {
-                        val lobbyInfo =
-                            service.lobbyInfo(userInfo.token, newLobby.lobbyId)
-                        if (lobbyInfo.guestUserId != null) {
-                            val hostPlayer: Player = Player(
-                                User(userInfo.id, userInfo.username),
-                                Turn.BLACK_PIECE
-                            )
-
-                            val guestUserInfo: User =
-                                service.fetchUser(userInfo.token, lobbyInfo.guestUserId)
-                            val guestPlayer: Player =
-                                Player(guestUserInfo, Turn.WHITE_PIECE)
-
-                            val newGame: Game = service.createGame(
-                                userInfo.token,
-                                newLobby.lobbyId,
-                                hostPlayer.first,
-                                guestPlayer.first
-                            )
-
+                        val isGameCreated = service.isGameCreated(userInfo.token, newLobby.lobbyId)
+                        if (isGameCreated == "CREATED") {
+                            val newGame = service.getGameById(userInfo.token, newLobby.lobbyId).toGame()
                             _screenStateFlow.value = ReadyLobby(newGame)
                         }
                         delay(POLLING_INTERVAL_VALUE)

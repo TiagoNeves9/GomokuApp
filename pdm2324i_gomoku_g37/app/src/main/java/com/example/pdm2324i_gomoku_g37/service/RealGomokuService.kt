@@ -3,6 +3,7 @@ package com.example.pdm2324i_gomoku_g37.service
 import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
+import com.example.pdm2324i_gomoku_g37.domain.GameInfo
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
@@ -11,6 +12,8 @@ import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AuthorsDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AuthorsDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbiesDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbiesDtoType
 import com.example.pdm2324i_gomoku_g37.service.utils.PathTemplate
 import com.example.pdm2324i_gomoku_g37.service.utils.ProblemJson
 import com.example.pdm2324i_gomoku_g37.service.utils.SirenMediaType
@@ -18,6 +21,7 @@ import com.example.pdm2324i_gomoku_g37.service.utils.SirenModel
 import com.example.pdm2324i_gomoku_g37.service.utils.plus
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
@@ -45,17 +49,17 @@ class RealGomokuService(
         buildRequest(url = baseRequestUrl + URI(PathTemplate.AUTHORS))
     }
 
-    override suspend fun fetchAuthors(): List<Author> {
-        val authorsDto = authorsRequest.send { body ->
-            gson.fromJson<AuthorsDto>(body.string(), AuthorsDtoType.type)
-        }
-        Log.v("fetch_authors", authorsDto.toString())
-        return authorsDto.properties.authors
+    private val lobbiesRequest by lazy {
+        buildRequest(url = baseRequestUrl + URI(PathTemplate.LOBBIES))
     }
 
-    override suspend fun fetchLobbies(): List<WaitingLobby> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun fetchAuthors(): List<Author> = authorsRequest.send { body ->
+        gson.fromJson<AuthorsDto>(body.string(), AuthorsDtoType.type)
+    }.properties.authors
+
+    override suspend fun fetchLobbies(): List<WaitingLobby> = lobbiesRequest.send { body ->
+        gson.fromJson<LobbiesDto>(body.string(), LobbiesDtoType.type)
+    }.properties.lobbyList
 
     override suspend fun fetchApiInfo(): String {
         TODO("Not yet implemented")
@@ -81,9 +85,10 @@ class RealGomokuService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun enterLobby(token: String, lobbyId: String): Flow<ReadyLobby> {
+    override suspend fun enterLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> {
         TODO("Not yet implemented")
     }
+
 
     override suspend fun leaveLobby(token: String, lobbyId: String): LobbyId {
         TODO("Not yet implemented")
@@ -93,12 +98,11 @@ class RealGomokuService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun createGame(
-        token: String,
-        lobbyId: String,
-        host: User,
-        joined: User
-    ): Game {
+    override suspend fun isGameCreated(token: String, lobbyId: String): String {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getGameById(token: String, gameId: String): GameInfo {
         TODO("Not yet implemented")
     }
 
@@ -113,12 +117,8 @@ class RealGomokuService(
             override fun onResponse(call: Call, response: Response) {
                 try {
                     val body = response.body
-                    if (!response.isSuccessful || body == null /*|| body.contentType() != SirenMediaType*/) {
-                        val problemJson = gson.fromJson(body.toString(), ProblemJson::class.java)
-                        if (problemJson == null && response.code == 401)
-                            continuation.resumeWithException(ApiUnauthorizedException())
-                        else
-                            continuation.resumeWithException(ApiErrorException(problemJson = problemJson))
+                    if (!response.isSuccessful || body == null) {
+                        handleUnsuccessfulResponse(body, response.code, continuation)
                     } else {
                         continuation.resumeWith(Result.success(handler(body)))
                     }
@@ -129,6 +129,12 @@ class RealGomokuService(
         })
 
         continuation.invokeOnCancellation { call.cancel() }
+    }
+
+    private fun <T> handleUnsuccessfulResponse(body: ResponseBody?, code: Int, continuation: CancellableContinuation<T>) {
+        val problemJson = gson.fromJson(body?.string(), ProblemJson::class.java)
+        if (problemJson == null && code == 401) continuation.resumeWithException(ApiUnauthorizedException())
+        else continuation.resumeWithException(ApiErrorException(problemJson = problemJson))
     }
 
     private fun buildRequest(

@@ -1,7 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain
 
-import com.example.pdm2324i_gomoku_g37.domain.dtos.GameDto
-
 sealed class LobbyScreenState
 
 data object EnteringLobby : LobbyScreenState()
@@ -15,6 +13,7 @@ data class LobbyAccessError(val cause: Throwable) : LobbyScreenState()
 class WaitingLobby(
     val lobbyId: String,
     val hostUserId: String,
-    val guestUserId: String?,
-    val rules: Rules
+    val boardDim: Int,
+    val opening: String,
+    val variant: String
 ) : LobbyScreenState()
