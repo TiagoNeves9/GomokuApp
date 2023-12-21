@@ -23,7 +23,6 @@ import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
-import com.example.pdm2324i_gomoku_g37.domain.toGame
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -122,7 +121,7 @@ class NewLobbyScreenViewModel(
                     while (_screenStateFlow.value !is ReadyLobby) {
                         val isGameCreated = service.isGameCreated(userInfo.token, newLobby.lobbyId)
                         if (isGameCreated == "CREATED") {
-                            val newGame = service.getGameById(userInfo.token, newLobby.lobbyId).toGame()
+                            val newGame = service.getGameById(userInfo.token, newLobby.lobbyId)
                             _screenStateFlow.value = ReadyLobby(newGame)
                         }
                         delay(POLLING_INTERVAL_VALUE)

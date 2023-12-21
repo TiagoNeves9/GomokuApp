@@ -1,9 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.service
 
-import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
-import com.example.pdm2324i_gomoku_g37.domain.GameInfo
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
@@ -15,17 +13,12 @@ import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.Variant
-import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
-import com.example.pdm2324i_gomoku_g37.domain.toGameDto
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
 import com.example.pdm2324i_gomoku_g37.domain.toVariantString
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import java.time.Instant
 
@@ -96,17 +89,17 @@ class FakeGomokuService : GomokuService {
         emit(ReadyLobby(game))*/
     }
 
-    override suspend fun leaveLobby(token: String, lobbyId: String): LobbyId {
+    override suspend fun leaveLobby(token: String, lobbyId: String): String {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
             lobby.lobbyId == lobbyId && lobby.hostUserId == user.userId
         } ?: throw UnknownLobby()
 
-        return GomokuLobbies.deleteLobby(lobby)
+        return "Left Lobby"
     }
 
-    override suspend fun fetchUser(token: String, userId: String): User {
+    override suspend fun fetchUserAccount(token: String, userId: String): User {
         delay(FAKE_SERVICE_DELAY)
         GomokuUsers.getUserByToken(token) ?: throw InvalidLogin() //depende da api
         return GomokuUsers.users.firstOrNull { it.userId == userId } ?: throw UnknownUser()
@@ -116,7 +109,7 @@ class FakeGomokuService : GomokuService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getGameById(token: String, gameId: String): GameInfo {
+    override suspend fun getGameById(token: String, gameId: String): Game {
         TODO("Not yet implemented")
     }
 }
@@ -275,8 +268,6 @@ object GomokuGames {
             users = Pair(User("2", "jp", "paulinho"), User("1", "tbmaster", "jubas")),
             board = createBoard(boardSize = 19),
             currentPlayer = Player(User("2", "jp", "paulinho"), Turn.BLACK_PIECE),
-            0,
-            now = Instant.now(),
             rules = Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
         )
     )
@@ -293,7 +284,7 @@ object GomokuGames {
         rules: Rules
     ): Game {
         val gameId = generateRandomString()
-        return Game(gameId, users, board, currentPlayer, score, now, rules)
+        return Game(gameId, users, board, currentPlayer, rules)
     }
 }
 

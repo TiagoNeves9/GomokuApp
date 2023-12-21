@@ -2,9 +2,7 @@ package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
-import com.example.pdm2324i_gomoku_g37.domain.GameInfo
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
-import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.User
@@ -36,11 +34,11 @@ interface GomokuService {
 
     suspend fun leaveLobby(token: String, lobbyId: String): String
 
-    suspend fun fetchUser(token: String, userId: String): UserInfo
+    suspend fun fetchUserAccount(token: String, userId: String): User
 
     suspend fun isGameCreated(token: String, lobbyId: String): String
 
-    suspend fun getGameById(token: String, gameId: String): GameInfo
+    suspend fun getGameById(token: String, gameId: String): Game
 }
 
 /**

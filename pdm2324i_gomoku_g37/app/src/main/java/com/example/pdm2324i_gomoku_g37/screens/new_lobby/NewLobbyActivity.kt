@@ -13,7 +13,7 @@ import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
 import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
-import com.example.pdm2324i_gomoku_g37.domain.toGameDto
+import com.example.pdm2324i_gomoku_g37.domain.toLocalGameInfoDto
 import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
@@ -63,7 +63,7 @@ class NewLobbyActivity : ComponentActivity() {
         lifecycleScope.launch {
             viewModel.screenState.collect {
                 if (it is ReadyLobby) {
-                    GameActivity.navigateTo(this@NewLobbyActivity, userInfoExtra, it.game.toGameDto())
+                    GameActivity.navigateTo(this@NewLobbyActivity, userInfoExtra, it.game.toLocalGameInfoDto())
                     finish()
                 }
             }

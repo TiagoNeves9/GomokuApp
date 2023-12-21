@@ -1,7 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Author
-import com.example.pdm2324i_gomoku_g37.domain.GameInfo
+import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
@@ -25,9 +25,12 @@ import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toGame
+import com.example.pdm2324i_gomoku_g37.domain.dtos.toUser
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toUserInfo
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toWaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
@@ -134,6 +137,14 @@ class RealGomokuService(
         )
     }
 
+    private fun getGameByIdRequest(token: String, gameId: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + PathTemplate.gameById(gameId),
+            method = "GET",
+            token = token
+        )
+    }
+
     override suspend fun fetchAuthors(): List<Author> = authorsRequest.send { body ->
         gson.fromJson<AuthorsDto>(body.string(), AuthorsDtoType.type)
     }.properties.authors
@@ -170,26 +181,25 @@ class RealGomokuService(
     override suspend fun joinLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> = flow {
         val result = joinLobbyRequest(token, lobby).value.send { body ->
             gson.fromJson<GameDto>(body.string(), GameDtoType.type)
-        }.properties.toGame()
+        }.toGame()
         emit(ReadyLobby(result))
     }
-
 
     override suspend fun leaveLobby(token: String, lobbyId: String): String = leaveLobbyRequest(token).value.send { body ->
         gson.fromJson<LeaveLobbyDto>(body.string(), LeaveLobbyDtoType.type).properties.waitMessage
     }
 
-    override suspend fun fetchUser(token: String, userId: String): UserInfo = fetchUserRequest(token).value.send { body ->
-        gson.fromJson<UserInfoDto>(body.string(), UserInfoDtoType.type)
-    }.properties.toUserInfo()
+    override suspend fun fetchUserAccount(token: String, userId: String): User = fetchUserRequest(token).value.send { body ->
+        gson.fromJson<UserDto>(body.string(), UserDtoType.type)
+    }.properties.toUser()
 
     override suspend fun isGameCreated(token: String, lobbyId: String): String = isGameCreatedRequest(token, lobbyId).value.send { body ->
         gson.fromJson<IsGameCreatedDto>(body.string(), IsGameCreatedDtoType.type)
     }.properties.waitMessage
 
-    override suspend fun getGameById(token: String, gameId: String): GameInfo {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getGameById(token: String, gameId: String): Game = getGameByIdRequest(token, gameId).value.send { body ->
+        gson.fromJson<GameDto>(body.string(), GameDtoType.type)
+    }.toGame()
 
     private suspend fun <T> Request.send(handler: (ResponseBody) -> T): T = suspendCancellableCoroutine { continuation ->
         val call = client.newCall(request = this)

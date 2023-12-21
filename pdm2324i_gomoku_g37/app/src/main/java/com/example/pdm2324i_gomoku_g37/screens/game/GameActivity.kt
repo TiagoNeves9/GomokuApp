@@ -9,7 +9,6 @@ import androidx.activity.compose.setContent
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LocalGameInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toGame
-import com.example.pdm2324i_gomoku_g37.domain.toGame
 import com.example.pdm2324i_gomoku_g37.screens.common.GAME_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra

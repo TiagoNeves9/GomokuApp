@@ -14,18 +14,14 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.Column
 import com.example.pdm2324i_gomoku_g37.domain.board.Row
 import kotlinx.parcelize.Parcelize
-import java.time.Instant
-import java.util.UUID
 
 @Parcelize
 data class LocalGameInfoDto(
     val gameId: String,
-    val user1: LocalUserDto,
-    val user2: LocalUserDto,
+    val userW: LocalUserDto,
+    val userB: LocalUserDto,
     val board: LocalBoardDto,
     val currentPlayer: LocalPlayerDto,
-    val score: Int,
-    val now: Instant,
     val rules: LocalRulesDto
 ) : Parcelable
 
@@ -52,11 +48,9 @@ data class LocalRulesDto(val boardDim: Int, val opening: Opening, val variant: V
 
 fun LocalGameInfoDto.toGame(): Game = Game(
     gameId = gameId,
-    users = Pair(user1.toUser(), user2.toUser()),
+    users = Pair(userW.toUser(), userB.toUser()),
     board = board.toBoard(),
     currentPlayer = currentPlayer.toPlayer(),
-    score = score,
-    now = now,
     rules = rules.toRules()
 )
 

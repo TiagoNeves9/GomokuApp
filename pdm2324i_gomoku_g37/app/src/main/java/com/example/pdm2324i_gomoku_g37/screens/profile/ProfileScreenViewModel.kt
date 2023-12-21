@@ -1,8 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.screens.profile
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -47,7 +44,7 @@ class ProfileScreenViewModel(
             _userProfileFlow.value = loading()
             viewModelScope.launch {
                 val result: Result<User> = runCatching {
-                    service.fetchUser(userInfo.token, userInfo.id)
+                    service.fetchUserAccount(userInfo.token, userInfo.id)
                 }
                 _userProfileFlow.value = loaded(result)
             }
