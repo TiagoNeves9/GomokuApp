@@ -57,8 +57,7 @@ class RankingsActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentRankings by viewModel.rankings
-                .collectAsState(initial = idle())
+            val currentRankings by viewModel.rankings.collectAsState(initial = idle())
             GomokuTheme {
                 RankingsScreen(
                     rankings = currentRankings,

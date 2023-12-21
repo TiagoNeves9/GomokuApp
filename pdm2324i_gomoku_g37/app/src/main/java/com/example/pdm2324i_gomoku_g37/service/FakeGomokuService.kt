@@ -59,7 +59,7 @@ class FakeGomokuService : GomokuService {
     override suspend fun login(username: String, password: String): UserInfo {
         delay(FAKE_SERVICE_DELAY)
         val user = GomokuUsers.validateLogIn(username, password) ?: throw InvalidLogin()
-        return GomokuUsers.createToken(user.id, username)
+        return GomokuUsers.createToken(user.userId, username)
     }
 
     override suspend fun fetchRankings(): List<UserStatistics> {
@@ -70,23 +70,15 @@ class FakeGomokuService : GomokuService {
 
     override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = flow {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
-        val lobbyId = GomokuLobbies.createLobby(user.id, rules)
+        val lobbyId = GomokuLobbies.createLobby(user.userId, rules)
         val lobby = WaitingLobby(
-            lobbyId, user.id, rules.boardDim,
+            lobbyId, user.userId, rules.boardDim,
             rules.opening.toOpeningString(), rules.variant.toVariantString()
         )
         emit(lobby)
     }
 
-    override suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby {
-        GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
-
-        return GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId
-        } ?: throw UnknownLobby()
-    }
-
-    override suspend fun enterLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> = flow {
+    override suspend fun joinLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> = flow {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         val lobby = GomokuLobbies.lobbies.firstOrNull { l ->
@@ -97,18 +89,18 @@ class FakeGomokuService : GomokuService {
 
         //TODO apagar lobby e criar jogo
 
-        val game = GomokuGames.games.firstOrNull { game ->
-            game.users.second.first.id == user.id
+        /*val game = GomokuGames.games.firstOrNull { game ->
+            game.users.second.first.id == user.userId
         } ?: throw UnknownLobby()
 
-        emit(ReadyLobby(game))
+        emit(ReadyLobby(game))*/
     }
 
     override suspend fun leaveLobby(token: String, lobbyId: String): LobbyId {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId && lobby.hostUserId == user.id
+            lobby.lobbyId == lobbyId && lobby.hostUserId == user.userId
         } ?: throw UnknownLobby()
 
         return GomokuLobbies.deleteLobby(lobby)
@@ -117,7 +109,7 @@ class FakeGomokuService : GomokuService {
     override suspend fun fetchUser(token: String, userId: String): User {
         delay(FAKE_SERVICE_DELAY)
         GomokuUsers.getUserByToken(token) ?: throw InvalidLogin() //depende da api
-        return GomokuUsers.users.firstOrNull { it.id == userId } ?: throw UnknownUser()
+        return GomokuUsers.users.firstOrNull { it.userId == userId } ?: throw UnknownUser()
     }
 
     override suspend fun isGameCreated(token: String, lobbyId: String): String {
@@ -225,9 +217,9 @@ object GomokuRankings {
 
 object GomokuUsers {
     private val _users: MutableList<User> = mutableListOf(
-        User("1", "tbmaster"),
-        User("2", "jp"),
-        User("3", "noobmaster69")
+        User("1", "tbmaster", "jubas"),
+        User("2", "jp", "paulinho"),
+        User("3", "noobmaster69", "qwerty")
     )
 
     val users: List<User>
@@ -244,7 +236,7 @@ object GomokuUsers {
 
     fun validateLogIn(username: String, password: String): User? =
         _users.firstOrNull { user ->
-            user.username == username && _passwords[user.id] == password
+            user.username == username && _passwords[user.userId] == password
         }
 
     private val _tokens: MutableMap<String, String> = mutableMapOf()
@@ -262,14 +254,14 @@ object GomokuUsers {
         val id: String? = _tokens.entries.firstOrNull { (_, v) ->
             v == token
         }?.key
-        return _users.firstOrNull { it.id == id }
+        return _users.firstOrNull { it.userId == id }
     }
 
     fun createUser(username: String, password: String): UserInfo? {
         if (users.firstOrNull { it.username == username } != null) return null
         val userId: String = generateRandomString()
         val token = generateRandomString()
-        _users.add(User(userId, username))
+        _users.add(User(userId, username, password))
         _passwords[userId] = password
         _tokens[userId] = token
         return UserInfo(userId, username, token)
@@ -280,9 +272,9 @@ object GomokuGames {
     private val _games: MutableList<Game> = mutableListOf(
         Game(
             gameId = "1",
-            users = Pair(Player(User("2", "jp"), Turn.BLACK_PIECE), Player(User("1", "tbmaster"), Turn.WHITE_PIECE)),
+            users = Pair(User("2", "jp", "paulinho"), User("1", "tbmaster", "jubas")),
             board = createBoard(boardSize = 19),
-            currentPlayer = Player(User("2", "jp"), Turn.BLACK_PIECE),
+            currentPlayer = Player(User("2", "jp", "paulinho"), Turn.BLACK_PIECE),
             0,
             now = Instant.now(),
             rules = Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
@@ -293,7 +285,7 @@ object GomokuGames {
         get() = _games.toList()
 
     fun createGame(
-        users: Pair<Player, Player>,
+        users: Pair<User, User>,
         board: Board,
         currentPlayer: Player,
         score: Int,

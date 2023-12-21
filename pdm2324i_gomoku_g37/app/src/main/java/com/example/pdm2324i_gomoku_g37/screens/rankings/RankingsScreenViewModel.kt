@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pdm2324i_gomoku_g37.domain.Idle
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.domain.loading
@@ -24,9 +25,9 @@ class RankingsScreenViewModel(private val service: GomokuService) : ViewModel() 
         }
     }
 
-    private val _rankingsFlow: MutableStateFlow<LoadState<GomokuRankings.Rankings>> =
+    private val _rankingsFlow: MutableStateFlow<LoadState<List<UserStatistics>>> =
         MutableStateFlow(idle())
-    val rankings: Flow<LoadState<GomokuRankings.Rankings>>
+    val rankings: Flow<LoadState<List<UserStatistics>>>
         get() = _rankingsFlow.asStateFlow()
 
 

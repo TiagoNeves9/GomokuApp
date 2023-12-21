@@ -32,13 +32,11 @@ interface GomokuService {
 
     suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby>
 
-    suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby
+    suspend fun joinLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby>
 
-    suspend fun enterLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby>
+    suspend fun leaveLobby(token: String, lobbyId: String): String
 
-    suspend fun leaveLobby(token: String, lobbyId: String): LobbyId
-
-    suspend fun fetchUser(token: String, userId: String): User
+    suspend fun fetchUser(token: String, userId: String): UserInfo
 
     suspend fun isGameCreated(token: String, lobbyId: String): String
 

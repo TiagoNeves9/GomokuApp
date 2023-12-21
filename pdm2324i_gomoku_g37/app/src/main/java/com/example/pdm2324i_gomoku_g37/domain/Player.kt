@@ -7,7 +7,11 @@ package com.example.pdm2324i_gomoku_g37.domain
  * */
 typealias Player = Pair<User, Turn>
 
-data class User(val id: String, val username: String)
+data class User(
+    val userId: String,
+    val username: String,
+    val encodedPassword: String
+)
 
 enum class Turn {
     BLACK_PIECE, WHITE_PIECE;

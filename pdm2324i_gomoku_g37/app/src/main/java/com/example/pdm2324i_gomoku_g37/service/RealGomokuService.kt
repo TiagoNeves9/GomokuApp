@@ -13,6 +13,12 @@ import com.example.pdm2324i_gomoku_g37.domain.dtos.AboutDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AboutDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AuthorsDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AuthorsDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.GameDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.GameDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.IsGameCreatedDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.IsGameCreatedDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.LeaveLobbyDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.LeaveLobbyDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbiesDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbiesDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDto
@@ -21,6 +27,7 @@ import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.toGame
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toUserInfo
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toWaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
@@ -65,7 +72,7 @@ class RealGomokuService(
         buildRequest(url = baseRequestUrl + URI(PathTemplate.ABOUT))
     }
 
-    private fun createSignUpRequest(username: String, password: String) = lazy {
+    private fun signUpRequest(username: String, password: String) = lazy {
         buildRequest(
             url = baseRequestUrl + URI(PathTemplate.CREATE_USER),
             method = "POST",
@@ -73,7 +80,7 @@ class RealGomokuService(
         )
     }
 
-    private fun createLoginRequest(username: String, password: String) = lazy {
+    private fun loginRequest(username: String, password: String) = lazy {
         buildRequest(
             url = baseRequestUrl + URI(PathTemplate.LOGIN),
             method = "POST",
@@ -89,7 +96,40 @@ class RealGomokuService(
         buildRequest(
             url = baseRequestUrl + URI(PathTemplate.START),
             method = "POST",
-            body = makeCreateLobbyBody(rules.boardDim, rules.opening.toOpeningString(), rules.variant.toVariantString()),
+            body = makeCreateLobbyBody(rules),
+            token = token
+        )
+    }
+
+    private fun joinLobbyRequest(token: String, lobby: WaitingLobby) = lazy {
+        buildRequest(
+            url = baseRequestUrl + URI(PathTemplate.JOIN_LOBBY),
+            method = "POST",
+            body = makeJoinLobby(lobby),
+            token = token
+        )
+    }
+
+    private fun leaveLobbyRequest(token: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + URI(PathTemplate.LEAVE_LOBBY),
+            method = "DELETE",
+            token = token
+        )
+    }
+
+    private fun fetchUserRequest(token: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + URI(PathTemplate.USER),
+            method = "GET",
+            token = token
+        )
+    }
+
+    private fun isGameCreatedRequest(token: String, lobbyId: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + PathTemplate.isGameCreated(lobbyId),
+            method = "GET",
             token = token
         )
     }
@@ -107,12 +147,12 @@ class RealGomokuService(
     }.properties.version
 
     override suspend fun signUp(username: String, password: String): UserInfo =
-        createSignUpRequest(username, password).value.send { body ->
+        signUpRequest(username, password).value.send { body ->
             gson.fromJson<UserInfoDto>(body.string(), UserInfoDtoType.type)
         }.properties.toUserInfo()
 
     override suspend fun login(username: String, password: String): UserInfo =
-        createLoginRequest(username, password).value.send { body ->
+        loginRequest(username, password).value.send { body ->
             gson.fromJson<UserInfoDto>(body.string(), UserInfoDtoType.type)
         }.properties.toUserInfo()
 
@@ -127,26 +167,25 @@ class RealGomokuService(
         emit(result)
     }
 
-    override suspend fun lobbyInfo(token: String, lobbyId: String): WaitingLobby {
-        TODO("Not yet implemented")
+    override suspend fun joinLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> = flow {
+        val result = joinLobbyRequest(token, lobby).value.send { body ->
+            gson.fromJson<GameDto>(body.string(), GameDtoType.type)
+        }.properties.toGame()
+        emit(ReadyLobby(result))
     }
 
-    override suspend fun enterLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> {
-        TODO("Not yet implemented")
+
+    override suspend fun leaveLobby(token: String, lobbyId: String): String = leaveLobbyRequest(token).value.send { body ->
+        gson.fromJson<LeaveLobbyDto>(body.string(), LeaveLobbyDtoType.type).properties.waitMessage
     }
 
+    override suspend fun fetchUser(token: String, userId: String): UserInfo = fetchUserRequest(token).value.send { body ->
+        gson.fromJson<UserInfoDto>(body.string(), UserInfoDtoType.type)
+    }.properties.toUserInfo()
 
-    override suspend fun leaveLobby(token: String, lobbyId: String): LobbyId {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun fetchUser(token: String, userId: String): User {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun isGameCreated(token: String, lobbyId: String): String {
-        TODO("Not yet implemented")
-    }
+    override suspend fun isGameCreated(token: String, lobbyId: String): String = isGameCreatedRequest(token, lobbyId).value.send { body ->
+        gson.fromJson<IsGameCreatedDto>(body.string(), IsGameCreatedDtoType.type)
+    }.properties.waitMessage
 
     override suspend fun getGameById(token: String, gameId: String): GameInfo {
         TODO("Not yet implemented")

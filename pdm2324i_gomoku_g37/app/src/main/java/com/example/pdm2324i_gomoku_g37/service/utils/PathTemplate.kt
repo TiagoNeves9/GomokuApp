@@ -13,10 +13,10 @@ object PathTemplate {
     const val LEAVE_LOBBY = "/lobbies/leave"
     const val JOIN_LOBBY = "/lobbies/join"
     const val GAMES = "/games"
-    const val PLAY = "/games/{id}"
-    const val SPECTATE = "/games/spectate/{id}"
-    const val IS_GAME_CREATED = "/lobbies/{id}"
-    const val GAME_BY_ID = "/games/{id}"
+    const val PLAY = "/games/"
+    const val SPECTATE = "/games/spectate/"
+    const val IS_GAME_CREATED = "/lobbies/"
+    const val GAME_BY_ID = "/games/"
 
     const val USER = "/user"
     const val USERS = "/users"
@@ -26,7 +26,7 @@ object PathTemplate {
     const val COOKIE = "/users/cookie"
 
     const val RANKINGS = "/rankings"
-    const val USER_RANKING = "/rankings/{username}"
+    const val USER_RANKING = "/rankings/"
 
     const val AUTHORS = "/authors"
     const val ABOUT = "/about"

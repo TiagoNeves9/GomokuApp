@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
@@ -27,7 +28,7 @@ import com.example.pdm2324i_gomoku_g37.service.GomokuRankings
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RankingsScreen(
-    rankings: LoadState<GomokuRankings.Rankings> = idle(),
+    rankings: LoadState<List<UserStatistics>> = idle(),
     navigation: NavigationHandlers = NavigationHandlers()
 ) =
     Scaffold(
@@ -46,21 +47,22 @@ fun RankingsScreen(
                 .padding(padding)
         ) {
             val ranking = rankings.getOrNull()
-            if (ranking != null) {
+
+            ranking?.forEach { userStatistics ->
                 Text(
-                    text = ranking.user,
+                    text = userStatistics.user,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = ranking.nGames.toString(),
+                    text = userStatistics.score.toString(),
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = ranking.score.toString(),
+                    text = userStatistics.nGames.toString(),
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center

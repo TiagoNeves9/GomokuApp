@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.pdm2324i_gomoku_g37.domain.Idle
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.LobbyAccessError
 import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
@@ -67,7 +66,7 @@ class PlayScreenViewModel(
 
         viewModelScope.launch {
             try {
-                service.enterLobby(userInfo.token, lobby).collect { readyLobby ->
+                service.joinLobby(userInfo.token, lobby).collect { readyLobby ->
                     Log.v("vm_enter_lobby", readyLobby.toString())
                     _screenStateFlow.value = readyLobby
                 }

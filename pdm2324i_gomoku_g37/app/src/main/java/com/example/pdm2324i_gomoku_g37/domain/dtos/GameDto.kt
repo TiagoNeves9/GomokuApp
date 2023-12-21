@@ -1,45 +1,35 @@
 package com.example.pdm2324i_gomoku_g37.domain.dtos
 
-import android.os.Parcelable
-import com.example.pdm2324i_gomoku_g37.domain.Opening
+import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Player
+import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.Turn
 import com.example.pdm2324i_gomoku_g37.domain.User
-import com.example.pdm2324i_gomoku_g37.domain.Variant
-import kotlinx.parcelize.Parcelize
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
+import com.example.pdm2324i_gomoku_g37.domain.board.Cell
+import com.example.pdm2324i_gomoku_g37.service.utils.SirenModel
 import java.time.Instant
 
-@Parcelize
-data class GameDto(
-    val gameId: String,
-    val user1: PlayerDto,
-    val user2: PlayerDto,
-    val board: BoardDto,
-    val currentPlayer: PlayerDto,
-    val score: Int,
-    val now: Instant,
-    val rules: RulesDto
-) : Parcelable
+typealias GameDto = SirenModel<GameDtoProperties>
 
-@Parcelize
-data class PlayerDto(val user: UserDto, val turn: Turn) : Parcelable
+data class GameDtoProperties(
+    val id: String,
+    val userB: User,
+    val userW: User,
+    val turn: String,
+    val rules: Rules,
+    val boardCells: Map<Cell, Turn>,
+    val boardState: String
+)
 
-@Parcelize
-data class UserDto(val id: String, val username: String) : Parcelable
+val GameDtoType = SirenModel.getType<GameDtoProperties>()
 
-@Parcelize
-data class BoardDto(val positions: Map<CellDto, Turn>, val boardSize: Int) : Parcelable
-
-@Parcelize
-data class CellDto(val row: RowDto, val col: ColumnDto) : Parcelable
-
-@Parcelize
-data class RowDto(val number: Int) : Parcelable
-
-@Parcelize
-data class ColumnDto(val symbol: Char) : Parcelable
-
-@Parcelize
-data class RulesDto(val boardDim: Int, val opening: Opening, val variant: Variant) : Parcelable
-
-
+fun GameDtoProperties.toGame() = Game(
+    id,
+    Pair(userB, userW),
+    BoardDraw(boardCells, rules.boardDim),
+    if (turn == userB.username) Player(userB, Turn.BLACK_PIECE) else Player(userW, Turn.WHITE_PIECE),
+    0,
+    Instant.now(),
+    rules
+)
