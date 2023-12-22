@@ -43,6 +43,7 @@ import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_NAME_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
+import com.example.pdm2324i_gomoku_g37.screens.components.ErrorAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
@@ -110,11 +111,11 @@ fun PlayScreen(
                 if (lobbyScreenState is WaitingLobby)
                     LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissLobby)
 
-                if (lobbyScreenState is ReadyLobby)
-                    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+                //if (lobbyScreenState is ReadyLobby)
+                //    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
 
                 if (lobbyScreenState is LobbyAccessError)
-                    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+                    ErrorAlert(R.string.error_join_lobby_title, R.string.error_join_lobby_message, R.string.error_retry_button_text)
             }
         }
     }

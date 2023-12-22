@@ -117,7 +117,7 @@ class NewLobbyScreenViewModel(
         viewModelScope.launch {
             try {
                 service.createLobby(userInfo.token, rules).collect { newLobby ->
-                    _screenStateFlow.value = EnteringLobby
+                    _screenStateFlow.value = WaitingLobby(newLobby.lobbyId, newLobby.hostUserId, newLobby.boardDim, newLobby.opening, newLobby.variant)
                     while (_screenStateFlow.value !is ReadyLobby) {
                         val isGameCreated = service.isGameCreated(userInfo.token, newLobby.lobbyId)
                         if (isGameCreated == "CREATED") {
@@ -138,7 +138,6 @@ class NewLobbyScreenViewModel(
     }
 
     fun leaveLobby() {
-        check(_screenStateFlow.value !is OutsideLobby) { "you must be in a lobby first" }
         check(_screenStateFlow.value is WaitingLobby) { "Cannot leave lobby" }
 
         val lobby = _screenStateFlow.value as WaitingLobby

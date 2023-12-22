@@ -62,18 +62,15 @@ class PlayScreenViewModel(
     fun enterLobby(lobby: WaitingLobby) {
         check(_screenStateFlow.value is OutsideLobby) { "Cannot enter lobby twice" }
 
-        _screenStateFlow.value = WaitingLobby(lobby.lobbyId, lobby.hostUserId, lobby.boardDim, lobby.opening, lobby.variant)
+        _screenStateFlow.value = lobby
 
         viewModelScope.launch {
             try {
                 service.joinLobby(userInfo.token, lobby).collect { readyLobby ->
-                    Log.v("vm_enter_lobby", readyLobby.toString())
+                    Log.v("enter_lobby_vm", readyLobby.toString())
                     _screenStateFlow.value = readyLobby
                 }
             } catch (cause: Throwable) {
-                if (_screenStateFlow.value is WaitingLobby) {
-                    leaveLobby()
-                }
                 _screenStateFlow.value = LobbyAccessError(cause)
             }
         }

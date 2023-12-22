@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.domain.dtos
 
+import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.Rules
@@ -25,14 +26,15 @@ data class GameDtoProperties(
 
 val GameDtoType = SirenModel.getType<GameDtoProperties>()
 
-fun GameDto.toGame(): Game {
-    val board = getBoard(properties.boardCells, properties.turn, properties.rules.boardDim, properties.userB.username)
+fun GameDtoProperties.toGame(): Game {
+    Log.v("success_gamedto", this.toString())
+    val board = getBoard(boardCells, turn, rules.boardDim, userB.username)
     return Game(
-        properties.id,
-        Pair(properties.userB, properties.userW),
+        id,
+        Pair(userB, userW),
         board,
-        getCurrentPlayer(properties.userB, properties.userW, properties.turn),
-        properties.rules
+        getCurrentPlayer(userB, userW, turn),
+        rules
     )
 }
 

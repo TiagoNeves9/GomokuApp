@@ -68,4 +68,7 @@
 
     <string name="loading_new_game_title">Matchmaking </string>
     <string name="loading_new_game_message">Waiting for player to join!</string>
+
+    <string name="error_join_lobby_title">Error joinig lobby</string>
+    <string name="error_join_lobby_message">Please check if the device is connected to the internet</string>
 </resources>

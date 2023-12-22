@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.service
 
+import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.LobbyId
@@ -181,8 +182,8 @@ class RealGomokuService(
     override suspend fun joinLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> = flow {
         val result = joinLobbyRequest(token, lobby).value.send { body ->
             gson.fromJson<GameDto>(body.string(), GameDtoType.type)
-        }.toGame()
-        emit(ReadyLobby(result))
+        }.properties
+        emit(ReadyLobby(result.toGame()))
     }
 
     override suspend fun leaveLobby(token: String, lobbyId: String): String = leaveLobbyRequest(token).value.send { body ->
@@ -199,7 +200,7 @@ class RealGomokuService(
 
     override suspend fun getGameById(token: String, gameId: String): Game = getGameByIdRequest(token, gameId).value.send { body ->
         gson.fromJson<GameDto>(body.string(), GameDtoType.type)
-    }.toGame()
+    }.properties.toGame()
 
     private suspend fun <T> Request.send(handler: (ResponseBody) -> T): T = suspendCancellableCoroutine { continuation ->
         val call = client.newCall(request = this)

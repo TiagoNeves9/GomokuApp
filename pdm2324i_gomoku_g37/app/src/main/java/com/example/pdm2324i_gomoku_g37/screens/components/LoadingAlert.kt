@@ -1,6 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.screens.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -10,9 +11,11 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,12 +29,14 @@ const val LoadingAlertTestTag = "LoadingAlertTestTag"
 fun LoadingAlert(
     @StringRes title: Int,
     @StringRes message: Int,
-    onDismiss: () -> Unit = { }
+    onDismiss: () -> Unit = { },
+    onDismissError: () -> Unit = { }
 ) {
     LoadingAlertImpl(
         stringResource(id = title),
         stringResource(id = message),
-        onDismiss
+        onDismiss,
+        onDismissError
     )
 }
 
@@ -39,10 +44,19 @@ fun LoadingAlert(
 fun LoadingAlertImpl(
     title: String,
     message: String,
-    onDismiss: () -> Unit = { }
+    onDismiss: () -> Unit = { },
+    onDismissError: () -> Unit = { }
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = onDismissError,
+        dismissButton = {
+            OutlinedButton(
+                border = BorderStroke(0.dp, Color.Unspecified),
+                onClick = onDismiss
+            ) {
+                Text(text = "Leave Lobby")
+            }
+        },
         confirmButton = { },
         title = { Text(text = title) },
         text = {
@@ -75,6 +89,6 @@ fun LoadingAlertImpl(
 @Composable
 private fun LoadingAlertPreview() {
     GomokuTheme {
-        LoadingAlertImpl("Create account", "We are creating your account!")
+        LoadingAlertImpl("Create account", "We are creating your account!", {})
     }
 }

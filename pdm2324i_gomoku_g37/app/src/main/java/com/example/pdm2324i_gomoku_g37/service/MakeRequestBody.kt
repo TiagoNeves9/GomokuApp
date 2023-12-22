@@ -18,5 +18,5 @@ fun makeCreateLobbyBody(rules: Rules) =
         .toRequestBody(contentType = jsonMediaType)
 
 fun makeJoinLobby(lobby: WaitingLobby) =
-    "{\"lobbyId\": ${lobby.lobbyId}, \"hostUserId\": \"${lobby.hostUserId}, \"boardDim\": ${lobby.boardDim}, \"opening\": \"${lobby.opening}\", \"variant\": \"${lobby.variant}\"}"
+    "{\"lobbyId\": \"${lobby.lobbyId}\", \"hostUserId\": \"${lobby.hostUserId}\", \"boardDim\": ${lobby.boardDim}, \"opening\": \"${lobby.opening}\", \"variant\": \"${lobby.variant}\"}"
          .toRequestBody(contentType = jsonMediaType)

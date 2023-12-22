@@ -126,16 +126,16 @@ fun NewLobbyScreen(
             }
 
             if (state.lobbyScreenState is EnteringLobby)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissError = functions.onDismissError)
 
             if (state.lobbyScreenState is WaitingLobby)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, functions.onDismissLobby)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismiss = functions.onDismissLobby, onDismissError = functions.onDismissError)
 
             if (state.lobbyScreenState is ReadyLobby)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissError = functions.onDismissError)
 
             if (state.lobbyScreenState is LobbyAccessError)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissError = functions.onDismissError)
         }
     }
 
