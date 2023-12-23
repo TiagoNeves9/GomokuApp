@@ -56,8 +56,7 @@ fun HomeScreen(
     onRankingsRequested: () -> Unit = { },
     onAboutRequested: () -> Unit = { },
     onProfileRequest: () -> Unit = { },
-    onLogoutRequest: () -> Unit = { },
-    onDismissError: () -> Unit = {} //TODO is this needed?
+    onLogoutRequested: () -> Unit = { },
 ) =
     Scaffold(
         bottomBar = { GroupFooterView(Color.White) }
@@ -67,7 +66,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Button(onClick = onLogoutRequest, Modifier) {
+            Button(onClick = onLogoutRequested, Modifier) {
                 Icon(
                     imageVector = Icons.Default.Logout,
                     contentDescription = "logout"

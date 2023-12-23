@@ -18,28 +18,13 @@ import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(private val repository: UserInfoRepository) : ViewModel() {
 
-    private val _userInfoFlow: MutableStateFlow<LoadState<UserInfo?>> = MutableStateFlow(idle())
-
-    val userInfoFlow: Flow<LoadState<UserInfo?>>
-        get() = _userInfoFlow.asStateFlow()
-
-    fun fetchUserInfo() {
-        if (_userInfoFlow.value is Idle) {
-            _userInfoFlow.value = loading()
-            viewModelScope.launch {
-                val result = runCatching { repository.getUserInfo() }
-                _userInfoFlow.value = loaded(result)
-            }
-        }
-    }
-
-    fun resetToIdle() {
-        _userInfoFlow.value = idle()
-    }
-
     companion object {
         fun factory(repository: UserInfoRepository) = viewModelFactory {
             initializer { HomeScreenViewModel(repository) }
         }
+    }
+
+    fun logout() = viewModelScope.launch {
+        kotlin.runCatching { repository.clearUserInfo() }
     }
 }
