@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Game
+import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.Rules
@@ -48,6 +50,8 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
+import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.service.GomokuGames
 import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
@@ -55,8 +59,7 @@ import java.time.Instant
 
 
 @Composable
-fun GameScreen(game: Game) {
-    var currentGame by remember { mutableStateOf(game) }
+fun GameScreen(currentGame: LoadState<Game?>) {
 
     val modifier = Modifier
         .background(Color.DarkGray)
@@ -69,27 +72,29 @@ fun GameScreen(game: Game) {
                 Arrangement.Bottom,
                 Alignment.CenterHorizontally
             ) {
-                DrawBoard(currentGame.board) { cell ->
-                    //currentGame = currentGame.computeNewGame(cell)
-                }
+                currentGame.getOrNull()?.let { game ->
+                    DrawBoard(game.board) { cell ->
+                        //currentGame = currentGame.computeNewGame(cell)
+                    }
 
-                Spacer(Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
+                    Spacer(Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
 
-                StatusBar {
-                    //TODO mudar o tamanho da imagem ou do texto
-                    when (val currentBoard = currentGame.board) {
-                        is BoardRun -> {
-                            Text("Turn: ", color = Color.Red)
-                            DrawTurnOrWinnerPiece(currentBoard)
+                    StatusBar {
+                        //TODO mudar o tamanho da imagem ou do texto
+                        when (val currentBoard = game.board) {
+                            is BoardRun -> {
+                                Text("Turn: ", color = Color.Red)
+                                DrawTurnOrWinnerPiece(currentBoard)
+                            }
+
+                            is BoardWin -> {
+                                Text("Game finished! Winner: ", color = Color.Red)
+                                DrawTurnOrWinnerPiece(currentBoard)
+                            }
+
+                            is BoardDraw ->
+                                Text("Game finished! It's a draw!", color = Color.Red)
                         }
-
-                        is BoardWin -> {
-                            Text("Game finished! Winner: ", color = Color.Red)
-                            DrawTurnOrWinnerPiece(currentBoard)
-                        }
-
-                        is BoardDraw ->
-                            Text("Game finished! It's a draw!", color = Color.Red)
                     }
                 }
             }
@@ -274,5 +279,5 @@ fun GameScreenPreview() {
     val board = createBoard(playerB.second, BOARD_DIM)
     val rules = Rules(board.boardSize, Opening.FREESTYLE, Variant.FREESTYLE)
     val game = GomokuGames.games.first()
-    GameScreen(game)
+    GameScreen(loaded(Result.success(game)))
 }
