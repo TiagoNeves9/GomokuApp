@@ -9,6 +9,9 @@ import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
+import com.example.pdm2324i_gomoku_g37.domain.board.Column
+import com.example.pdm2324i_gomoku_g37.domain.board.Row
+import com.example.pdm2324i_gomoku_g37.domain.board.toCell
 import com.example.pdm2324i_gomoku_g37.service.utils.SirenModel
 import java.time.Instant
 
@@ -20,7 +23,7 @@ data class GameDtoProperties(
     val userW: User,
     val turn: String,
     val rules: Rules,
-    val boardCells: Map<Cell, Turn>,
+    val boardCells: Map<String, Turn>,
     val boardState: String
 )
 
@@ -28,7 +31,12 @@ val GameDtoType = SirenModel.getType<GameDtoProperties>()
 
 fun GameDtoProperties.toGame(): Game {
     Log.v("success_gamedto", this.toString())
-    val board = getBoard(boardCells, turn, rules.boardDim, userB.username)
+    val cells: Map<Cell, Turn> = if (boardCells.isEmpty()) emptyMap()
+                else boardCells.mapKeys {
+                    it.key.toCell(rules.boardDim)
+                }
+
+    val board = getBoard(cells, turn, rules.boardDim, userB.username)
     return Game(
         id,
         Pair(userB, userW),

@@ -23,5 +23,5 @@ fun makeJoinLobby(lobby: WaitingLobby) =
          .toRequestBody(contentType = jsonMediaType)
 
 fun makePlayBody(cell: Cell, boardSize: Int) =
-    "{\"row\": ${cell.row.number}, \"col\": \"${cell.col.symbol}\", \"boardSize\": $boardSize}"
+    "{\"row\": ${cell.row.number}, \"col\": \"${cell.col.symbol.uppercase()}\", \"boardSize\": $boardSize}"
         .toRequestBody(contentType = jsonMediaType)
