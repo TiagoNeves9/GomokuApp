@@ -2,6 +2,7 @@ package com.example.pdm2324i_gomoku_g37.service
 
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
+import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
 import com.example.pdm2324i_gomoku_g37.domain.toVariantString
 import okhttp3.MediaType.Companion.toMediaType
@@ -20,3 +21,7 @@ fun makeCreateLobbyBody(rules: Rules) =
 fun makeJoinLobby(lobby: WaitingLobby) =
     "{\"lobbyId\": \"${lobby.lobbyId}\", \"hostUserId\": \"${lobby.hostUserId}\", \"boardDim\": ${lobby.boardDim}, \"opening\": \"${lobby.opening}\", \"variant\": \"${lobby.variant}\"}"
          .toRequestBody(contentType = jsonMediaType)
+
+fun makePlayBody(cell: Cell, boardSize: Int) =
+    "{\"row\": ${cell.row.number}, \"col\": \"${cell.col.symbol}\", \"boardSize\": $boardSize}"
+        .toRequestBody(contentType = jsonMediaType)

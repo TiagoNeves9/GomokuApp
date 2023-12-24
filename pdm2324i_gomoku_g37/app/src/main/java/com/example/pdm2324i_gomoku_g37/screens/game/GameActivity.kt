@@ -23,6 +23,7 @@ import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getGameExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
+import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.play.PlayScreenViewModel
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
@@ -72,7 +73,16 @@ class GameActivity : ComponentActivity() {
         setContent {
             val currentGame by viewModel.currentGameFlow.collectAsState(initial = idle())
             GomokuTheme {
-                GameScreen(currentGame = currentGame)
+                GameScreen(
+                    currentGame = currentGame,
+                    selectedCell = viewModel.selectedCell,
+                    onCellSelected = viewModel::changeSelectedCell,
+                    onGameFinished = {
+                        HomeActivity.navigateTo(origin = this, userInfoExtra)
+                    },
+                    currentUser = userInfoExtra.username,
+                    onPlayRequested = viewModel::play
+                )
             }
         }
     }

@@ -10,6 +10,7 @@ import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
+import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AboutDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AboutDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.AuthorsDto
@@ -146,6 +147,15 @@ class RealGomokuService(
         )
     }
 
+    private fun playRequest(token: String, gameId: String, cell: Cell, boardSize: Int) = lazy {
+        buildRequest(
+            url = baseRequestUrl + PathTemplate.play(gameId),
+            method = "POST",
+            body = makePlayBody(cell, boardSize),
+            token = token
+        )
+    }
+
     override suspend fun fetchAuthors(): List<Author> = authorsRequest.send { body ->
         gson.fromJson<AuthorsDto>(body.string(), AuthorsDtoType.type)
     }.properties.authors
@@ -199,6 +209,10 @@ class RealGomokuService(
     }.properties.waitMessage
 
     override suspend fun getGameById(token: String, gameId: String): Game = getGameByIdRequest(token, gameId).value.send { body ->
+        gson.fromJson<GameDto>(body.string(), GameDtoType.type)
+    }.properties.toGame()
+
+    override suspend fun play(token: String, gameId: String, cell: Cell, boardSize: Int): Game = playRequest(token, gameId, cell, boardSize).value.send { body ->
         gson.fromJson<GameDto>(body.string(), GameDtoType.type)
     }.properties.toGame()
 

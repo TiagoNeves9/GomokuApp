@@ -24,6 +24,8 @@ import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +44,8 @@ class NewLobbyScreenViewModel(
             initializer { NewLobbyScreenViewModel(service, userInfo) }
         }
     }
+
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     private var _selectedBoardSize by mutableIntStateOf(BOARD_DIM)
 
@@ -114,7 +118,7 @@ class NewLobbyScreenViewModel(
 
         val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
 
-        viewModelScope.launch {
+        scope.launch {
             try {
                 service.createLobby(userInfo.token, rules).collect { newLobby ->
                     _screenStateFlow.value = WaitingLobby(newLobby.lobbyId, newLobby.hostUserId, newLobby.boardDim, newLobby.opening, newLobby.variant)

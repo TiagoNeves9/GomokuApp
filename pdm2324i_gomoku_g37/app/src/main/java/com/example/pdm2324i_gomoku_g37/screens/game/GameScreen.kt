@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,22 +60,42 @@ import java.time.Instant
 
 
 @Composable
-fun GameScreen(currentGame: LoadState<Game?>) {
+fun GameScreen(
+    currentGame: LoadState<Game?>,
+    selectedCell: Cell?,
+    onCellSelected: (Cell) -> Unit = { },
+    onGameFinished: () -> Unit = { },
+    currentUser: String,
+    onPlayRequested: () -> Unit = { }
+) {
 
-    val modifier = Modifier
+    val containerModifier = Modifier
         .background(Color.DarkGray)
         .fillMaxSize()
 
     GomokuTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             Column(
-                modifier,
+                containerModifier,
                 Arrangement.Bottom,
                 Alignment.CenterHorizontally
             ) {
                 currentGame.getOrNull()?.let { game ->
-                    DrawBoard(game.board) { cell ->
-                        //currentGame = currentGame.computeNewGame(cell)
+                    
+                    Text(
+                        text = "${game.users.first.username} VS ${game.users.second.username}"
+                    )
+                    
+                    DrawBoard(game.board, selectedCell) { cell ->
+                        if (game.currentPlayer.first.username == currentUser) {
+                            onCellSelected(cell)
+                        }
+                    }
+
+                    if (selectedCell != null) {
+                        OutlinedButton(onClick = onPlayRequested) {
+                            Text("Make move")
+                        }
                     }
 
                     Spacer(Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
@@ -83,17 +104,22 @@ fun GameScreen(currentGame: LoadState<Game?>) {
                         //TODO mudar o tamanho da imagem ou do texto
                         when (val currentBoard = game.board) {
                             is BoardRun -> {
-                                Text("Turn: ", color = Color.Red)
+                                Text(
+                                    "Turn: ${game.currentPlayer.first.username}", color = Color.Red,
+                                )
                                 DrawTurnOrWinnerPiece(currentBoard)
                             }
 
                             is BoardWin -> {
                                 Text("Game finished! Winner: ", color = Color.Red)
                                 DrawTurnOrWinnerPiece(currentBoard)
+                                onGameFinished()
                             }
 
-                            is BoardDraw ->
+                            is BoardDraw -> {
                                 Text("Game finished! It's a draw!", color = Color.Red)
+                                onGameFinished()
+                            }
                         }
                     }
                 }
@@ -103,7 +129,7 @@ fun GameScreen(currentGame: LoadState<Game?>) {
 }
 
 @Composable
-fun DrawBoard(board: Board, onClick: (Cell) -> Unit = {}) {
+fun DrawBoard(board: Board, selectedCell: Cell?, onClick: (Cell) -> Unit = {}) {
     SymbolAxisView(board.boardSize)
 
     Row(
@@ -112,7 +138,7 @@ fun DrawBoard(board: Board, onClick: (Cell) -> Unit = {}) {
         Alignment.Bottom
     ) {
         NumberAxisView(board.boardSize)
-        CellsView(board, onClick)
+        CellsView(board, selectedCell, onClick)
         NumberAxisView(board.boardSize)
     }
 
@@ -171,22 +197,22 @@ fun AxisText(text: String) =
     )
 
 @Composable
-fun CellsView(board: Board, onClick: (Cell) -> Unit = {}) =
+fun CellsView(board: Board, selectedCell: Cell?, onClick: (Cell) -> Unit = {}) =
     Column {
         repeat(board.boardSize) { line ->
             Row {
                 repeat(board.boardSize) { col ->
                     val cell = Cell(line, col, board.boardSize)
                     when (board.positions[cell]) {
-                        Turn.BLACK_PIECE -> DrawCells(enabled = false) {
+                        Turn.BLACK_PIECE -> DrawCells(cell = cell, enabled = false) {
                             DrawBlackPiece()
                         }
 
-                        Turn.WHITE_PIECE -> DrawCells(enabled = false) {
+                        Turn.WHITE_PIECE -> DrawCells(cell = cell, enabled = false) {
                             DrawWhitePiece()
                         }
 
-                        else -> DrawCells({ onClick(cell) }, enabled = true)
+                        else -> DrawCells(onClick = onClick, selectedCell = selectedCell, cell = cell, enabled = true)
                     }
                 }
             }
@@ -195,22 +221,26 @@ fun CellsView(board: Board, onClick: (Cell) -> Unit = {}) =
 
 @Composable
 fun DrawCells(
-    onClick: () -> Unit = {},
+    onClick: (Cell) -> Unit = {},
+    selectedCell: Cell? = null,
+    cell: Cell,
     enabled: Boolean,
     content: @Composable () -> Unit = {}
 ) {
     val padding = (BOARD_CELL_SIZE / 2).dp
+
+    val color = if (selectedCell == cell) Color.Red else Color.White
+
     val modifier = Modifier
         .testTag("clickableCell")
         .size(BOARD_CELL_SIZE.dp)
-        .background(color = Color.White)
-        .clickable(enabled = enabled) { onClick() }
-    Box(
-        modifier,
-        Alignment.Center
-    ) {
-        DrawPlusSymbol(padding)
+        .background(color = color)
+        .clickable(enabled = enabled) {
+            onClick(cell)
+        }
 
+    Box(modifier, Alignment.Center) {
+        DrawPlusSymbol(padding)
         content()
     }
 }
@@ -258,7 +288,7 @@ fun DrawTurnOrWinnerPiece(board: Board) =
 fun StatusBar(content: @Composable () -> Unit = {}) {
     Row(
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.CenterVertically
     ) {
         content()
     }
@@ -279,5 +309,5 @@ fun GameScreenPreview() {
     val board = createBoard(playerB.second, BOARD_DIM)
     val rules = Rules(board.boardSize, Opening.FREESTYLE, Variant.FREESTYLE)
     val game = GomokuGames.games.first()
-    GameScreen(loaded(Result.success(game)))
+    GameScreen(loaded(Result.success(game)), null, {}, {}, "jp")
 }

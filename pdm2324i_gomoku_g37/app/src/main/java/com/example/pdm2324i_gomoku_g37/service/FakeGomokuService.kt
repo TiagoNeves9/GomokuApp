@@ -13,7 +13,9 @@ import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
+import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
 import com.example.pdm2324i_gomoku_g37.domain.toVariantString
@@ -110,6 +112,10 @@ class FakeGomokuService : GomokuService {
     }
 
     override suspend fun getGameById(token: String, gameId: String): Game {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun play(token: String, gameId: String, cell: Cell, boardSize: Int): Game {
         TODO("Not yet implemented")
     }
 }
@@ -268,7 +274,7 @@ object GomokuGames {
             users = Pair(User("2", "jp", "paulinho"), User("1", "tbmaster", "jubas")),
             board = createBoard(boardSize = 19),
             currentPlayer = Player(User("2", "jp", "paulinho"), Turn.BLACK_PIECE),
-            rules = Rules(19, Opening.FREESTYLE, Variant.FREESTYLE)
+            rules = Rules(BOARD_DIM, Opening.FREESTYLE, Variant.FREESTYLE)
         )
     )
 
