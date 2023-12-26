@@ -11,10 +11,10 @@ import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
-import com.example.pdm2324i_gomoku_g37.domain.dtos.LocalGameInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.domain.loading
+import com.example.pdm2324i_gomoku_g37.screens.common.GameExtra
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +29,10 @@ private const val POLLING_INTERVAL_VALUE = 5000L
 class GameScreenViewModel(
     private val service: GomokuService,
     private val userInfo: UserInfo,
-    private val gameInfo: LocalGameInfoDto
+    private val gameInfo: Game
 ) : ViewModel() {
     companion object {
-        fun factory(service: GomokuService, userInfo: UserInfo, gameInfo: LocalGameInfoDto) = viewModelFactory {
+        fun factory(service: GomokuService, userInfo: UserInfo, gameInfo: Game) = viewModelFactory {
             initializer { GameScreenViewModel(service, userInfo, gameInfo) }
         }
     }
@@ -81,6 +81,7 @@ class GameScreenViewModel(
                     service.play(userInfo.token, gameInfo.gameId, cell, gameInfo.rules.boardDim)
                 }
                 _currentGameFlow.value = loaded(result)
+                _selectedCell = null
             }
         }
     }

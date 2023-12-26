@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.authors
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,9 +40,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Loading
+import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
+import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorCardTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorEmailButtonTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNextTestTag
@@ -56,14 +60,15 @@ import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_RADIUS
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_CONTENT_PADDING
+import com.example.pdm2324i_gomoku_g37.screens.components.ErrorAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.ICON_SIZE
+import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.ROW_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.service.GomokuAuthors
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-
 
 data class AuthorsHandlers(
     val onNextRequested: (() -> Unit)? = null,
@@ -78,51 +83,52 @@ fun AuthorsScreen(
     authorsHandlers: AuthorsHandlers = AuthorsHandlers(),
     navigation: NavigationHandlers = NavigationHandlers(),
     onSendEmailRequested: () -> Unit = { },
-) =
+    onDismiss: () -> Unit = { }
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            CustomBar(
-                text = stringResource(R.string.activity_authors_top_bar_title),
-                navigation = navigation
-            )
+            CustomBar(text = stringResource(R.string.activity_authors_top_bar_title), navigation = navigation)
         },
         bottomBar = { GroupFooterView(Color.White) }
     ) { padding ->
-        CustomContainerView(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
+        val customContainerModifier = Modifier.fillMaxSize().padding(padding)
 
-            ) {
-            require(index >= 0) {
-                "Index must be greater than or equal to 0"
-            }
+        CustomContainerView(modifier = customContainerModifier) {
+            require(index >= 0) { "Index must be greater than or equal to 0" }
 
             MediumCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
 
+            if (authors is Loading)
+                LoadingAlert(R.string.loading_authors_title, R.string.loading_authors_message)
+
+            authors.exceptionOrNull()?.message?.let { errorMessage ->
+                Log.v(AuthorsScreenTestTags.AuthorFetchAuthorsErrorTag, errorMessage)
+                ErrorAlert(
+                    R.string.error_general_title,
+                    R.string.error_loading_authors_message,
+                    R.string.default_ack_button,
+                    onDismiss = onDismiss
+                )
+            }
+
             val authorsList = authors.getOrNull()
+
             if (authorsList.isNullOrEmpty()) {
+                val infoModifier = Modifier.fillMaxWidth().testTag(AuthorNoAuthorTestTag)
                 Text(
                     text = stringResource(R.string.activity_author_no_author_found),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag(AuthorNoAuthorTestTag),
+                    modifier = infoModifier,
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
                 )
             } else {
-                val primaryColor = MaterialTheme.colorScheme.primary
+                val userModifier = Modifier.fillMaxWidth().padding(CARD_PADDING).testTag(AuthorCardTestTag)
                 ElevatedCard(
-                    modifier = Modifier
-                        .fillMaxWidth() //TODO VERIFICAR
-                        .padding(CARD_PADDING)
-                        .testTag(AuthorCardTestTag),
+                    modifier = userModifier,
                     shape = RoundedCornerShape(DEFAULT_RADIUS),
-                    colors = CardDefaults
-                        .cardColors(containerColor = primaryColor),
-                    elevation = CardDefaults
-                        .cardElevation(defaultElevation = CARD_ELEVATION)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                    elevation = CardDefaults.cardElevation(defaultElevation = CARD_ELEVATION)
                 ) {
                     DisplayAuthor(
                         author = authorsList[index],
@@ -133,19 +139,16 @@ fun AuthorsScreen(
             }
         }
     }
+}
 
 @Composable
-fun DisplayAuthor(
+private fun DisplayAuthor(
     author: Author,
     authorsHandlers: AuthorsHandlers = AuthorsHandlers(),
     onSendEmailRequested: () -> Unit = { },
 ) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(DEFAULT_CONTENT_PADDING),
-        Arrangement.Center,
-    ) {
+    val modifier = Modifier.fillMaxWidth().padding(DEFAULT_CONTENT_PADDING)
+    Row(modifier, Arrangement.Center) {
         LoadImageByNumber(author.number)
     }
 
@@ -173,23 +176,22 @@ fun DisplayAuthor(
 }
 
 @Composable
-fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers()) =
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = ROW_DEFAULT_PADDING, top = ROW_DEFAULT_PADDING),
-        Arrangement.Center
-    ) {
-        authorsHandlers.onPrevRequested?.let {
-            AuthorNavigationButton(it, Modifier.testTag(AuthorPrevTestTag)) {
+private fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers()) {
+    val modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = ROW_DEFAULT_PADDING, top = ROW_DEFAULT_PADDING)
+
+    Row(modifier, Arrangement.Center) {
+        authorsHandlers.onPrevRequested?.let { onPrev ->
+            AuthorNavigationButton(Modifier.testTag(AuthorPrevTestTag), onPrev) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = stringResource(R.string.activity_authors_previous)
                 )
             }
         }
-        authorsHandlers.onNextRequested?.let {
-            AuthorNavigationButton(it, Modifier.testTag(AuthorNextTestTag)) {
+        authorsHandlers.onNextRequested?.let { onNext ->
+            AuthorNavigationButton(Modifier.testTag(AuthorNextTestTag), onNext) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     contentDescription = stringResource(R.string.activity_authors_next)
@@ -197,13 +199,14 @@ fun NavigationButtons(authorsHandlers: AuthorsHandlers = AuthorsHandlers()) =
             }
         }
     }
+}
 
 @Composable
 private fun AuthorNavigationButton(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit = {}
-) =
+    onClick: () -> Unit = { },
+    content: @Composable () -> Unit = { }
+) {
     Button(
         onClick = onClick,
         modifier = modifier.padding(BUTTON_DEFAULT_PADDING),
@@ -216,18 +219,18 @@ private fun AuthorNavigationButton(
     ) {
         content()
     }
+}
 
 @Composable
 private fun LoadImageByNumber(imageNumber: Int) {
     val resourceId = resourceMap[imageNumber]
     resourceId?.let { id ->
         val painter: Painter = painterResource(id)
+        val modifier = Modifier.clip(CircleShape).size(AUTHOR_IMAGE_SIZE)
         Image(
             painter = painter,
             contentDescription = stringResource(R.string.activity_authors_image_desc),
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(AUTHOR_IMAGE_SIZE),
+            modifier = modifier,
             alignment = Center,
             contentScale = ContentScale.Crop,
         )
@@ -237,10 +240,9 @@ private fun LoadImageByNumber(imageNumber: Int) {
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun AuthorsScreenPreview() =
+fun AuthorsScreenPreview() {
     GomokuTheme {
-        val authors: LoadState<List<Author>?> =
-            loaded(Result.success(GomokuAuthors.authors))
+        val authors: LoadState<List<Author>?> = loaded(Result.success(GomokuAuthors.authors))
         AuthorsScreen(
             authors = authors,
             index = 0,
@@ -248,3 +250,4 @@ fun AuthorsScreenPreview() =
             NavigationHandlers(onBackRequested = {}, onInfoRequested = {})
         )
     }
+}

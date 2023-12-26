@@ -11,29 +11,24 @@ class Cell private constructor(val row: Row, val col: Column) {
         if (this == INVALID) "INVALID Cell!" else "${this.row.number}${this.col.symbol}"
 
     companion object {
-        val valuesMedium =
-            List(BOARD_DIM * BOARD_DIM) {
-                Cell(
-                    (it / BOARD_DIM).indexToRow(BOARD_DIM),
-                    (it % BOARD_DIM).indexToColumn(BOARD_DIM)
-                )
-            }
-        val valuesBig =
-            List(BIG_BOARD_DIM * BIG_BOARD_DIM) {
-                Cell(
-                    (it / BIG_BOARD_DIM).indexToRow(BIG_BOARD_DIM),
-                    (it % BIG_BOARD_DIM).indexToColumn(BIG_BOARD_DIM)
-                )
-
-            }
+        val valuesMedium = List(BOARD_DIM * BOARD_DIM) {
+            Cell(
+                (it / BOARD_DIM).indexToRow(BOARD_DIM),
+                (it % BOARD_DIM).indexToColumn(BOARD_DIM)
+            )
+        }
+        val valuesBig = List(BIG_BOARD_DIM * BIG_BOARD_DIM) {
+            Cell(
+                (it / BIG_BOARD_DIM).indexToRow(BIG_BOARD_DIM),
+                (it % BIG_BOARD_DIM).indexToColumn(BIG_BOARD_DIM)
+            )
+        }
         val INVALID = Cell(-1, -1, -1)
 
         operator fun invoke(rowIndex: Int, colIndex: Int, boardSize: Int): Cell =
             if (rowIndex in 0 until boardSize && colIndex in 0 until boardSize) {
-                if (boardSize == BOARD_DIM)
-                    valuesMedium[rowIndex * boardSize + colIndex]
-                else
-                    valuesBig[rowIndex * boardSize + colIndex]
+                if (boardSize == BOARD_DIM) valuesMedium[rowIndex * boardSize + colIndex]
+                else valuesBig[rowIndex * boardSize + colIndex]
             } else INVALID
 
         operator fun invoke(row: Row, col: Column, boardSize: Int = BOARD_DIM): Cell =
@@ -44,7 +39,7 @@ class Cell private constructor(val row: Row, val col: Column) {
 fun String.toCellOrNull(boardSize: Int): Cell? {
     if (this.length < 2 || this.length > 3) return null
     val aux = if (this.length == 2) "0$this" else this
-    if (!aux[1].isDigit()) return null  //'1BB' is not a valid cell, but '10B' is
+    if (!aux[1].isDigit()) return null
 
     val row = aux.dropLast(1).toInt().toRowOrNull(boardSize)
     val col = aux[2].toColumnOrNull(boardSize)
@@ -80,8 +75,7 @@ fun cellsInDir(from: Cell, dir: Direction, boardSize: Int): List<Cell> {
     return line
 }
 
-fun Cell.distance(other: Cell): Int =
-    max(
-        kotlin.math.abs(this.rowIndex - other.rowIndex),
-        kotlin.math.abs(this.colIndex - other.colIndex)
-    )
+fun Cell.distance(other: Cell): Int = max(
+    kotlin.math.abs(this.rowIndex - other.rowIndex),
+    kotlin.math.abs(this.colIndex - other.colIndex)
+)

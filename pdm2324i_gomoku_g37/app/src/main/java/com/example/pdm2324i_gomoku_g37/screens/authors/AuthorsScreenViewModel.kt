@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pdm2324i_gomoku_g37.domain.Author
-import com.example.pdm2324i_gomoku_g37.domain.Idle
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
 
 class AuthorsScreenViewModel(private val service: GomokuService) : ViewModel() {
     companion object {
@@ -52,12 +50,10 @@ class AuthorsScreenViewModel(private val service: GomokuService) : ViewModel() {
     }
 
     fun fetchAuthors() {
-        if (_authorsListFlow.value is Idle) {
-            _authorsListFlow.value = loading()
-            viewModelScope.launch {
-                val result = runCatching { service.fetchAuthors() }
-                _authorsListFlow.value = loaded(result)
-            }
+        _authorsListFlow.value = loading()
+        viewModelScope.launch {
+            val result = runCatching { service.fetchAuthors() }
+            _authorsListFlow.value = loaded(result)
         }
     }
 }

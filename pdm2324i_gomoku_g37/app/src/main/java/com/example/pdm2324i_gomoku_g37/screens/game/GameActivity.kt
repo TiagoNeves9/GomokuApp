@@ -18,18 +18,16 @@ import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
-import com.example.pdm2324i_gomoku_g37.domain.dtos.LocalGameInfoDto
-import com.example.pdm2324i_gomoku_g37.domain.dtos.toGame
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.screens.common.GAME_EXTRA
+import com.example.pdm2324i_gomoku_g37.screens.common.GameExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getGameExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
-import com.example.pdm2324i_gomoku_g37.screens.play.PlayScreenViewModel
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
 
@@ -42,11 +40,11 @@ class GameActivity : ComponentActivity() {
     }
 
     companion object {
-        fun navigateTo(origin: Context, userInfo: UserInfo, game: LocalGameInfoDto) {
+        fun navigateTo(origin: Context, userInfo: UserInfo, game: GameExtra) {
             origin.startActivity(createIntent(origin, userInfo, game))
         }
 
-        private fun createIntent(ctx: Context, userInfo: UserInfo, game: LocalGameInfoDto): Intent {
+        private fun createIntent(ctx: Context, userInfo: UserInfo, game: GameExtra): Intent {
             Log.v("game_activity", game.toString())
             val intent = Intent(ctx, GameActivity::class.java)
             intent.putExtra(USER_INFO_EXTRA, UserInfoExtra(userInfo))
@@ -62,8 +60,8 @@ class GameActivity : ComponentActivity() {
         checkNotNull(getUserInfoExtra(intent)).toUserInfo()
     }
 
-    private val gameExtra: LocalGameInfoDto by lazy {
-        checkNotNull(getGameExtra(intent))
+    private val gameExtra: Game by lazy {
+        checkNotNull(getGameExtra(intent)).toGame()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,6 +96,7 @@ class GameActivity : ComponentActivity() {
     private fun doNavigation(game: Game?) {
         if (game != null && (game.board is BoardWin || game.board is BoardDraw)) {
             HomeActivity.navigateTo(origin = this, userInfoExtra)
+            finish()
         }
     }
 }

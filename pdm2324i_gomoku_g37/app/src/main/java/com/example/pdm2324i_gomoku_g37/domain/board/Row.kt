@@ -1,6 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
-
 class Row private constructor(val number: Int) {
     val index = number - 1
 

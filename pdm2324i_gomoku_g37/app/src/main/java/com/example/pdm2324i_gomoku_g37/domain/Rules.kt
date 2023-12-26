@@ -6,7 +6,6 @@ import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.distance
 
-
 data class Rules(val boardDim: Int, val opening: Opening, val variant: Variant)
 
 enum class Opening {
@@ -45,18 +44,6 @@ val variantsList = listOf("Freestyle", "Swap after first")
 
 enum class Variant {
     FREESTYLE, SWAP_AFTER_FIRST;
-
-    /** This function checks if the variant rules are respected */
-    /*fun wantSwapAfterFirst(boardRun: BoardRun): Boolean {
-        return if (this == SWAP_AFTER_FIRST && boardRun.positions.size == 1) {
-            println("Do you want to swap? Y/N")
-            when (readln().uppercase()) {
-                "Y" -> true
-                "N" -> false
-                else -> throw IllegalArgumentException("Invalid input!")
-            }
-        } else false
-    }*/
 }
 
 fun String.toOpening(): Opening =

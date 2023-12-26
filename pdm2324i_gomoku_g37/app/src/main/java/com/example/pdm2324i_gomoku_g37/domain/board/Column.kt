@@ -1,6 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.domain.board
 
-
 class Column private constructor(val symbol: Char) {
     val index get() = symbol - 'A'
 

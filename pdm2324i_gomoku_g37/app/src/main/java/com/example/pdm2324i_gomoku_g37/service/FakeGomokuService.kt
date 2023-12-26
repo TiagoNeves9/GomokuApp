@@ -3,7 +3,6 @@ package com.example.pdm2324i_gomoku_g37.service
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
-import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.Player
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
@@ -196,10 +195,8 @@ object GomokuLobbies {
         return lobbyId
     }
 
-    fun deleteLobby(lobby: WaitingLobby): LobbyId {
-        val lobbyId = LobbyId(lobby.lobbyId)
+    fun deleteLobby(lobby: WaitingLobby) {
         _lobbies.remove(lobby)
-        return lobbyId
     }
 }
 

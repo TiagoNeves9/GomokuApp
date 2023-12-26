@@ -1,4 +1,4 @@
-package com.example.pdm2324i_gomoku_g37.domain.board
+package com.example.pdm2324i_gomoku_g37.domain
 
 class Exceptions : Exception() {
     class UsernameAlreadyInUseException(message: String) : Exception(message)

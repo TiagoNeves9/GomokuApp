@@ -71,4 +71,11 @@
 
     <string name="error_join_lobby_title">Error joinig lobby</string>
     <string name="error_join_lobby_message">Please check if the device is connected to the internet</string>
+
+    <string name="loading_authors_title">Loading Authors</string>
+    <string name="loading_authors_message">Looking up all of the authors, please wait</string>
+
+    <string name="error_loading_authors_message">Error, could not load authors</string>
+
+    <string name="default_ack_button">Got it</string>
 </resources>

@@ -70,17 +70,11 @@ class AuthorsActivity : ComponentActivity() {
                 AuthorsScreen(
                     authors = currentAuthors,
                     index = viewModel.index,
-                    authorsHandlers = AuthorsHandlers(
-                        { viewModel.nextIndex() },
-                        { viewModel.prevIndex() }
-                    ),
+                    authorsHandlers = AuthorsHandlers(viewModel::nextIndex, viewModel::prevIndex),
                     navigation = NavigationHandlers(
                         onBackRequested = { finish() },
                         onInfoRequested = {
-                            InfoActivity.navigateTo(
-                                origin = this,
-                                userInfo = userInfoExtra
-                            )
+                            InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra)
                         }
                     ),
                     onSendEmailRequested = {
@@ -93,7 +87,7 @@ class AuthorsActivity : ComponentActivity() {
         }
     }
 
-    private fun openSendEmail(email: String) =
+    private fun openSendEmail(email: String) {
         try {
             val intent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
@@ -111,4 +105,5 @@ class AuthorsActivity : ComponentActivity() {
                 )
                 .show()
         }
+    }
 }

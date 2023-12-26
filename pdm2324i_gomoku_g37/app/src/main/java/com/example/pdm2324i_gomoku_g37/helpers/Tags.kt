@@ -8,6 +8,7 @@ object AuthorsScreenTestTags {
     const val AuthorNextTestTag = "AuthorFetchNextTestTag"
     const val AuthorPrevTestTag = "AuthorFetchPrevTestTag"
     const val AuthorEmailButtonTestTag = "AuthorEmailTestTag"
+    const val AuthorFetchAuthorsErrorTag = "AuthorFetchAuthorsErrorTag"
 }
 
 // This object contains the tags used in the LoginScreen
@@ -19,3 +20,4 @@ object LoginScreenTestTags {
 object SignUpScreenTestTags {
     const val SignUpScreenTestTag = "SignUpScreenTestTag"
 }
+

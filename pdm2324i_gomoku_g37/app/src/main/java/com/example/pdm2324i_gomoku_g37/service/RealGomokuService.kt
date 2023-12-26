@@ -1,9 +1,7 @@
 package com.example.pdm2324i_gomoku_g37.service
 
-import android.util.Log
 import com.example.pdm2324i_gomoku_g37.domain.Author
 import com.example.pdm2324i_gomoku_g37.domain.Game
-import com.example.pdm2324i_gomoku_g37.domain.LobbyId
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Rules
 import com.example.pdm2324i_gomoku_g37.domain.User
@@ -35,8 +33,6 @@ import com.example.pdm2324i_gomoku_g37.domain.dtos.toGame
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toUser
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toUserInfo
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toWaitingLobby
-import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
-import com.example.pdm2324i_gomoku_g37.domain.toVariantString
 import com.example.pdm2324i_gomoku_g37.service.utils.PathTemplate
 import com.example.pdm2324i_gomoku_g37.service.utils.ProblemJson
 import com.example.pdm2324i_gomoku_g37.service.utils.plus
