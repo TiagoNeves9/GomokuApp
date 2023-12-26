@@ -201,13 +201,13 @@ object GomokuLobbies {
 }
 
 object GomokuRankings {
-    data class Rankings(val user: String, val nGames: Int, val score: Int)
 
-    private val _rankings: MutableList<Rankings> = mutableListOf(
-        Rankings("admin", 9, 666)
+
+    private val _rankings: MutableList<UserStatistics> = mutableListOf(
+        UserStatistics("admin", 9, 666)
     )
 
-    val rankings: List<Rankings>
+    val rankings: List<UserStatistics>
         get() = _rankings.toList()
 }
 
