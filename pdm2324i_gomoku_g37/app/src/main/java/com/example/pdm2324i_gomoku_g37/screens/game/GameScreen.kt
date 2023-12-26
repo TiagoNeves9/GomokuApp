@@ -64,7 +64,6 @@ fun GameScreen(
     currentGame: LoadState<Game?>,
     selectedCell: Cell?,
     onCellSelected: (Cell) -> Unit = { },
-    onGameFinished: () -> Unit = { },
     currentUser: String,
     onPlayRequested: () -> Unit = { }
 ) {
@@ -102,6 +101,7 @@ fun GameScreen(
 
                     StatusBar {
                         //TODO mudar o tamanho da imagem ou do texto
+
                         when (val currentBoard = game.board) {
                             is BoardRun -> {
                                 Text(
@@ -113,12 +113,10 @@ fun GameScreen(
                             is BoardWin -> {
                                 Text("Game finished! Winner: ", color = Color.Red)
                                 DrawTurnOrWinnerPiece(currentBoard)
-                                onGameFinished()
                             }
 
                             is BoardDraw -> {
                                 Text("Game finished! It's a draw!", color = Color.Red)
-                                onGameFinished()
                             }
                         }
                     }
@@ -309,5 +307,5 @@ fun GameScreenPreview() {
     val board = createBoard(playerB.second, BOARD_DIM)
     val rules = Rules(board.boardSize, Opening.FREESTYLE, Variant.FREESTYLE)
     val game = GomokuGames.games.first()
-    GameScreen(loaded(Result.success(game)), null, {}, {}, "jp")
+    GameScreen(loaded(Result.success(game)), null, {}, "jp")
 }

@@ -8,6 +8,7 @@ import com.example.pdm2324i_gomoku_g37.domain.Turn
 import com.example.pdm2324i_gomoku_g37.domain.User
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.Column
 import com.example.pdm2324i_gomoku_g37.domain.board.Row
@@ -30,13 +31,12 @@ data class GameDtoProperties(
 val GameDtoType = SirenModel.getType<GameDtoProperties>()
 
 fun GameDtoProperties.toGame(): Game {
-    Log.v("success_gamedto", this.toString())
     val cells: Map<Cell, Turn> = if (boardCells.isEmpty()) emptyMap()
                 else boardCells.mapKeys {
                     it.key.toCell(rules.boardDim)
                 }
 
-    val board = getBoard(cells, turn, rules.boardDim, userB.username)
+    val board = getBoard(cells, turn, rules.boardDim, userB, userW, boardState)
     return Game(
         id,
         Pair(userB, userW),
@@ -46,8 +46,18 @@ fun GameDtoProperties.toGame(): Game {
     )
 }
 
-fun getBoard(boardCells: Map<Cell, Turn>, turn: String, boardDim: Int, userB: String) =
-    BoardRun(boardCells, turn.getTurn(userB), boardDim)
+fun getBoard(
+    boardCells: Map<Cell, Turn>,
+    turn: String,
+    boardDim: Int,
+    userB: User,
+    userW: User, boardState: String
+) = when(boardState) {
+    "BLACK_WON" -> BoardWin(boardCells, Player(userB, Turn.BLACK_PIECE), boardDim)
+    "WHITE_WON" -> BoardWin(boardCells, Player(userW, Turn.BLACK_PIECE), boardDim)
+    "DRAW" -> BoardDraw(boardCells, boardDim)
+    else -> BoardRun(boardCells, turn.getTurn(userB.username), boardDim)
+}
 
 fun getCurrentPlayer(userB: User, userW: User, turn: String): Player =
     if (userB.username == turn) Player(userB, Turn.BLACK_PIECE) else Player(userW, Turn.WHITE_PIECE)

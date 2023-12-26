@@ -13,9 +13,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
+import com.example.pdm2324i_gomoku_g37.domain.Game
+import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
+import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LocalGameInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toGame
+import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.screens.common.GAME_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
@@ -67,6 +72,12 @@ class GameActivity : ComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.fetchGame()
+
+                viewModel.currentGameFlow.collect{
+                    if (it is Loaded) {
+                        doNavigation(it.getOrNull())
+                    }
+                }
             }
         }
 
@@ -77,13 +88,16 @@ class GameActivity : ComponentActivity() {
                     currentGame = currentGame,
                     selectedCell = viewModel.selectedCell,
                     onCellSelected = viewModel::changeSelectedCell,
-                    onGameFinished = {
-                        HomeActivity.navigateTo(origin = this, userInfoExtra)
-                    },
                     currentUser = userInfoExtra.username,
                     onPlayRequested = viewModel::play
                 )
             }
+        }
+    }
+
+    private fun doNavigation(game: Game?) {
+        if (game != null && (game.board is BoardWin || game.board is BoardDraw)) {
+            HomeActivity.navigateTo(origin = this, userInfoExtra)
         }
     }
 }

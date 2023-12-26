@@ -272,7 +272,7 @@ object GomokuGames {
         Game(
             gameId = "1",
             users = Pair(User("2", "jp", "paulinho"), User("1", "tbmaster", "jubas")),
-            board = createBoard(boardSize = 19),
+            board = createBoard(boardSize = BOARD_DIM),
             currentPlayer = Player(User("2", "jp", "paulinho"), Turn.BLACK_PIECE),
             rules = Rules(BOARD_DIM, Opening.FREESTYLE, Variant.FREESTYLE)
         )
