@@ -100,9 +100,9 @@ class FakeGomokuService : GomokuService {
         return "Left Lobby"
     }
 
-    override suspend fun fetchUserAccount(token: String, userId: String): User {
+    override suspend fun fetchUserAccount(userId: String): User {
         delay(FAKE_SERVICE_DELAY)
-        GomokuUsers.getUserByToken(token) ?: throw InvalidLogin() //depende da api
+        //GomokuUsers.getUserByToken(token) ?: throw InvalidLogin() //depende da api
         return GomokuUsers.users.firstOrNull { it.userId == userId } ?: throw UnknownUser()
     }
 

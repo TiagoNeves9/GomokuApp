@@ -26,6 +26,7 @@ import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDtoProperties
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDtoType
@@ -119,11 +120,10 @@ class RealGomokuService(
         )
     }
 
-    private fun fetchUserRequest(token: String) = lazy {
+    private fun fetchUserRequest(userId: String) = lazy {
         buildRequest(
-            url = baseRequestUrl + URI(PathTemplate.USER),
+            url = baseRequestUrl + PathTemplate.userById(userId),
             method = "GET",
-            token = token
         )
     }
 
@@ -196,9 +196,9 @@ class RealGomokuService(
         gson.fromJson<LeaveLobbyDto>(body.string(), LeaveLobbyDtoType.type).properties.waitMessage
     }
 
-    override suspend fun fetchUserAccount(token: String, userId: String): User = fetchUserRequest(token).value.send { body ->
-        gson.fromJson<UserDto>(body.string(), UserDtoType.type)
-    }.properties.toUser()
+    override suspend fun fetchUserAccount(userId: String): User = fetchUserRequest(userId).value.send { body ->
+        gson.fromJson(body.string(), UserDtoProperties::class.java)
+    }.toUser()
 
     override suspend fun isGameCreated(token: String, lobbyId: String): String = isGameCreatedRequest(token, lobbyId).value.send { body ->
         gson.fromJson<IsGameCreatedDto>(body.string(), IsGameCreatedDtoType.type)

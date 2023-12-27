@@ -20,7 +20,7 @@ object PathTemplate {
 
     const val USER = "/user"
     const val USERS = "/users"
-    const val USER_BY_ID = "/users/{id}"
+    const val USER_BY_ID = "/users/"
     const val CREATE_USER = "/users/signup"
     const val LOGIN = "/users/login"
     const val COOKIE = "/users/cookie"
@@ -37,6 +37,7 @@ object PathTemplate {
     fun play(gameId: String): URI = URI(PLAY) + gameId
     fun isGameCreated(lobbyId: String): URI = URI(IS_GAME_CREATED) + lobbyId
     fun gameById(gameId: String): URI = URI(GAME_BY_ID) + gameId
+    fun userById(userId: String): URI = URI(USER_BY_ID) + userId
 }
 
 object LinkRelations {

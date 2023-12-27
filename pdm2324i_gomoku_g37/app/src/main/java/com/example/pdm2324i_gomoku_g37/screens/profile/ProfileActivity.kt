@@ -8,7 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.idle
@@ -52,22 +54,25 @@ class ProfileActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            viewModel.fetchUser()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.fetchUser()
+                viewModel.fetchUserStatistic()
+            }
         }
 
         setContent {
-            /*val currentUserProfile by viewModel.userProfileFlow
-                .collectAsState(initial = idle())*/
+            val currentUserProfile by viewModel.userProfileFlow.collectAsState(initial = idle())
+            val currentUserStatistic by viewModel.userStatisticFlow.collectAsState(initial = idle())
             GomokuTheme {
                 ProfileScreen(
-                    userInfo =userInfoExtra,
+                    userProfile = currentUserProfile,
+                    userStatistic = currentUserStatistic,
+                    onDismissProfileError = viewModel::resetUserProfileToIdle,
+                    onDismissStatisticError = viewModel::resetUserStatisticToIdle,
                     navigation = NavigationHandlers(
                         onBackRequested = { finish() },
                         onInfoRequested = {
-                            InfoActivity.navigateTo(
-                                origin = this,
-                                userInfo = userInfoExtra
-                            )
+                            InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra)
                         }
                     )
                 )

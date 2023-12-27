@@ -8,13 +8,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.Loading
 import com.example.pdm2324i_gomoku_g37.domain.User
-import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
@@ -29,11 +28,12 @@ import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    userInfo: UserInfo,
-    //userProfile: LoadState<User?> = idle(),
-    onDismissError: () -> Unit = {},
+    userProfile: LoadState<User?> = idle(),
+    userStatistic: LoadState<UserStatistics?> = idle(),
+    onDismissProfileError: () -> Unit = {},
+    onDismissStatisticError: () -> Unit = { },
     navigation: NavigationHandlers = NavigationHandlers()
-) =
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -49,18 +49,38 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Text("User: ${userInfo.username}")
 
-            /*if (userProfile is Loading)
-                LoadingAlert(R.string.loading_home_title, R.string.loading_home_message)
+            val profileInfo = userProfile.getOrNull()
 
-            userProfile.exceptionOrNull()?.let { cause ->
-                ProcessError(onDismissError, cause)
+            if (profileInfo != null) {
+                Text(stringResource(id = R.string.userid_text).plus(" ${profileInfo.userId}"))
+                Text(stringResource(id = R.string.username_text).plus(" ${profileInfo.username}"))
+            } else {
+                Text(text = stringResource(id = R.string.no_profile_info_found))
             }
 
-            userProfile.getOrNull()?.let { user ->
-                Text("User: ${user.username}")
-                //dar display das stats
-            }*/
+            if (userProfile is Loading)
+                LoadingAlert(R.string.loading_user_profile_title, R.string.loading_user_profile_message)
+
+            userProfile.exceptionOrNull()?.let { cause ->
+                ProcessError(onDismissProfileError, cause)
+            }
+
+            val statistic = userStatistic.getOrNull()
+
+            if (statistic != null) {
+                Text(text = stringResource(id = R.string.profile_screen_total_games).plus(" ${statistic.ngames}"))
+                Text(text = stringResource(id = R.string.profile_total_score).plus(" ${statistic.score}"))
+            } else {
+                Text(text = stringResource(id = R.string.profile_no_stats_found))
+            }
+
+            if (userStatistic is Loading)
+                LoadingAlert(R.string.loading_user_profile_title, R.string.loading_user_profile_message)
+
+            userStatistic.exceptionOrNull()?.let { cause ->
+                ProcessError(onDismissStatisticError, cause)
+            }
         }
     }
+}

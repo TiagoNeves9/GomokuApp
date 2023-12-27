@@ -90,6 +90,10 @@
     <string name="loading_api_info_title">Loading Api Info</string>
     <string name="loading_api_info_message">Looking up api information, please wait</string>
 
+    <string name="loading_user_profile_title">Loading user profile</string>
+    <string name="loading_user_profile_message">Loading your account details</string>
+    <string name="no_profile_info_found">No profile info found</string>
+
     <string name="loading_lobbies_title">Loading Lobbies</string>
     <string name="loading_lobbies_message">Loading up all the lobbies, please wait</string>
     <string name="no_lobbies_found">No lobbies found!</string>
@@ -106,6 +110,8 @@
     <string name="game_draw">Game finished! It is a draw!</string>
 
     <string name="turn_text">Turn:</string>
+    <string name="userid_text">Id:</string>
+    <string name="username_text">Username:</string>
 
     <string name="make_move_button">Make Move!</string>
 
@@ -119,4 +125,8 @@
     <string name="new_lobby_board_size">Board size</string>
     <string name="new_lobby_board_opening">Opening</string>
     <string name="new_lobby_board_variant">Variant</string>
+
+    <string name="profile_screen_total_games">Number of games:</string>
+    <string name="profile_total_score">Total score:</string>
+    <string name="profile_no_stats_found">No user statistic found</string>
 </resources>

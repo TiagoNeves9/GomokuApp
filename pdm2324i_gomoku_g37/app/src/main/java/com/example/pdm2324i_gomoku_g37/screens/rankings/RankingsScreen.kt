@@ -62,7 +62,7 @@ fun RankingsScreen(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = userStatistics.nGames.toString(),
+                    text = userStatistics.ngames.toString(),
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center

@@ -35,7 +35,7 @@ interface GomokuService {
 
     suspend fun leaveLobby(token: String, lobbyId: String): String
 
-    suspend fun fetchUserAccount(token: String, userId: String): User
+    suspend fun fetchUserAccount(userId: String): User
 
     suspend fun isGameCreated(token: String, lobbyId: String): String
 
