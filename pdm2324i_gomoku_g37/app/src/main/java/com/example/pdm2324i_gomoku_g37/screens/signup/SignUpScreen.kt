@@ -89,7 +89,7 @@ fun SignUpScreen(
                 navigation = navigation
             )
         },
-        bottomBar = { GroupFooterView(Color.White) },
+        bottomBar = { GroupFooterView() },
     ) { padding ->
         CustomContainerView(
             Modifier

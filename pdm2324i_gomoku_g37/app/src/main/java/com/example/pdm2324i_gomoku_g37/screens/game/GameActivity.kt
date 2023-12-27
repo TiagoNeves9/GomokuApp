@@ -3,7 +3,6 @@ package com.example.pdm2324i_gomoku_g37.screens.game
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -33,6 +32,17 @@ import kotlinx.coroutines.launch
 
 class GameActivity : ComponentActivity() {
 
+    /**
+     * Helper method to get the user info extra from the intent.
+     */
+    private val userInfoExtra: UserInfo by lazy {
+        checkNotNull(getUserInfoExtra(intent)).toUserInfo()
+    }
+
+    private val gameExtra: Game by lazy {
+        checkNotNull(getGameExtra(intent)).toGame()
+    }
+
     private val dependencies by lazy { application as GomokuDependenciesContainer }
 
     private val viewModel by viewModels<GameScreenViewModel> {
@@ -45,23 +55,11 @@ class GameActivity : ComponentActivity() {
         }
 
         private fun createIntent(ctx: Context, userInfo: UserInfo, game: GameExtra): Intent {
-            Log.v("game_activity", game.toString())
             val intent = Intent(ctx, GameActivity::class.java)
             intent.putExtra(USER_INFO_EXTRA, UserInfoExtra(userInfo))
             intent.putExtra(GAME_EXTRA, game)
             return intent
         }
-    }
-
-    /**
-     * Helper method to get the user info extra from the intent.
-     */
-    private val userInfoExtra: UserInfo by lazy {
-        checkNotNull(getUserInfoExtra(intent)).toUserInfo()
-    }
-
-    private val gameExtra: Game by lazy {
-        checkNotNull(getGameExtra(intent)).toGame()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +68,6 @@ class GameActivity : ComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.fetchGame()
-
                 viewModel.currentGameFlow.collect{
                     if (it is Loaded) {
                         doNavigation(it.getOrNull())
@@ -87,7 +84,8 @@ class GameActivity : ComponentActivity() {
                     selectedCell = viewModel.selectedCell,
                     onCellSelected = viewModel::changeSelectedCell,
                     currentUser = userInfoExtra.username,
-                    onPlayRequested = viewModel::play
+                    onPlayRequested = viewModel::play,
+                    onDismissError = viewModel::resetCurrentGameFlowFlowToIdle
                 )
             }
         }

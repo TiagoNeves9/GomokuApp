@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.game
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,16 +18,14 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,29 +34,29 @@ import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Game
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
-import com.example.pdm2324i_gomoku_g37.domain.Loaded
-import com.example.pdm2324i_gomoku_g37.domain.Opening
-import com.example.pdm2324i_gomoku_g37.domain.Player
-import com.example.pdm2324i_gomoku_g37.domain.Rules
+import com.example.pdm2324i_gomoku_g37.domain.Loading
 import com.example.pdm2324i_gomoku_g37.domain.Turn
-import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_CELL_SIZE
-import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardDraw
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardRun
 import com.example.pdm2324i_gomoku_g37.domain.board.BoardWin
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
-import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToColumn
 import com.example.pdm2324i_gomoku_g37.domain.board.indexToRow
+import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.loaded
+import com.example.pdm2324i_gomoku_g37.helpers.GameScreenTestTags.GameScreenBoardTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.GameScreenTestTags.GameScreenClickableCellTestTag
+import com.example.pdm2324i_gomoku_g37.screens.components.BOARD_PLUS_SYMBOL_FULL_OFFSET
+import com.example.pdm2324i_gomoku_g37.screens.components.BOARD_PLUS_SYMBOL_HALF_OFFSET
+import com.example.pdm2324i_gomoku_g37.screens.components.BOARD_PLUS_SYMBOL_STROKE_WIDTH
+import com.example.pdm2324i_gomoku_g37.screens.components.BOARD_PLUS_SYMBOL_ZERO_OFFSET
+import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
+import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.service.GomokuGames
-import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-import java.time.Instant
-
 
 @Composable
 fun GameScreen(
@@ -65,62 +64,64 @@ fun GameScreen(
     selectedCell: Cell?,
     onCellSelected: (Cell) -> Unit = { },
     currentUser: String,
-    onPlayRequested: () -> Unit = { }
+    onPlayRequested: () -> Unit = { },
+    onDismissError: () -> Unit = { }
 ) {
 
     val containerModifier = Modifier
         .background(Color.DarkGray)
         .fillMaxSize()
 
-    GomokuTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            Column(
-                containerModifier,
-                Arrangement.Bottom,
-                Alignment.CenterHorizontally
-            ) {
-                currentGame.getOrNull()?.let { game ->
-                    
-                    Text(
-                        text = "${game.users.first.username} VS ${game.users.second.username}"
-                    )
-                    
-                    DrawBoard(game.board, selectedCell) { cell ->
-                        if (game.currentPlayer.first.username == currentUser) {
-                            onCellSelected(cell)
-                        }
+    Surface(color = MaterialTheme.colorScheme.background) {
+        Column(
+            containerModifier,
+            Arrangement.Bottom,
+            Alignment.CenterHorizontally
+        ) {
+            currentGame.getOrNull()?.let { game ->
+
+                Text(text = "${game.users.first.username} VS ${game.users.second.username}")
+
+                DrawBoard(game.board, selectedCell) { cell ->
+                    if (game.currentPlayer.first.username == currentUser) {
+                        onCellSelected(cell)
                     }
+                }
 
-                    if (selectedCell != null) {
-                        OutlinedButton(onClick = onPlayRequested) {
-                            Text("Make move")
-                        }
+                if (selectedCell != null) {
+                    OutlinedButton(onClick = onPlayRequested) {
+                        Text(stringResource(id = R.string.make_move_button))
                     }
+                }
 
-                    Spacer(Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
+                Spacer(Modifier.padding(vertical = BOARD_CELL_SIZE.dp))
 
-                    StatusBar {
-                        //TODO mudar o tamanho da imagem ou do texto
+                StatusBar {
+                    when (game.board) {
+                        is BoardRun -> {
+                            Text(stringResource(id = R.string.turn_text).plus(" ${game.currentPlayer.first.username}"))
+                            DrawTurnOrWinnerPiece(game.board)
+                        }
 
-                        when (val currentBoard = game.board) {
-                            is BoardRun -> {
-                                Text(
-                                    "Turn: ${game.currentPlayer.first.username}", color = Color.Red,
-                                )
-                                DrawTurnOrWinnerPiece(currentBoard)
-                            }
+                        is BoardWin -> {
+                            val message = stringResource(id = R.string.game_winner_message).plus(" ${game.currentPlayer.first.username}")
+                            Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+                            DrawTurnOrWinnerPiece(game.board)
+                        }
 
-                            is BoardWin -> {
-                                Text("Game finished! Winner: ", color = Color.Red)
-                                DrawTurnOrWinnerPiece(currentBoard)
-                            }
-
-                            is BoardDraw -> {
-                                Text("Game finished! It's a draw!", color = Color.Red)
-                            }
+                        is BoardDraw -> {
+                            val message = stringResource(id = R.string.game_draw)
+                            Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
+            }
+
+            if (currentGame is Loading)
+                LoadingAlert(R.string.loading_game_title, R.string.loading_game_message)
+
+            currentGame.exceptionOrNull()?.let { cause ->
+                ProcessError(onDismissError, cause)
             }
         }
     }
@@ -131,7 +132,7 @@ fun DrawBoard(board: Board, selectedCell: Cell?, onClick: (Cell) -> Unit = {}) {
     SymbolAxisView(board.boardSize)
 
     Row(
-        Modifier.testTag("boardTest"),
+        Modifier.testTag(GameScreenBoardTestTag),
         Arrangement.Center,
         Alignment.Bottom
     ) {
@@ -144,7 +145,7 @@ fun DrawBoard(board: Board, selectedCell: Cell?, onClick: (Cell) -> Unit = {}) {
 }
 
 @Composable
-fun SymbolAxisView(boardSize: Int) =
+fun SymbolAxisView(boardSize: Int) {
     Row(
         Modifier.padding(top = 10.dp, bottom = 10.dp),
         Arrangement.SpaceEvenly
@@ -167,6 +168,7 @@ fun SymbolAxisView(boardSize: Int) =
             AxisText(" ")
         }
     }
+}
 
 @Composable
 fun NumberAxisView(boardSize: Int) =
@@ -186,16 +188,15 @@ fun NumberAxisView(boardSize: Int) =
     }
 
 @Composable
-fun AxisText(text: String) =
-    Text(
-        text = text,
-        color = Color.Blue,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center
-    )
+fun AxisText(text: String) = Text(
+    text = text,
+    color = MaterialTheme.colorScheme.primary,
+    fontWeight = FontWeight.Bold,
+    textAlign = TextAlign.Center
+)
 
 @Composable
-fun CellsView(board: Board, selectedCell: Cell?, onClick: (Cell) -> Unit = {}) =
+fun CellsView(board: Board, selectedCell: Cell?, onClick: (Cell) -> Unit = {}) {
     Column {
         repeat(board.boardSize) { line ->
             Row {
@@ -210,12 +211,18 @@ fun CellsView(board: Board, selectedCell: Cell?, onClick: (Cell) -> Unit = {}) =
                             DrawWhitePiece()
                         }
 
-                        else -> DrawCells(onClick = onClick, selectedCell = selectedCell, cell = cell, enabled = true)
+                        else -> DrawCells(
+                            onClick = onClick,
+                            selectedCell = selectedCell,
+                            cell = cell,
+                            enabled = true
+                        )
                     }
                 }
             }
         }
     }
+}
 
 @Composable
 fun DrawCells(
@@ -230,7 +237,7 @@ fun DrawCells(
     val color = if (selectedCell == cell) Color.Red else Color.White
 
     val modifier = Modifier
-        .testTag("clickableCell")
+        .testTag(GameScreenClickableCellTestTag)
         .size(BOARD_CELL_SIZE.dp)
         .background(color = color)
         .clickable(enabled = enabled) {
@@ -244,33 +251,32 @@ fun DrawCells(
 }
 
 @Composable
-fun DrawPlusSymbol(padding: Dp) =
-    Canvas(
-        Modifier
-            .fillMaxSize()
-            .padding(padding)
-    ) {
+fun DrawPlusSymbol(padding: Dp) {
+    val modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+
+    Canvas(modifier) {
         drawLine(
             color = Color.LightGray,
-            start = Offset(0.5F, 0F),
-            end = Offset(0.5F, 1F),
-            strokeWidth = 60F   //TODO 60F é hard-coded
+            start = Offset(BOARD_PLUS_SYMBOL_HALF_OFFSET, BOARD_PLUS_SYMBOL_ZERO_OFFSET),
+            end = Offset(BOARD_PLUS_SYMBOL_HALF_OFFSET, BOARD_PLUS_SYMBOL_FULL_OFFSET),
+            strokeWidth = BOARD_PLUS_SYMBOL_STROKE_WIDTH
         )
         drawLine(
             color = Color.LightGray,
-            start = Offset(0F, 0.5F),
-            end = Offset(1F, 0.5F),
-            strokeWidth = 60F   //TODO 60F é hard-coded
+            start = Offset(BOARD_PLUS_SYMBOL_ZERO_OFFSET, BOARD_PLUS_SYMBOL_HALF_OFFSET),
+            end = Offset(BOARD_PLUS_SYMBOL_FULL_OFFSET, BOARD_PLUS_SYMBOL_HALF_OFFSET),
+            strokeWidth = BOARD_PLUS_SYMBOL_STROKE_WIDTH
         )
     }
+}
 
 @Composable
-fun DrawBlackPiece() =
-    Image(painter = painterResource(id = R.drawable.b), contentDescription = null)
+fun DrawBlackPiece() = Image(painter = painterResource(id = R.drawable.b), contentDescription = null)
 
 @Composable
-fun DrawWhitePiece() =
-    Image(painter = painterResource(id = R.drawable.w), contentDescription = null)
+fun DrawWhitePiece() = Image(painter = painterResource(id = R.drawable.w), contentDescription = null)
 
 @Composable
 fun DrawTurnOrWinnerPiece(board: Board) =
@@ -290,22 +296,14 @@ fun StatusBar(content: @Composable () -> Unit = {}) {
     ) {
         content()
     }
-    Text("Group 37 - Gomoku ", color = Color.Blue)
+    Text(stringResource(id = R.string.activity_main_footer), color = MaterialTheme.colorScheme.primary)
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GameScreenPreview() {
-    val playerB = Player(
-        GomokuUsers.users[0],
-        Turn.BLACK_PIECE
-    )
-    val playerW = Player(
-        GomokuUsers.users[1],
-        Turn.WHITE_PIECE
-    )
-    val board = createBoard(playerB.second, BOARD_DIM)
-    val rules = Rules(board.boardSize, Opening.FREESTYLE, Variant.FREESTYLE)
-    val game = GomokuGames.games.first()
-    GameScreen(loaded(Result.success(game)), null, {}, "jp")
+    GomokuTheme {
+        val game = GomokuGames.games.first()
+        GameScreen(loaded(Result.success(game)), null, {}, "jp")
+    }
 }

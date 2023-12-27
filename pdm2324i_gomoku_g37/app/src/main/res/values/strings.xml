@@ -28,6 +28,8 @@
 
     <string name="activity_login_top_bar_title">Login</string>
 
+    <string name="activity_home_top_bar_title">Home</string>
+
     <string name="activity_login_sign_up_input_username">Username</string>
     <string name="activity_login_sign_up_input_password">Password</string>
 
@@ -66,8 +68,15 @@
     <string name="loading_home_title">Setting up your home</string>
     <string name="loading_home_message">We are getting things ready for you!</string>
 
-    <string name="loading_new_game_title">Matchmaking </string>
+    <string name="loading_new_game_title">Matchmaking</string>
     <string name="loading_new_game_message">Waiting for player to join!</string>
+
+    <string name="loading_new_lobby_title">New Lobby</string>
+    <string name="loading_new_lobby_message">We are creating your new lobby, please wait</string>
+
+    <string name="new_lobby_screen_title">New Game</string>
+    <string name="new_lobby_screen_subtitle">Choose your game settings</string>
+    <string name="new_lobby_screen_submit">Continue</string>
 
     <string name="error_join_lobby_title">Error joinig lobby</string>
     <string name="error_join_lobby_message">Please check if the device is connected to the internet</string>
@@ -75,7 +84,32 @@
     <string name="loading_authors_title">Loading Authors</string>
     <string name="loading_authors_message">Looking up all of the authors, please wait</string>
 
+    <string name="loading_game_title">Loading Game</string>
+    <string name="loading_game_message">Building your own personal game, please wait</string>
+
+    <string name="loading_api_info_title">Loading Api Info</string>
+    <string name="loading_api_info_message">Looking up api information, please wait</string>
+
     <string name="error_loading_authors_message">Error, could not load authors</string>
 
     <string name="default_ack_button">Got it</string>
+
+    <string name="game_winner_message">Game finished! Winner: </string>
+
+    <string name="game_draw">Game finished! It is a draw!</string>
+
+    <string name="turn_text">Turn:</string>
+
+    <string name="make_move_button">Make Move!</string>
+
+    <string name="menu_logout_option">Logout</string>
+    <string name="menu_play_option">Play</string>
+    <string name="menu_rankings_option">Rankings</string>
+    <string name="menu_authors_option">Authors</string>
+    <string name="menu_about_option">About</string>
+    <string name="menu_profile_option">Profile</string>
+
+    <string name="new_lobby_board_size">Board size</string>
+    <string name="new_lobby_board_opening">Opening</string>
+    <string name="new_lobby_board_variant">Variant</string>
 </resources>

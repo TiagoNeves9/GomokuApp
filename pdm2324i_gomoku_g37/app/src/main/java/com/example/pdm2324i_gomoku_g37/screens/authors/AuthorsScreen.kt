@@ -48,6 +48,7 @@ import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorCardTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorEmailButtonTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorFetchAuthorsErrorTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNextTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorPrevTestTag
 import com.example.pdm2324i_gomoku_g37.helpers.AuthorsScreenTestTags.AuthorNoAuthorTestTag
@@ -66,6 +67,7 @@ import com.example.pdm2324i_gomoku_g37.screens.components.ICON_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
+import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.screens.components.ROW_DEFAULT_PADDING
 import com.example.pdm2324i_gomoku_g37.service.GomokuAuthors
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
@@ -90,7 +92,7 @@ fun AuthorsScreen(
         topBar = {
             CustomBar(text = stringResource(R.string.activity_authors_top_bar_title), navigation = navigation)
         },
-        bottomBar = { GroupFooterView(Color.White) }
+        bottomBar = { GroupFooterView() }
     ) { padding ->
         val customContainerModifier = Modifier.fillMaxSize().padding(padding)
 
@@ -98,19 +100,6 @@ fun AuthorsScreen(
             require(index >= 0) { "Index must be greater than or equal to 0" }
 
             MediumCustomTitleView(text = stringResource(R.string.activity_authors_group_number))
-
-            if (authors is Loading)
-                LoadingAlert(R.string.loading_authors_title, R.string.loading_authors_message)
-
-            authors.exceptionOrNull()?.message?.let { errorMessage ->
-                Log.v(AuthorsScreenTestTags.AuthorFetchAuthorsErrorTag, errorMessage)
-                ErrorAlert(
-                    R.string.error_general_title,
-                    R.string.error_loading_authors_message,
-                    R.string.default_ack_button,
-                    onDismiss = onDismiss
-                )
-            }
 
             val authorsList = authors.getOrNull()
 
@@ -136,6 +125,14 @@ fun AuthorsScreen(
                         onSendEmailRequested = onSendEmailRequested
                     )
                 }
+            }
+
+            if (authors is Loading)
+                LoadingAlert(R.string.loading_authors_title, R.string.loading_authors_message)
+
+            authors.exceptionOrNull()?.let { cause ->
+                cause.message?.let { Log.v(AuthorFetchAuthorsErrorTag, it) }
+                ProcessError(onDismiss, cause)
             }
         }
     }

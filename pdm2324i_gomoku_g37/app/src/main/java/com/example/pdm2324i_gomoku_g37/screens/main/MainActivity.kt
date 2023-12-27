@@ -49,8 +49,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentUserInfo by viewModel.userInfoFlow
-                .collectAsState(initial = idle())
+            val currentUserInfo by viewModel.userInfoFlow.collectAsState(initial = idle())
             GomokuTheme {
                 MainScreen(
                     onStartEnabled = currentUserInfo is Idle,

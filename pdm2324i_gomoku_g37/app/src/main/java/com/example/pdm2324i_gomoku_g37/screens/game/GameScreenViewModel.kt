@@ -14,7 +14,6 @@ import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.domain.loading
-import com.example.pdm2324i_gomoku_g37.screens.common.GameExtra
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +60,7 @@ class GameScreenViewModel(
 
     fun fetchGame() {
         _currentGameFlow.value = loading()
-        viewModelScope.launch {
+        scope.launch {
             while (true) {
                 val result: Result<Game> = runCatching {
                     service.getGameById(userInfo.token, gameInfo.gameId)
@@ -74,8 +73,8 @@ class GameScreenViewModel(
 
     fun play() {
         check(_selectedCell != null)
-        _currentGameFlow.value = loading()
-        scope.launch {
+        //_currentGameFlow.value = loading()
+        viewModelScope.launch {
             _selectedCell?.let { cell ->
                 val result: Result<Game> = runCatching {
                     service.play(userInfo.token, gameInfo.gameId, cell, gameInfo.rules.boardDim)

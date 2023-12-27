@@ -20,10 +20,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.helpers.ComponentsTestTags
 import com.example.pdm2324i_gomoku_g37.ui.theme.DarkBlue50
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-
-const val LoadingAlertTestTag = "LoadingAlertTestTag"
 
 @Composable
 fun LoadingAlert(
@@ -54,7 +54,7 @@ fun LoadingAlertImpl(
                 border = BorderStroke(0.dp, Color.Unspecified),
                 onClick = onDismiss
             ) {
-                Text(text = "Leave Lobby")
+                Text(text = stringResource(id = R.string.default_ack_button))
             }
         },
         confirmButton = { },
@@ -80,8 +80,7 @@ fun LoadingAlertImpl(
                 modifier = Modifier.size(42.dp)
             )
         },
-        modifier = Modifier
-            .testTag(LoadingAlertTestTag)
+        modifier = Modifier.testTag(ComponentsTestTags.LoadingAlertTestTag)
     )
 }
 

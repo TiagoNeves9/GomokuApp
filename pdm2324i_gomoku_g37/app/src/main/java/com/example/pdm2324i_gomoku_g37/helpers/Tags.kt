@@ -11,6 +11,10 @@ object AuthorsScreenTestTags {
     const val AuthorFetchAuthorsErrorTag = "AuthorFetchAuthorsErrorTag"
 }
 
+object ComponentsTestTags {
+    const val LoadingAlertTestTag = "LoadingAlertTestTag"
+}
+
 // This object contains the tags used in the LoginScreen
 object LoginScreenTestTags {
     const val LoginScreenTestTag = "LoginScreenTestTag"
@@ -19,5 +23,14 @@ object LoginScreenTestTags {
 // This object contains the tags used in the SignUpScreen
 object SignUpScreenTestTags {
     const val SignUpScreenTestTag = "SignUpScreenTestTag"
+}
+
+object GameScreenTestTags {
+    const val GameScreenBoardTestTag = "GameScreenBoardTestTag"
+    const val GameScreenClickableCellTestTag = "GameScreenClickableCellTestTag"
+}
+
+object InfoScreenTestTags {
+    const val InfoFetchInfoErrorTag = "InfoFetchInfoErrorTag"
 }
 

@@ -25,12 +25,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
@@ -38,7 +36,6 @@ import com.example.pdm2324i_gomoku_g37.domain.LobbyAccessError
 import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
 import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
-import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.Variant
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
 import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
@@ -51,11 +48,14 @@ import com.example.pdm2324i_gomoku_g37.domain.toVariant
 import com.example.pdm2324i_gomoku_g37.domain.toVariantString
 import com.example.pdm2324i_gomoku_g37.domain.variantsList
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
+import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_CONTENT_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
+import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
+import com.example.pdm2324i_gomoku_g37.screens.components.SUBTITLE_FONT_SIZE
+import com.example.pdm2324i_gomoku_g37.screens.components.TEXT_FIELD_NEW_GAME_PADDING
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-
 
 data class NewGameScreenState(
     val lobbyScreenState: LobbyScreenState = OutsideLobby,
@@ -84,20 +84,20 @@ data class NewGameScreenFunctions(
 fun NewLobbyScreen(
     state: NewGameScreenState = NewGameScreenState(),
     functions: NewGameScreenFunctions = NewGameScreenFunctions()
-) =
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = { GroupFooterView(Color.White) },
+        bottomBar = { GroupFooterView() },
     ) { padding ->
         val customContainerModifier = Modifier
             .padding(padding)
             .fillMaxSize()
         CustomContainerView(modifier = customContainerModifier) {
-            LargeCustomTitleView(text = "New Game")
+            LargeCustomTitleView(text = stringResource(id = R.string.new_lobby_screen_title))
 
             Text(
-                text = "Choose your game settings",
-                fontSize = 15.sp
+                text = stringResource(id = R.string.new_lobby_screen_subtitle),
+                fontSize = SUBTITLE_FONT_SIZE
             )
 
             BoardSizeSelect(
@@ -120,24 +120,22 @@ fun NewLobbyScreen(
             )
             Button(
                 onClick = functions.createNewGameRequested,
-                modifier = Modifier.padding(vertical = 10.dp)
+                modifier = Modifier.padding(vertical = DEFAULT_CONTENT_PADDING)
             ) {
-                Text(text = "Continue")
+                Text(text = stringResource(id = R.string.new_lobby_screen_submit))
             }
 
             if (state.lobbyScreenState is EnteringLobby)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissError = functions.onDismissError)
+                LoadingAlert(R.string.loading_new_lobby_title, R.string.loading_new_lobby_message, onDismissError = functions.onDismissLobby)
 
             if (state.lobbyScreenState is WaitingLobby)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismiss = functions.onDismissLobby, onDismissError = functions.onDismissError)
-
-            if (state.lobbyScreenState is ReadyLobby)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissError = functions.onDismissError)
+                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismiss = functions.onDismissLobby, onDismissError = functions.onDismissLobby)
 
             if (state.lobbyScreenState is LobbyAccessError)
-                LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissError = functions.onDismissError)
+                ProcessError(functions.onDismissError, state.lobbyScreenState.cause)
         }
     }
+}
 
 @Composable
 private fun BoardSizeSelect(
@@ -148,7 +146,7 @@ private fun BoardSizeSelect(
 ) {
     GameSelect(
         value = selectedBoardSize.boardSizeString(),
-        label = { Text("Board size") },
+        label = { Text(stringResource(id = R.string.new_lobby_board_size)) },
         isExpanded = isExpanded,
         dataList = boardSizeList.map { it.toString() },
         onExpandChange = changeIsExpanded,
@@ -167,7 +165,7 @@ private fun GameOpeningSelect(
 ) {
     GameSelect(
         value = selectedGameOpening.toOpeningString(),
-        label = { Text("Opening") },
+        label = { Text(stringResource(id = R.string.new_lobby_board_opening)) },
         isExpanded = isExpanded,
         dataList = openingsList,
         onExpandChange = changeIsExpanded,
@@ -186,7 +184,7 @@ private fun GameVariantSelect(
 ) {
     GameSelect(
         value = selectedGameVariant.toVariantString(),
-        label = { Text("Variant") },
+        label = { Text(stringResource(id = R.string.new_lobby_board_variant)) },
         isExpanded = isExpanded,
         dataList = variantsList,
         onExpandChange = changeIsExpanded,
@@ -211,7 +209,7 @@ private fun GameSelect(
         .onGloballyPositioned { coordinates ->
             textFieldSize = coordinates.size.toSize()
         }
-        .padding(vertical = 15.dp)
+        .padding(vertical = TEXT_FIELD_NEW_GAME_PADDING)
 
     val dropDownMenuModifier = Modifier
         .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
@@ -256,7 +254,8 @@ private fun TrailingIcon(isExpanded: Boolean, changeIsExpanded: () -> Unit) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun NewGameScreenPreview() =
+fun NewGameScreenPreview() {
     GomokuTheme {
         NewLobbyScreen()
     }
+}

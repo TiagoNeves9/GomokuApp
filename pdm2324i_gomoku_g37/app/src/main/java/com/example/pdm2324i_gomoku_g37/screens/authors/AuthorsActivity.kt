@@ -13,7 +13,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
@@ -61,7 +63,9 @@ class AuthorsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            viewModel.fetchAuthors()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.fetchAuthors()
+            }
         }
 
         setContent {

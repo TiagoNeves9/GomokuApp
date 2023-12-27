@@ -98,7 +98,7 @@ data class RulesExtra(val boardDim: Int, val opening: Opening, val variant: Vari
     fun toRules(): Rules = Rules(boardDim, opening, variant)
 }
 
-fun Map<Cell, Turn>.toCellDto(): Map<CellExtra, Turn> = this.mapKeys { (cell, _) ->
+private fun Map<Cell, Turn>.toCellDto(): Map<CellExtra, Turn> = this.mapKeys { (cell, _) ->
     CellExtra(cell)
 }
 

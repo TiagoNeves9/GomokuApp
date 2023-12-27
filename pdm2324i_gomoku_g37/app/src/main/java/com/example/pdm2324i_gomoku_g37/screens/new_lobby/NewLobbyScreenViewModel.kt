@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
 import com.example.pdm2324i_gomoku_g37.domain.Game
+import com.example.pdm2324i_gomoku_g37.domain.Idle
 import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
 import com.example.pdm2324i_gomoku_g37.domain.LobbyAccessError
 import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
@@ -34,6 +35,8 @@ import kotlinx.coroutines.launch
 
 
 private const val POLLING_INTERVAL_VALUE = 5000L
+
+private const val GAME_FLAG_CREATED = "CREATED"
 
 class NewLobbyScreenViewModel(
     private val service: GomokuService,
@@ -112,37 +115,37 @@ class NewLobbyScreenViewModel(
     }
 
     fun createLobbyAndWaitForPlayer() {
-        check(_screenStateFlow.value is OutsideLobby) {
-            "Cannot enter lobby twice"
-        }
+        if (_screenStateFlow.value is OutsideLobby) {
+            _screenStateFlow.value = EnteringLobby
 
-        val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
+            val rules = Rules(_selectedBoardSize, _selectedGameOpening, _selectedGameVariant)
 
-        scope.launch {
-            try {
-                service.createLobby(userInfo.token, rules).collect { newLobby ->
-                    _screenStateFlow.value = WaitingLobby(newLobby.lobbyId, newLobby.hostUserId, newLobby.boardDim, newLobby.opening, newLobby.variant)
-                    while (_screenStateFlow.value !is ReadyLobby) {
-                        val isGameCreated = service.isGameCreated(userInfo.token, newLobby.lobbyId)
-                        if (isGameCreated == "CREATED") {
-                            val newGame = service.getGameById(userInfo.token, newLobby.lobbyId)
-                            _screenStateFlow.value = ReadyLobby(newGame)
+            scope.launch {
+                try {
+                    service.createLobby(userInfo.token, rules).collect { newLobby ->
+                        _screenStateFlow.value = WaitingLobby(newLobby.lobbyId, newLobby.hostUserId, newLobby.boardDim, newLobby.opening, newLobby.variant)
+                        while (_screenStateFlow.value !is ReadyLobby) {
+                            val isGameCreated = service.isGameCreated(userInfo.token, newLobby.lobbyId)
+                            if (isGameCreated == GAME_FLAG_CREATED) {
+                                val newGame = service.getGameById(userInfo.token, newLobby.lobbyId)
+                                _screenStateFlow.value = ReadyLobby(newGame)
+                            }
+                            delay(POLLING_INTERVAL_VALUE)
                         }
-                        delay(POLLING_INTERVAL_VALUE)
                     }
-                }
-            } catch (cause: Throwable) {
-                if (_screenStateFlow.value is WaitingLobby) {
-                    leaveLobby()
-                }
+                } catch (cause: Throwable) {
+                    if (_screenStateFlow.value is WaitingLobby) {
+                        leaveLobby()
+                    }
 
-                _screenStateFlow.value = LobbyAccessError(cause)
+                    _screenStateFlow.value = LobbyAccessError(cause)
+                }
             }
         }
     }
 
     fun leaveLobby() {
-        check(_screenStateFlow.value is WaitingLobby) { "Cannot leave lobby" }
+        check(_screenStateFlow.value is WaitingLobby) { "Must be in a lobby first" }
 
         val lobby = _screenStateFlow.value as WaitingLobby
 

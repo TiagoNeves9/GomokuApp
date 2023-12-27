@@ -38,7 +38,6 @@ import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.ui.theme.BackgroundBlue
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
-
 data class LoginScreenState(
     val userInfo: LoadState<UserInfo?> = idle(),
     val username: String = "",
@@ -75,7 +74,7 @@ fun LoginScreen(
             .fillMaxSize()
             .testTag(LoginScreenTestTag),
         topBar = { CustomBar(text = stringResource(R.string.activity_login_top_bar_title), navigation = navigation) },
-        bottomBar = { GroupFooterView(Color.White) }
+        bottomBar = { GroupFooterView() }
     ) { padding ->
         CustomContainerView(
             modifier = Modifier.fillMaxSize()

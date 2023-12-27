@@ -239,8 +239,9 @@ class RealGomokuService(
 
     private fun <T> handleUnsuccessfulResponse(body: ResponseBody?, code: Int, continuation: CancellableContinuation<T>) {
         val problemJson = gson.fromJson(body?.string(), ProblemJson::class.java)
-        if (problemJson == null && code == 401) continuation.resumeWithException(ApiUnauthorizedException())
-        else continuation.resumeWithException(ApiErrorException(problemJson = problemJson))
+        if (code == 401) continuation.resumeWithException(ApiUnauthorizedException())
+        else if (problemJson != null) continuation.resumeWithException(ApiErrorException(problemJson = problemJson))
+        else continuation.resumeWithException(FetchGomokuError(message = "Error. Remote service returned ${code}", null))
     }
 
     private fun buildRequest(

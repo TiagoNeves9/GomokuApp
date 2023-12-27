@@ -13,11 +13,13 @@ import com.example.pdm2324i_gomoku_g37.screens.common.USER_INFO_EXTRA
 import com.example.pdm2324i_gomoku_g37.screens.common.UserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.getUserInfoExtra
 import com.example.pdm2324i_gomoku_g37.screens.common.toUserInfo
+import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginActivity
 import com.example.pdm2324i_gomoku_g37.screens.play.PlayActivity
 import com.example.pdm2324i_gomoku_g37.screens.profile.ProfileActivity
 import com.example.pdm2324i_gomoku_g37.screens.rankings.RankingsActivity
+import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
 
 class HomeActivity : ComponentActivity() {
@@ -48,25 +50,22 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeScreen(
-                userInfo = userInfoExtra,
-                onAuthorsRequested = {
-                    AuthorsActivity.navigateTo(origin = this, userInfo = userInfoExtra)
-                },
-                onPlayRequested = {
-                    PlayActivity.navigateTo(origin = this, userInfo = userInfoExtra)
-                },
-                onRankingsRequested = {
-                    RankingsActivity.navigateTo(origin = this, userInfo = userInfoExtra)
-                },
-                onAboutRequested = {
-                    InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra)
-                },
-                onProfileRequest = {
-                    ProfileActivity.navigateTo(origin = this, userInfo = userInfoExtra)
-                },
-                onLogoutRequested = { doLogout() }
-            )
+            GomokuTheme {
+                HomeScreen(
+                    userInfo = userInfoExtra,
+                    navigation = NavigationHandlers(
+                        onBackRequested = { finish() },
+                        onInfoRequested = { InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra) }
+                    ),
+                    error = viewModel.error,
+                    onAuthorsRequested = { AuthorsActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
+                    onPlayRequested = { PlayActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
+                    onRankingsRequested = { RankingsActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
+                    onProfileRequest = { ProfileActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
+                    onLogoutRequested = { doLogout() },
+                    onDismissError = viewModel::onDismissError
+                )
+            }
         }
     }
 

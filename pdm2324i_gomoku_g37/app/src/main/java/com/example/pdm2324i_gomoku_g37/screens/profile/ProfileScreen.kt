@@ -42,7 +42,7 @@ fun ProfileScreen(
                 navigation
             )
         },
-        bottomBar = { GroupFooterView(Color.White) }
+        bottomBar = { GroupFooterView() }
     ) { padding ->
         CustomContainerView(
             modifier = Modifier

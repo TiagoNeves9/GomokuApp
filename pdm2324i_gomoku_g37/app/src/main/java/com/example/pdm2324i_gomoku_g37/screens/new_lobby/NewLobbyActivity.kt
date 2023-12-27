@@ -70,8 +70,7 @@ class NewLobbyActivity : ComponentActivity() {
         }
 
         setContent {
-            val currentLobbyState: LobbyScreenState =
-                viewModel.screenState.collectAsState(OutsideLobby).value
+            val currentLobbyState: LobbyScreenState = viewModel.screenState.collectAsState(OutsideLobby).value
             GomokuTheme {
                 NewLobbyScreen(
                     state = NewGameScreenState(

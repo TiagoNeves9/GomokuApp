@@ -67,7 +67,6 @@ class PlayActivity : ComponentActivity() {
 
                 viewModel.screenState.collect {
                     if (it is ReadyLobby) {
-                        Log.v("test_game_ready", it.toString())
                         GameActivity.navigateTo(this@PlayActivity, userInfoExtra, GameExtra(it.game))
                         finish()
                     }
@@ -85,10 +84,7 @@ class PlayActivity : ComponentActivity() {
                     navigation = NavigationHandlers(
                         onBackRequested = { finish() },
                         onInfoRequested = {
-                            InfoActivity.navigateTo(
-                                origin = this,
-                                userInfo = userInfoExtra
-                            )
+                            InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra)
                         }
                     ),
                     onJoinRequested = viewModel::enterLobby,

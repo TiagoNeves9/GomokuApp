@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,11 +42,10 @@ import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 fun MainScreen(
     onStartEnabled: Boolean = true,
     onStartRequested: () -> Unit = {},
-) =
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = { GroupFooterView(Color.White) },
-        //modifier = Modifier.fillMaxSize()
+        bottomBar = { GroupFooterView() },
     ) { padding ->
         Image(
             painter = painterResource(R.drawable.app_background),
@@ -55,18 +53,23 @@ fun MainScreen(
             contentScale = ContentScale.FillBounds
         )
 
-        CustomContainerView(
-            modifier = Modifier
-                .padding(padding)
-        ) {
+        CustomContainerView(modifier = Modifier.padding(padding)) {
             val painter = painterResource(R.drawable.img_gomoku_icon)
-            val imageModifier = Modifier
-                .sizeIn(
-                    minWidth = MAIN_IMAGE_MIN_WIDTH,
-                    minHeight = MAIN_IMAGE_MIN_HEIGHT,
-                    maxWidth = MAIN_IMAGE_MAX_WIDTH,
-                    maxHeight = MAIN_IMAGE_MAX_HEIGHT
+            val imageModifier = Modifier.sizeIn(
+                minWidth = MAIN_IMAGE_MIN_WIDTH,
+                minHeight = MAIN_IMAGE_MIN_HEIGHT,
+                maxWidth = MAIN_IMAGE_MAX_WIDTH,
+                maxHeight = MAIN_IMAGE_MAX_HEIGHT
+            )
+
+            val customContainerModifier = Modifier
+                .padding(MAIN_SCREEN_CONTAINER_PADDING)
+                .fillMaxWidth()
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(MAIN_ROUNDED_CORNER_SHAPE)
                 )
+                .clip(shape = RoundedCornerShape(MAIN_ROUNDED_CORNER_SHAPE))
 
             Image(
                 painter = painter,
@@ -75,16 +78,7 @@ fun MainScreen(
                 modifier = imageModifier
             )
 
-            CustomContainerView(
-                modifier = Modifier
-                    .padding(MAIN_SCREEN_CONTAINER_PADDING)
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(MAIN_ROUNDED_CORNER_SHAPE)
-                    )
-                    .clip(shape = RoundedCornerShape(MAIN_ROUNDED_CORNER_SHAPE))
-            ) {
+            CustomContainerView(modifier = customContainerModifier) {
                 LargeCustomTitleView(text = "Gomoku")
                 DescriptionContainer()
                 LargeCustomButtonView(enabled = onStartEnabled, onClick = onStartRequested) {
@@ -97,6 +91,7 @@ fun MainScreen(
             }
         }
     }
+}
 
 @Composable
 private fun DescriptionContainer() =

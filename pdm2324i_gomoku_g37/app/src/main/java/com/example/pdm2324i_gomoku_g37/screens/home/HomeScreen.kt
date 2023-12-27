@@ -24,166 +24,106 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pdm2324i_gomoku_g37.R
-import com.example.pdm2324i_gomoku_g37.domain.LoadState
-import com.example.pdm2324i_gomoku_g37.domain.Loading
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
-import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
-import com.example.pdm2324i_gomoku_g37.domain.getOrNull
-import com.example.pdm2324i_gomoku_g37.domain.idle
-import com.example.pdm2324i_gomoku_g37.domain.loaded
+import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.HOME_FONT_SIZE
+import com.example.pdm2324i_gomoku_g37.screens.components.HOME_USERNAME_FONT_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomTitleView
-import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
+import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
-import com.example.pdm2324i_gomoku_g37.service.GomokuUsers
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 
+private data class MenuOption(
+    val onOptionSelected: () -> Unit = { },
+    val imageVector: ImageVector,
+    val text: String
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     userInfo: UserInfo,
+    navigation: NavigationHandlers = NavigationHandlers(),
+    error: Exception? = null,
     onAuthorsRequested: () -> Unit = { },
     onPlayRequested: () -> Unit = { },
     onRankingsRequested: () -> Unit = { },
-    onAboutRequested: () -> Unit = { },
     onProfileRequest: () -> Unit = { },
     onLogoutRequested: () -> Unit = { },
-) =
+    onDismissError: () -> Unit = { }
+) {
+    val menu: List<MenuOption> = listOf(
+        MenuOption(onPlayRequested, Icons.Default.PlayArrow, stringResource(id = R.string.menu_play_option)),
+        MenuOption(onRankingsRequested, Icons.Default.Star, stringResource(id = R.string.menu_rankings_option)),
+        MenuOption(onAuthorsRequested, Icons.Default.Face, stringResource(id = R.string.menu_authors_option)),
+        MenuOption(onProfileRequest, Icons.Default.PermIdentity, stringResource(id = R.string.menu_profile_option))
+    )
+
     Scaffold(
-        bottomBar = { GroupFooterView(Color.White) }
+        topBar = { CustomBar(text = stringResource(R.string.activity_home_top_bar_title), navigation = navigation) },
+        bottomBar = { GroupFooterView() }
     ) { padding ->
         CustomContainerView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            Text(text = userInfo.username, fontSize = HOME_USERNAME_FONT_SIZE)
+
             Button(onClick = onLogoutRequested, Modifier) {
+                val logoutStr = stringResource(id = R.string.menu_logout_option)
                 Icon(
                     imageVector = Icons.Default.Logout,
-                    contentDescription = "logout"
+                    contentDescription = logoutStr
                 )
+                Text(logoutStr)
             }
-
-            Text("User: ${userInfo.username}")
 
             LargeCustomTitleView(text = stringResource(R.string.activity_menu_title))
 
-            Row(
-                Modifier,
-                Arrangement.Center
-            ) {
-                MenuButton(onPlayRequested) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Play"
-                        )
-                        Text(
-                            text = "Play",
-                            fontSize = HOME_FONT_SIZE,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
+            val menuGroups = menu.chunked(2)
 
-                MenuButton(onRankingsRequested) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Rankings"
-                        )
-                        Text(
-                            text = "Rankings",
-                            fontSize = HOME_FONT_SIZE,
-                            textAlign = TextAlign.Center
-                        )
+            for (menuGroup in menuGroups) {
+                Row(Modifier, Arrangement.Center) {
+                    menuGroup.forEach { menuOption ->
+                        MenuButton(menuOption.onOptionSelected) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(
+                                    imageVector = menuOption.imageVector,
+                                    contentDescription = menuOption.text
+                                )
+                                Text(
+                                    text = menuOption.text,
+                                    fontSize = HOME_FONT_SIZE,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
                     }
                 }
             }
 
-            Row(
-                Modifier,
-                Arrangement.Center
-            ) {
-                MenuButton(onAuthorsRequested) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Face,
-                            contentDescription = "Authors"
-                        )
-                        Text(
-                            text = "Authors",
-                            fontSize = HOME_FONT_SIZE,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                MenuButton(onAboutRequested) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = "About"
-                        )
-                        Text(
-                            text = "About",
-                            fontSize = HOME_FONT_SIZE,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-
-            Row(
-                Modifier,
-                Arrangement.Center
-            ) {
-                MenuButton(onProfileRequest) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PermIdentity,
-                            contentDescription = "Profile"
-                        )
-                        Text(
-                            text = "Profile",
-                            fontSize = HOME_FONT_SIZE,
-                            textAlign = TextAlign.Center
-                        )
-
-                    }
-                }
+            error?.cause?.let { cause ->
+                ProcessError(onDismissError, cause)
             }
         }
     }
+}
 
 @Composable
 fun MenuButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) =
     ElevatedButton(
         shape = RoundedCornerShape(2.dp),
         onClick = onClick,
-        //contentPadding = PaddingValues(30.dp)
-        modifier = Modifier
-            .size(110.dp)
-            .padding(2.dp)
+        modifier = Modifier.size(110.dp).padding(2.dp)
     ) {
         content()
     }
@@ -197,5 +137,5 @@ private fun MenuButtonPreview() = MenuButton { Text(text = "Play") }
 @Preview(showBackground = true, showSystemUi = true)
 fun HomeScreenPreview() =
     GomokuTheme {
-        HomeScreen(UserInfo("1", "prefiew user", "ab12"))
+        HomeScreen(UserInfo("1","prefiew user", "ab12"), NavigationHandlers({}, {}))
     }
