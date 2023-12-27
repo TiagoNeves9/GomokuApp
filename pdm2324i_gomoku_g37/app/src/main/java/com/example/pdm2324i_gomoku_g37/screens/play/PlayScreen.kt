@@ -1,7 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.play
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,37 +20,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
-import com.example.pdm2324i_gomoku_g37.domain.EnteringLobby
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
+import com.example.pdm2324i_gomoku_g37.domain.Loading
 import com.example.pdm2324i_gomoku_g37.domain.LobbyAccessError
 import com.example.pdm2324i_gomoku_g37.domain.LobbyScreenState
 import com.example.pdm2324i_gomoku_g37.domain.WaitingLobby
-import com.example.pdm2324i_gomoku_g37.domain.Opening
 import com.example.pdm2324i_gomoku_g37.domain.OutsideLobby
-import com.example.pdm2324i_gomoku_g37.domain.ReadyLobby
-import com.example.pdm2324i_gomoku_g37.domain.Rules
-import com.example.pdm2324i_gomoku_g37.domain.Variant
+import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_NAME_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
+import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_CONTENT_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.ErrorAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
 import com.example.pdm2324i_gomoku_g37.screens.components.MediumCustomTitleView
+import com.example.pdm2324i_gomoku_g37.screens.components.PLAY_SCREEN_BUTTON_MAX_WIDTH
+import com.example.pdm2324i_gomoku_g37.screens.components.PLAY_SCREEN_CONTAINER_MAX_WIDTH
+import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.service.GomokuLobbies
-
-
-val myPadding = 10.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,8 +56,9 @@ fun PlayScreen(
     navigation: NavigationHandlers = NavigationHandlers(),
     onJoinRequested: (lobby: WaitingLobby) -> Unit = { },
     onCreateRequested: () -> Unit = { },
-    onDismissLobby: () -> Unit = { }
-) =
+    onDismissJoinLobby: () -> Unit = { },
+    onDismissLobbies: () -> Unit = { }
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -73,58 +69,62 @@ fun PlayScreen(
         },
         bottomBar = { GroupFooterView() }
     ) { padding ->
-        CustomContainerView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(padding)
-        ) {
-            MediumCustomTitleView(text = "List of lobbies:")
+        val customContainerModifier = Modifier
+            .fillMaxWidth()
+            .padding(padding)
+        val buttonContainerModifier = Modifier
+            .fillMaxWidth(PLAY_SCREEN_BUTTON_MAX_WIDTH)
+            .padding(DEFAULT_CONTENT_PADDING)
 
-            Row(
-                Modifier.fillMaxHeight(0.85F)
-            ) {
+        CustomContainerView(modifier = customContainerModifier) {
+            MediumCustomTitleView(text = stringResource(id = R.string.lobbies_screen_title))
+
+            Row(modifier = Modifier.fillMaxHeight(PLAY_SCREEN_CONTAINER_MAX_WIDTH)) {
                 val lobbiesList = lobbies.getOrNull()
                 if (lobbiesList != null) LobbiesList(lobbies = lobbiesList, onJoinRequested)
-                else LoadingView()
+                else Text(text = stringResource(id = R.string.no_lobbies_found))
             }
 
-            Row(
-                Modifier
-                    .fillMaxWidth(0.7F)
-                    .padding(myPadding)
-            ) {
+            Row(modifier = buttonContainerModifier) {
                 Button(
                     onClick = onCreateRequested,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    val str = stringResource(id = R.string.create_new_lobby_button_desc)
                     Icon(
                         imageVector = Icons.Default.PlusOne,
-                        contentDescription = "Create your own lobby"
+                        contentDescription = str
                     )
                     Text(
-                        text = "Create a new lobby",
+                        text = str,
                         fontSize = BUTTON_NAME_SIZE,
                         textAlign = TextAlign.Center
                     )
                 }
 
-                if (lobbyScreenState is WaitingLobby)
-                    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissLobby)
+                if (lobbies is Loading) {
+                    LoadingAlert(R.string.loading_lobbies_title, R.string.loading_lobbies_message, onDismissLobbies)
+                }
 
-                //if (lobbyScreenState is ReadyLobby)
-                //    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message)
+                lobbies.exceptionOrNull()?.let { cause ->
+                    ProcessError(onDismissLobbies, cause)
+                }
+
+                if (lobbyScreenState is WaitingLobby)
+                    LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissJoinLobby)
 
                 if (lobbyScreenState is LobbyAccessError)
                     ErrorAlert(R.string.error_join_lobby_title, R.string.error_join_lobby_message, R.string.error_retry_button_text)
             }
         }
     }
+}
 
 @Composable
 fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLobby) -> Unit) =
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(myPadding)
+        contentPadding = PaddingValues(DEFAULT_CONTENT_PADDING)
     ) {
         items(lobbies) { lobby ->
             Row(
@@ -137,11 +137,11 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
                     onClick = { onJoinRequested(lobby) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = myPadding)
+                        .padding(bottom = DEFAULT_CONTENT_PADDING)
                 ) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Join lobby"
+                        contentDescription = stringResource(id = R.string.join_lobby_desc)
                     )
                     Text(
                         text = "Lobby ID ${lobby.lobbyId}\n" +
@@ -161,13 +161,6 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
             }
         }
     }
-
-@Composable
-fun LoadingView() =
-    Column {
-        Text(text = "Loading lobbies...")
-    }
-
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)

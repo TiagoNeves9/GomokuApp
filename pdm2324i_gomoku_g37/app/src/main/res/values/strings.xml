@@ -90,6 +90,13 @@
     <string name="loading_api_info_title">Loading Api Info</string>
     <string name="loading_api_info_message">Looking up api information, please wait</string>
 
+    <string name="loading_lobbies_title">Loading Lobbies</string>
+    <string name="loading_lobbies_message">Loading up all the lobbies, please wait</string>
+    <string name="no_lobbies_found">No lobbies found!</string>
+    <string name="lobbies_screen_title">List of lobbies</string>
+    <string name="create_new_lobby_button_desc">Create a new lobby</string>
+    <string name="join_lobby_desc">Join lobby</string>
+
     <string name="error_loading_authors_message">Error, could not load authors</string>
 
     <string name="default_ack_button">Got it</string>

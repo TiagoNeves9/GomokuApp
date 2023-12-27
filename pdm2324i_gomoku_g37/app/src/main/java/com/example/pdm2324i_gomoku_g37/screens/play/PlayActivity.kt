@@ -3,7 +3,6 @@ package com.example.pdm2324i_gomoku_g37.screens.play
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -29,7 +28,6 @@ import com.example.pdm2324i_gomoku_g37.screens.info.InfoActivity
 import com.example.pdm2324i_gomoku_g37.screens.new_lobby.NewLobbyActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
 import kotlinx.coroutines.launch
-
 
 class PlayActivity : ComponentActivity() {
 
@@ -89,7 +87,7 @@ class PlayActivity : ComponentActivity() {
                     ),
                     onJoinRequested = viewModel::enterLobby,
                     onCreateRequested = { NewLobbyActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
-                    onDismissLobby = viewModel::leaveLobby
+                    onDismissJoinLobby = viewModel::leaveLobby
                 )
             }
         }

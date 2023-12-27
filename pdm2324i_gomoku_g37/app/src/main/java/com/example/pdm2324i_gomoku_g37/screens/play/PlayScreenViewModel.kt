@@ -77,14 +77,13 @@ class PlayScreenViewModel(
     }
 
     fun leaveLobby() {
-        check(_screenStateFlow.value !is OutsideLobby) { "you must be in a lobby first" }
-        check(_screenStateFlow.value is WaitingLobby) { "Cannot leave lobby" }
+        if (_screenStateFlow.value is WaitingLobby) {
+            val lobby = _screenStateFlow.value as WaitingLobby
 
-        val lobby = _screenStateFlow.value as WaitingLobby
-
-        _screenStateFlow.value = OutsideLobby
-        viewModelScope.launch {
-            kotlin.runCatching { service.leaveLobby(userInfo.token, lobby.lobbyId) }
+            _screenStateFlow.value = OutsideLobby
+            viewModelScope.launch {
+                kotlin.runCatching { service.leaveLobby(userInfo.token, lobby.lobbyId) }
+            }
         }
     }
 }
