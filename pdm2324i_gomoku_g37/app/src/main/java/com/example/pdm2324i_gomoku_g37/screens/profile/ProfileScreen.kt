@@ -53,7 +53,6 @@ fun ProfileScreen(
             val profileInfo = userProfile.getOrNull()
 
             if (profileInfo != null) {
-                Text(stringResource(id = R.string.userid_text).plus(" ${profileInfo.userId}"))
                 Text(stringResource(id = R.string.username_text).plus(" ${profileInfo.username}"))
             } else {
                 Text(text = stringResource(id = R.string.no_profile_info_found))

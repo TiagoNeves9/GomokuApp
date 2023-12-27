@@ -42,6 +42,8 @@ interface GomokuService {
     suspend fun getGameById(token: String, gameId: String): Game
 
     suspend fun play(token: String, gameId: String, cell: Cell, boardSize: Int): Game
+
+    suspend fun userRanking(username: String): UserStatistics
 }
 
 /**

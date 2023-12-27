@@ -30,6 +30,8 @@ import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDtoProperties
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDtoType
+import com.example.pdm2324i_gomoku_g37.domain.dtos.UserRankingDto
+import com.example.pdm2324i_gomoku_g37.domain.dtos.UserRankingDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toGame
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toUser
 import com.example.pdm2324i_gomoku_g37.domain.dtos.toUserInfo
@@ -152,6 +154,13 @@ class RealGomokuService(
         )
     }
 
+    private fun getUserRankingRequest(username: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + PathTemplate.getUserRanking(username),
+            method = "GET"
+        )
+    }
+
     override suspend fun fetchAuthors(): List<Author> = authorsRequest.send { body ->
         gson.fromJson<AuthorsDto>(body.string(), AuthorsDtoType.type)
     }.properties.authors
@@ -211,6 +220,10 @@ class RealGomokuService(
     override suspend fun play(token: String, gameId: String, cell: Cell, boardSize: Int): Game = playRequest(token, gameId, cell, boardSize).value.send { body ->
         gson.fromJson<GameDto>(body.string(), GameDtoType.type)
     }.properties.toGame()
+
+    override suspend fun userRanking(username: String): UserStatistics = getUserRankingRequest(username).value.send { body ->
+        gson.fromJson<UserRankingDto>(body.string(), UserRankingDtoType.type)
+    }.properties.userRanking
 
     private suspend fun <T> Request.send(handler: (ResponseBody) -> T): T = suspendCancellableCoroutine { continuation ->
         val call = client.newCall(request = this)
