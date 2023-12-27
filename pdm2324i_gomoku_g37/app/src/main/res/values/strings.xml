@@ -87,6 +87,9 @@
     <string name="loading_game_title">Loading Game</string>
     <string name="loading_game_message">Building your own personal game, please wait</string>
 
+    <string name="loading_rankings_title">Loading Rankings</string>
+    <string name="loading_rankings_message">Looking up all of the rankings, please wait</string>
+
     <string name="loading_api_info_title">Loading Api Info</string>
     <string name="loading_api_info_message">Looking up api information, please wait</string>
 
@@ -129,4 +132,5 @@
     <string name="profile_screen_total_games">Number of games:</string>
     <string name="profile_total_score">Total score:</string>
     <string name="profile_no_stats_found">No user statistic found</string>
+    <string name="rankings_no_rankings_found">No rankings found</string>
 </resources>

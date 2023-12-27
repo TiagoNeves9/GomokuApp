@@ -10,13 +10,11 @@ import com.example.pdm2324i_gomoku_g37.domain.UserStatistics
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.domain.loaded
 import com.example.pdm2324i_gomoku_g37.domain.loading
-import com.example.pdm2324i_gomoku_g37.service.GomokuRankings
 import com.example.pdm2324i_gomoku_g37.service.GomokuService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
 
 class RankingsScreenViewModel(private val service: GomokuService) : ViewModel() {
     companion object {
@@ -25,19 +23,20 @@ class RankingsScreenViewModel(private val service: GomokuService) : ViewModel() 
         }
     }
 
-    private val _rankingsFlow: MutableStateFlow<LoadState<List<UserStatistics>>> =
-        MutableStateFlow(idle())
+    private val _rankingsFlow: MutableStateFlow<LoadState<List<UserStatistics>>> = MutableStateFlow(idle())
+
     val rankings: Flow<LoadState<List<UserStatistics>>>
         get() = _rankingsFlow.asStateFlow()
 
+    fun resetToIdle() {
+        _rankingsFlow.value = idle()
+    }
 
     fun fetchRankings() {
-        if (_rankingsFlow.value is Idle) {
-            _rankingsFlow.value = loading()
-            viewModelScope.launch {
-                val result = runCatching { service.fetchRankings() }
-                _rankingsFlow.value = loaded(result)
-            }
+        _rankingsFlow.value = loading()
+        viewModelScope.launch {
+            val result = runCatching { service.fetchRankings() }
+            _rankingsFlow.value = loaded(result)
         }
     }
 }

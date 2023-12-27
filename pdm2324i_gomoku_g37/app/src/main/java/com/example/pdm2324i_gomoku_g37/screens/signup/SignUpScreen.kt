@@ -14,12 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.LoadState
 import com.example.pdm2324i_gomoku_g37.domain.Loading
@@ -30,6 +28,7 @@ import com.example.pdm2324i_gomoku_g37.helpers.SignUpScreenTestTags.SignUpScreen
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_RADIUS
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
+import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_CONTENT_PADDING
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
@@ -37,9 +36,6 @@ import com.example.pdm2324i_gomoku_g37.screens.components.PasswordTextFieldView
 import com.example.pdm2324i_gomoku_g37.screens.components.ProcessError
 import com.example.pdm2324i_gomoku_g37.screens.components.UsernameTextFieldView
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
-
-
-val myPadding = 10.dp
 
 data class SignUpScreenState(
     val userInfo: LoadState<UserInfo?> = idle(),
@@ -78,7 +74,7 @@ fun SignUpScreen(
     state: SignUpScreenState = SignUpScreenState(),
     navigation: NavigationHandlers = NavigationHandlers(),
     functions: SignUpScreenFunctions = SignUpScreenFunctions()
-) =
+) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -138,7 +134,7 @@ fun SignUpScreen(
                 onClick = functions.onSignUpRequested,
                 enabled = isButtonEnabled(state),
                 shape = RoundedCornerShape(BUTTON_RADIUS),
-                modifier = Modifier.padding(myPadding)
+                modifier = Modifier.padding(DEFAULT_CONTENT_PADDING)
             ) {
                 Text(stringResource(R.string.activity_sign_up_register_button))
             }
@@ -153,6 +149,7 @@ fun SignUpScreen(
             }
         }
     }
+}
 
 
 private fun isButtonEnabled(state: SignUpScreenState = SignUpScreenState()) =

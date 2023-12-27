@@ -61,13 +61,11 @@ class RankingsActivity : ComponentActivity() {
             GomokuTheme {
                 RankingsScreen(
                     rankings = currentRankings,
+                    onDismissError = viewModel::resetToIdle,
                     navigation = NavigationHandlers(
                         onBackRequested = { finish() },
                         onInfoRequested = {
-                            InfoActivity.navigateTo(
-                                origin = this,
-                                userInfo = userInfoExtra
-                            )
+                            InfoActivity.navigateTo(origin = this, userInfo = userInfoExtra)
                         }
                     )
                 )
