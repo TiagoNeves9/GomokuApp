@@ -36,6 +36,8 @@ import isel.pdm.pdm2324i_gomoku_g37.service.utils.PathTemplate
 import isel.pdm.pdm2324i_gomoku_g37.service.utils.ProblemJson
 import isel.pdm.pdm2324i_gomoku_g37.service.utils.plus
 import com.google.gson.Gson
+import isel.pdm.pdm2324i_gomoku_g37.domain.dtos.UserRankingDto
+import isel.pdm.pdm2324i_gomoku_g37.domain.dtos.UserRankingDtoType
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -151,6 +153,13 @@ class RealGomokuService(
         )
     }
 
+    private fun getUserRankingRequest(username: String) = lazy {
+        buildRequest(
+            url = baseRequestUrl + PathTemplate.getUserRanking(username),
+            method = "GET"
+        )
+    }
+
     override suspend fun fetchAuthors(): List<Author> = authorsRequest.send { body ->
         gson.fromJson<AuthorsDto>(body.string(), AuthorsDtoType.type)
     }.properties.authors
@@ -220,11 +229,15 @@ class RealGomokuService(
             gson.fromJson<GameDto>(body.string(), GameDtoType.type)
         }.properties.toGame()
 
+    override suspend fun userRanking(username: String): UserStatistics =
+        getUserRankingRequest(username).value.send { body ->
+            gson.fromJson<UserRankingDto>(body.string(), UserRankingDtoType.type)
+        }.properties.userRanking
+
     private suspend fun <T> Request.send(handler: (ResponseBody) -> T): T =
         suspendCancellableCoroutine { continuation ->
             val call = client.newCall(request = this)
             call.enqueue(object : Callback {
-
                 override fun onFailure(call: Call, e: IOException) =
                     continuation.resumeWithException(FetchGomokuError("Error", e))
 
@@ -253,6 +266,7 @@ class RealGomokuService(
         continuation: CancellableContinuation<T>
     ) {
         val problemJson = gson.fromJson(body?.string(), ProblemJson::class.java)
+
         if (code == 401)
             continuation.resumeWithException(ApiUnauthorizedException())
         else if (problemJson != null)

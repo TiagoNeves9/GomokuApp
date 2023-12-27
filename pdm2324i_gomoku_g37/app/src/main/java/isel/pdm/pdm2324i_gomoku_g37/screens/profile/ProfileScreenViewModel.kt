@@ -64,7 +64,7 @@ class ProfileScreenViewModel(
         _userStatisticFlow.value = loading()
         viewModelScope.launch {
             val result: Result<UserStatistics> = runCatching {
-                service.fetchRankings().first { it.user == userInfo.username }
+                service.userRanking(userInfo.username)
             }
             _userStatisticFlow.value = loaded(result)
         }

@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import isel.pdm.pdm2324i_gomoku_g37.R
 import isel.pdm.pdm2324i_gomoku_g37.domain.LoadState
 import isel.pdm.pdm2324i_gomoku_g37.domain.Loading
@@ -50,12 +49,11 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-
             val profileInfo = userProfile.getOrNull()
-            if (profileInfo != null) {
-                Text(stringResource(R.string.userid_text).plus(" ${profileInfo.userId}"))
+            if (profileInfo != null)
                 Text(stringResource(R.string.username_text).plus(" ${profileInfo.username}"))
-            } else Text(text = stringResource(R.string.no_profile_info_found))
+            else Text(stringResource(R.string.no_profile_info_found))
+
 
             if (userProfile is Loading)
                 LoadingAlert(
@@ -67,11 +65,17 @@ fun ProfileScreen(
                 ProcessError(onDismissProfileError, cause)
             }
 
-            val stat = userStatistic.getOrNull()
-            if (stat != null) {
-                Text(text = stringResource(R.string.profile_screen_total_games).plus(" ${stat.ngames}"))
-                Text(text = stringResource(R.string.profile_total_score).plus(" ${stat.score}"))
-            } else Text(text = stringResource(R.string.profile_no_stats_found))
+            val statistic = userStatistic.getOrNull()
+            if (statistic != null) {
+                Text(
+                    stringResource(R.string.profile_screen_total_games)
+                        .plus(" ${statistic.ngames}")
+                )
+                Text(
+                    stringResource(R.string.profile_total_score)
+                        .plus(" ${statistic.score}")
+                )
+            } else Text(stringResource(R.string.profile_no_stats_found))
 
             if (userStatistic is Loading)
                 LoadingAlert(
@@ -84,7 +88,3 @@ fun ProfileScreen(
             }
         }
     }
-
-@Preview
-@Composable
-fun ProfileScreenPreview() = ProfileScreen()

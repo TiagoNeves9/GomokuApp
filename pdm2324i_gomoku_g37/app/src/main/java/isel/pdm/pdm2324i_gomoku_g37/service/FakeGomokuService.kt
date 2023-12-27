@@ -119,6 +119,10 @@ class FakeGomokuService : GomokuService {
     override suspend fun play(token: String, gameId: String, cell: Cell, boardSize: Int): Game {
         TODO("Not yet implemented")
     }
+
+    override suspend fun userRanking(username: String): UserStatistics {
+        TODO("Not yet implemented")
+    }
 }
 
 object GomokuAuthors {
