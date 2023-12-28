@@ -25,9 +25,7 @@ import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.LobbyDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.RankingsDtoType
-import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDtoProperties
-import com.example.pdm2324i_gomoku_g37.domain.dtos.UserDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDto
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserInfoDtoType
 import com.example.pdm2324i_gomoku_g37.domain.dtos.UserRankingDto

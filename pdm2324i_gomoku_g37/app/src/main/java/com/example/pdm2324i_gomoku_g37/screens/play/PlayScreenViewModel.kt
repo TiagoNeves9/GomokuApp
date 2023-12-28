@@ -1,6 +1,5 @@
 package com.example.pdm2324i_gomoku_g37.screens.play
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -67,7 +66,6 @@ class PlayScreenViewModel(
         viewModelScope.launch {
             try {
                 service.joinLobby(userInfo.token, lobby).collect { readyLobby ->
-                    Log.v("enter_lobby_vm", readyLobby.toString())
                     _screenStateFlow.value = readyLobby
                 }
             } catch (cause: Throwable) {
@@ -81,6 +79,7 @@ class PlayScreenViewModel(
             val lobby = _screenStateFlow.value as WaitingLobby
 
             _screenStateFlow.value = OutsideLobby
+
             viewModelScope.launch {
                 kotlin.runCatching { service.leaveLobby(userInfo.token, lobby.lobbyId) }
             }

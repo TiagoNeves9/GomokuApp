@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.service.ApiUnauthorizedException
 import com.example.pdm2324i_gomoku_g37.service.FetchGomokuException
 import com.example.pdm2324i_gomoku_g37.service.InvalidLogin
 import com.example.pdm2324i_gomoku_g37.service.UserAlreadyExists
@@ -39,6 +40,7 @@ fun ProcessError(dismissError: () -> Unit, cause: Throwable) {
         is EmptyConfirmPassword -> Pair(R.string.error_confirm_password_title, R.string.repeat_password_is_blank_input_error)
         is UnmatchedPasswords -> Pair(R.string.error_confirm_password_title, R.string.repeat_password_and_password_not_equal_input_error)
         is InvalidLogin -> Pair(R.string.error_general_title, R.string.error_bad_login)
+        is ApiUnauthorizedException -> Pair(R.string.error_general_title, R.string.error_bad_login)
         is UserAlreadyExists -> Pair(R.string.error_general_title, R.string.error_bad_signup)
         else -> Pair(R.string.error_api_title, R.string.error_could_not_reach_api)
     }

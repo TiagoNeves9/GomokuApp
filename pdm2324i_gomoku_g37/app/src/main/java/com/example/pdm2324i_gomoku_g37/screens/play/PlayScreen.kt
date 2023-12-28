@@ -38,7 +38,6 @@ import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_NAME_SIZE
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.DEFAULT_CONTENT_PADDING
-import com.example.pdm2324i_gomoku_g37.screens.components.ErrorAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LoadingAlert
 import com.example.pdm2324i_gomoku_g37.screens.components.NavigationHandlers
@@ -57,7 +56,8 @@ fun PlayScreen(
     onJoinRequested: (lobby: WaitingLobby) -> Unit = { },
     onCreateRequested: () -> Unit = { },
     onDismissJoinLobby: () -> Unit = { },
-    onDismissLobbies: () -> Unit = { }
+    onDismissLobbies: () -> Unit = { },
+    onDismissScreenState: () -> Unit = { }
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -114,14 +114,17 @@ fun PlayScreen(
                     LoadingAlert(R.string.loading_new_game_title, R.string.loading_new_game_message, onDismissJoinLobby)
 
                 if (lobbyScreenState is LobbyAccessError)
-                    ErrorAlert(R.string.error_join_lobby_title, R.string.error_join_lobby_message, R.string.error_retry_button_text)
+                    LoadingAlert(R.string.error_join_lobby_title, R.string.error_join_lobby_message, onDismissScreenState)
             }
         }
     }
 }
 
 @Composable
-fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLobby) -> Unit) =
+fun LobbiesList(
+    lobbies: List<WaitingLobby>,
+    onJoinRequested: (lobby: WaitingLobby) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(DEFAULT_CONTENT_PADDING)
@@ -144,16 +147,10 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
                         contentDescription = stringResource(id = R.string.join_lobby_desc)
                     )
                     Text(
-                        text = "Lobby ID ${lobby.lobbyId}\n" +
-                                "Host ID${lobby.hostUserId}\n",
-                        fontSize = BUTTON_NAME_SIZE,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "Rules:\n" +
-                                "\tBoard dimension - $boardDim x $boardDim\n" +
-                                "\tOpening - ${lobby.opening}\n" +
-                                "\tVariant - ${lobby.variant}",
+                        text = stringResource(id = R.string.rules_text) + ":\n"+
+                                "\t" + stringResource(id = R.string.board_dimension_text) + " - $boardDim x $boardDim\n" +
+                                "\t" + stringResource(id = R.string.new_lobby_board_opening) + " - ${lobby.opening}\n" +
+                                "\t" + stringResource(id = R.string.new_lobby_board_variant) + " - ${lobby.variant}",
                         fontSize = BUTTON_NAME_SIZE,
                         textAlign = TextAlign.Center
                     )
@@ -161,6 +158,7 @@ fun LobbiesList(lobbies: List<WaitingLobby>, onJoinRequested: (lobby: WaitingLob
             }
         }
     }
+}
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)

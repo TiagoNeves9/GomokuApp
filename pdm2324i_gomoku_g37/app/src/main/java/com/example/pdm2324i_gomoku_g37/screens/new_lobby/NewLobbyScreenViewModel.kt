@@ -134,11 +134,11 @@ class NewLobbyScreenViewModel(
                         }
                     }
                 } catch (cause: Throwable) {
+                    _screenStateFlow.value = LobbyAccessError(cause)
+                } finally {
                     if (_screenStateFlow.value is WaitingLobby) {
                         leaveLobby()
                     }
-
-                    _screenStateFlow.value = LobbyAccessError(cause)
                 }
             }
         }

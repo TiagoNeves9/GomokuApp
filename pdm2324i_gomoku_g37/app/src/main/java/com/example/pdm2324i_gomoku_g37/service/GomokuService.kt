@@ -70,7 +70,7 @@ class UnexpectedResponseException(
     contentType: MediaType? = null,
 ) : FetchGomokuException(message = "Unexpected content type [$contentType] response from the API.")
 
-class ApiUnauthorizedException() : FetchGomokuException("Unauthorized Access")
+class ApiUnauthorizedException : FetchGomokuException("Unauthorized Access")
 
 class ApiErrorException(
     val problemJson: ProblemJson

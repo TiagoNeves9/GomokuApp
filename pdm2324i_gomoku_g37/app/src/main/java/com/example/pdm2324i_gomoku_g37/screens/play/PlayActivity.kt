@@ -87,7 +87,9 @@ class PlayActivity : ComponentActivity() {
                     ),
                     onJoinRequested = viewModel::enterLobby,
                     onCreateRequested = { NewLobbyActivity.navigateTo(origin = this, userInfo = userInfoExtra) },
-                    onDismissJoinLobby = viewModel::leaveLobby
+                    onDismissJoinLobby = viewModel::leaveLobby,
+                    onDismissLobbies = viewModel::resetLobbiesFlowToIdle,
+                    onDismissScreenState = viewModel::resetScreenStateToIdle
                 )
             }
         }

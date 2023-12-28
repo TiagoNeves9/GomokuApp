@@ -115,6 +115,8 @@
     <string name="turn_text">Turn:</string>
     <string name="userid_text">Id:</string>
     <string name="username_text">Username:</string>
+    <string name="rules_text">Rules: </string>
+    <string name="board_dimension_text">Board dimension: </string>
 
     <string name="make_move_button">Make Move!</string>
 
