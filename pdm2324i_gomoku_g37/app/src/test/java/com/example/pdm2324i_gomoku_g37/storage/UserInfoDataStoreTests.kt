@@ -42,8 +42,8 @@ class UserInfoDataStoreTests {
     fun getUserInfo_returns_the_previously_stored_value(): Unit = runTest {
         // Arrange
         val sut = UserInfoDataStore(testDataStore)
-        sut.updateUserInfo(UserInfo(1, "first test user", "first test token"))
-        val expected = UserInfo(2, "test user", "test token")
+        sut.updateUserInfo(UserInfo("1", "first test user", "first test token"))
+        val expected = UserInfo("2", "test user", "test token")
         sut.updateUserInfo(expected)
         // Act
         val result = sut.getUserInfo()
