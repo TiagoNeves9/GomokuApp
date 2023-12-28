@@ -1,5 +1,6 @@
 package com.example.pdm2324i_gomoku_g37.screens.rankings
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -70,24 +71,24 @@ fun RankingsScreen(
 
 @Composable
 private fun UserStatsView(userStatistics: UserStatistics) {
-    Text(
-        text = stringResource(id = R.string.username_text).plus(" ${userStatistics.user}"),
-        modifier = Modifier.fillMaxWidth(),
-        style = MaterialTheme.typography.titleMedium,
-        textAlign = TextAlign.Center
-    )
-    Text(
-        text = stringResource(id = R.string.profile_total_score).plus(" ${userStatistics.score }"),
-        modifier = Modifier.fillMaxWidth(),
-        style = MaterialTheme.typography.titleMedium,
-        textAlign = TextAlign.Center
-    )
-    Text(
-        text = stringResource(id = R.string.profile_screen_total_games).plus(" ${userStatistics.ngames}"),
-        modifier = Modifier.fillMaxWidth(),
-        style = MaterialTheme.typography.titleMedium,
-        textAlign = TextAlign.Center
-    )
+        Text(
+            text = stringResource(id = R.string.username_text).plus(" ${userStatistics.user}"),
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = stringResource(id = R.string.profile_total_score).plus(" ${userStatistics.score }"),
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = stringResource(id = R.string.profile_screen_total_games).plus(" ${userStatistics.ngames}"),
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center
+        )
 }
 
 
