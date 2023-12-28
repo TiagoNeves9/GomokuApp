@@ -62,6 +62,8 @@ class UnknownLobby : FetchGomokuException("Lobby not found")
 
 class UnknownUser : FetchGomokuException("User not found")
 
+class GameNotFound : FetchGomokuException("Game not found")
+
 class FetchGomokuError(message: String, cause: Throwable?) : FetchGomokuException(message, cause)
 
 class UnexpectedResponseException(

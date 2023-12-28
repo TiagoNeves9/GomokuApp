@@ -16,13 +16,14 @@ import com.example.pdm2324i_gomoku_g37.domain.board.BOARD_DIM
 import com.example.pdm2324i_gomoku_g37.domain.board.Board
 import com.example.pdm2324i_gomoku_g37.domain.board.Cell
 import com.example.pdm2324i_gomoku_g37.domain.board.createBoard
+import com.example.pdm2324i_gomoku_g37.domain.toOpening
 import com.example.pdm2324i_gomoku_g37.domain.toOpeningString
+import com.example.pdm2324i_gomoku_g37.domain.toVariant
 import com.example.pdm2324i_gomoku_g37.domain.toVariantString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.Instant
-
 
 private const val FAKE_SERVICE_DELAY = 1000L
 private const val FAKE_SERVICE_APP_VERSION = "1.0.0"
@@ -58,8 +59,7 @@ class FakeGomokuService : GomokuService {
 
     override suspend fun fetchRankings(): List<UserStatistics> {
         delay(FAKE_SERVICE_DELAY)
-        //TODO FIX
-        return emptyList()
+        return GomokuRankings.rankings
     }
 
     override suspend fun createLobby(token: String, rules: Rules): Flow<WaitingLobby> = flow {
@@ -75,51 +75,67 @@ class FakeGomokuService : GomokuService {
     override suspend fun joinLobby(token: String, lobby: WaitingLobby): Flow<ReadyLobby> = flow {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
-        val lobby = GomokuLobbies.lobbies.firstOrNull { l ->
-            l.lobbyId == lobby.lobbyId
-        } ?: throw UnknownLobby()
+        val hostUser = GomokuUsers.users.firstOrNull { it.userId == lobby.hostUserId } ?: throw UnknownUser()
 
-        //GomokuLobbies.updateGuestUser(user.id, lobby)
+        val game = GomokuGames.createGame(
+            users = Pair(hostUser, user),
+            board = createBoard(Turn.BLACK_PIECE, lobby.boardDim),
+            currentPlayer = Player(hostUser, Turn.BLACK_PIECE),
+            score = 0,
+            now = Instant.now(),
+            rules = Rules(lobby.boardDim, lobby.opening.toOpening(), lobby.variant.toVariant())
+        )
 
-        //TODO apagar lobby e criar jogo
+        GomokuLobbies.deleteLobby(lobby)
 
-        /*val game = GomokuGames.games.firstOrNull { game ->
-            game.users.second.first.id == user.userId
-        } ?: throw UnknownLobby()
-
-        emit(ReadyLobby(game))*/
+        emit(ReadyLobby(game))
     }
 
     override suspend fun leaveLobby(token: String, lobbyId: String): String {
         val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
 
         val lobby = GomokuLobbies.lobbies.firstOrNull { lobby ->
-            lobby.lobbyId == lobbyId && lobby.hostUserId == user.userId
+            lobby.lobbyId == lobbyId
         } ?: throw UnknownLobby()
+
+        if (lobby.hostUserId == user.userId) {
+            GomokuLobbies.deleteLobby(lobby)
+        }
 
         return "Left Lobby"
     }
 
     override suspend fun fetchUserAccount(userId: String): User {
         delay(FAKE_SERVICE_DELAY)
-        //GomokuUsers.getUserByToken(token) ?: throw InvalidLogin() //depende da api
         return GomokuUsers.users.firstOrNull { it.userId == userId } ?: throw UnknownUser()
     }
 
     override suspend fun isGameCreated(token: String, lobbyId: String): String {
-        TODO("Not yet implemented")
+        delay(FAKE_SERVICE_DELAY)
+        val game = GomokuGames.games.firstOrNull { it.gameId == lobbyId }
+        return if (game != null) "CREATED" else "WAITING"
     }
 
     override suspend fun getGameById(token: String, gameId: String): Game {
-        TODO("Not yet implemented")
+        delay(FAKE_SERVICE_DELAY)
+        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+        return GomokuGames.games.firstOrNull {
+            it.gameId == gameId && (it.users.first == user || it.users.second == user)
+        } ?: throw GameNotFound()
     }
 
     override suspend fun play(token: String, gameId: String, cell: Cell, boardSize: Int): Game {
-        TODO("Not yet implemented")
+        delay(FAKE_SERVICE_DELAY)
+        val user = GomokuUsers.getUserByToken(token) ?: throw InvalidLogin()
+        val game = GomokuGames.games.firstOrNull {
+            it.gameId == gameId && (it.users.first == user || it.users.second == user)
+        } ?: throw GameNotFound()
+        return game.computeNewGame(cell)
     }
 
     override suspend fun userRanking(username: String): UserStatistics {
-        TODO("Not yet implemented")
+        delay(FAKE_SERVICE_DELAY)
+        return GomokuRankings.rankings.firstOrNull { it.user == username } ?: throw UnknownUser()
     }
 }
 
@@ -154,7 +170,7 @@ object GomokuLobbies {
         ),
         WaitingLobby(
             "2",
-            "5",
+            "2",
             19,
             Opening.FREESTYLE.toOpeningString(),
             Variant.FREESTYLE.toVariantString()
@@ -206,9 +222,10 @@ object GomokuLobbies {
 
 object GomokuRankings {
 
-
     private val _rankings: MutableList<UserStatistics> = mutableListOf(
-        UserStatistics("admin", 9, 666)
+        UserStatistics("tbmaster", 9, 666),
+        UserStatistics("jp", 1234, 32),
+        UserStatistics("noobmaster69", 4321, 11)
     )
 
     val rankings: List<UserStatistics>

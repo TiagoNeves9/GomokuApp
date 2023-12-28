@@ -20,7 +20,7 @@ object PathTemplate {
     const val LOGIN = "/users/login"
 
     const val RANKINGS = "/rankings"
-    const val USER_RANKING = "/rankings/"
+    private const val USER_RANKING = "/rankings/"
 
     const val AUTHORS = "/authors"
     const val ABOUT = "/about"
