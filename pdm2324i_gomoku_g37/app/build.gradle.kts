@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "isel.pdm.pdm2324i_gomoku_g37"
+    namespace = "com.example.pdm2324i_gomoku_g37"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "isel.pdm.pdm2324i_gomoku_g37"
+        applicationId = "com.example.pdm2324i_gomoku_g37"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
