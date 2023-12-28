@@ -18,11 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.pdm2324i_gomoku_g37.R
+import com.example.pdm2324i_gomoku_g37.helpers.MainScreenTestTags.MainScreenDisplayTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.MainScreenTestTags.StartButtonTestTag
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
 import com.example.pdm2324i_gomoku_g37.screens.components.LargeCustomButtonView
@@ -46,6 +49,7 @@ fun MainScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = { GroupFooterView() },
+        modifier = Modifier.testTag(MainScreenDisplayTestTag)
     ) { padding ->
         Image(
             painter = painterResource(R.drawable.app_background),
@@ -81,7 +85,11 @@ fun MainScreen(
             CustomContainerView(modifier = customContainerModifier) {
                 LargeCustomTitleView(text = "Gomoku")
                 DescriptionContainer()
-                LargeCustomButtonView(enabled = onStartEnabled, onClick = onStartRequested) {
+                LargeCustomButtonView(
+                    modifier = Modifier.testTag(StartButtonTestTag),
+                    enabled = onStartEnabled,
+                    onClick = onStartRequested
+                ) {
                     Icon(
                         tint = MaterialTheme.colorScheme.surfaceVariant,
                         imageVector = Icons.Filled.ArrowForward,

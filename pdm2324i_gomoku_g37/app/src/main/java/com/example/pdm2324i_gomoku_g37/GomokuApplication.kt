@@ -20,15 +20,6 @@ import okhttp3.OkHttpClient
 const val GomokuAppTestTag = "GomokuAppTestTag"
 
 interface GomokuDependenciesContainer {
-    /**
-     * The HTTP client used to perform HTTP requests
-     */
-    val httpClient: OkHttpClient
-
-    /**
-     * The JSON serializer/deserializer used to convert JSON into DTOs
-     */
-    val gson: Gson
 
     /**
      * The service used to fetch jokes
@@ -52,7 +43,7 @@ class GomokuApplication : Application(), GomokuDependenciesContainer {
     /**
      * The HTTP client used to perform HTTP requests
      */
-    override val httpClient: OkHttpClient =
+    private val httpClient: OkHttpClient =
         OkHttpClient
             .Builder()
             .callTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
@@ -61,7 +52,7 @@ class GomokuApplication : Application(), GomokuDependenciesContainer {
     /**
      * The JSON serializer/deserializer used to convert JSON into DTOs
      */
-    override val gson: Gson = Gson()
+    private val gson: Gson = Gson()
 
     /**
      * The service used for the gomoku app

@@ -25,12 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
+import com.example.pdm2324i_gomoku_g37.helpers.HomeScreenTestTags.HomeScreenDisplayTestTag
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
 import com.example.pdm2324i_gomoku_g37.screens.components.GroupFooterView
@@ -69,7 +71,8 @@ fun HomeScreen(
 
     Scaffold(
         topBar = { CustomBar(text = stringResource(R.string.activity_home_top_bar_title), navigation = navigation) },
-        bottomBar = { GroupFooterView() }
+        bottomBar = { GroupFooterView() },
+        modifier = Modifier.testTag(HomeScreenDisplayTestTag)
     ) { padding ->
         CustomContainerView(
             modifier = Modifier

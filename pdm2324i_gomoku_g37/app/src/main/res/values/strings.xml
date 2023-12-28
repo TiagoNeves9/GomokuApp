@@ -135,4 +135,8 @@
     <string name="profile_total_score">Total score:</string>
     <string name="profile_no_stats_found">No user statistic found</string>
     <string name="rankings_no_rankings_found">No rankings found</string>
+
+    <string name="failed_to_read_preferences_error_dialog_title">Fatal Error</string>
+    <string name="failed_to_read_preferences_error_dialog_text">Failed to read local data store</string>
+    <string name="failed_to_read_preferences_error_dialog_ok_button">OK</string>
 </resources>

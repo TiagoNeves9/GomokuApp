@@ -9,11 +9,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.example.pdm2324i_gomoku_g37.GomokuDependenciesContainer
+import com.example.pdm2324i_gomoku_g37.R
 import com.example.pdm2324i_gomoku_g37.domain.Idle
 import com.example.pdm2324i_gomoku_g37.domain.Loaded
 import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.getOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
+import com.example.pdm2324i_gomoku_g37.screens.components.ErrorAlert
 import com.example.pdm2324i_gomoku_g37.screens.home.HomeActivity
 import com.example.pdm2324i_gomoku_g37.screens.login.LoginActivity
 import com.example.pdm2324i_gomoku_g37.ui.theme.GomokuTheme
@@ -41,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.userInfoFlow.collect {
-                if (it is Loaded) {
+                if (it is Loaded && it.value.isSuccess) {
                     doNavigation(it.getOrNull())
                     viewModel.resetToIdle()
                 }
@@ -55,6 +57,15 @@ class MainActivity : ComponentActivity() {
                     onStartEnabled = currentUserInfo is Idle,
                     onStartRequested = { viewModel.fetchUserInfo() }
                 )
+                currentUserInfo.let {
+                    if (it is Loaded && it.value.isFailure)
+                        ErrorAlert(
+                            title = R.string.failed_to_read_preferences_error_dialog_title,
+                            message = R.string.failed_to_read_preferences_error_dialog_text,
+                            buttonText = R.string.failed_to_read_preferences_error_dialog_ok_button,
+                            onDismiss = { viewModel.resetToIdle() },
+                        )
+                }
             }
         }
     }

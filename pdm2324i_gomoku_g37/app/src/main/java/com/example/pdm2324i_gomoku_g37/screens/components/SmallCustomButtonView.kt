@@ -26,6 +26,7 @@ val LARGE_BUTTON_FONT_SIZE = 20.sp
 
 @Composable
 fun LargeCustomButtonView(
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
     content: @Composable () -> Unit = {}
@@ -36,7 +37,7 @@ fun LargeCustomButtonView(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onBackground),
         contentPadding = PaddingValues(0.dp),
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 10.dp, bottom = 15.dp)
             .size(size = 50.dp)
     ) {
