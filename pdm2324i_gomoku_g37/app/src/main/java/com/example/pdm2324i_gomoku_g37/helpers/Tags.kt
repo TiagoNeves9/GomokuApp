@@ -26,6 +26,9 @@ object ComponentsTestTags {
 // This object contains the tags used in the LoginScreen
 object LoginScreenTestTags {
     const val LoginScreenTestTag = "LoginScreenTestTag"
+    const val SignUpButtonTestTag = "SignUpButtonTestTag"
+    const val UsernameInputTestTag = "UsernameInputTestTag"
+    const val PasswordInputTestTag = "PasswordInputTestTag"
 }
 
 // This object contains the tags used in the SignUpScreen
@@ -40,9 +43,5 @@ object GameScreenTestTags {
 
 object InfoScreenTestTags {
     const val InfoFetchInfoErrorTag = "InfoFetchInfoErrorTag"
-}
-
-object InfoTestTags {
-    const val StartButtonTestTag = "StartButtonTestTag"
 }
 

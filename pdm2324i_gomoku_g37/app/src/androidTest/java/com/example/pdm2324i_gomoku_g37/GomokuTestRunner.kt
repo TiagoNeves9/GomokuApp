@@ -12,11 +12,16 @@ import io.mockk.mockk
 
 class GomokuTestApplication: GomokuDependenciesContainer, Application() {
 
-    override val gomokuService: GomokuService = FakeGomokuService()
+    override val gomokuService: GomokuService =
+        mockk(relaxed = true) {
+            coEvery { login(username = any(), password = any()) } returns UserInfo("test_id", "test_username", "test_token")
+        }
 
-    override var userInfoRepository: UserInfoRepository = mockk {
-        coEvery { getUserInfo() } returns UserInfo("test_id", "test_username", "test_token")
-    }
+    override var userInfoRepository: UserInfoRepository =
+        mockk {
+            coEvery { updateUserInfo(userInfo = any()) } returns Unit
+            coEvery { getUserInfo() } returns UserInfo("test_id", "test_username", "test_token")
+        }
 
 }
 

@@ -26,12 +26,14 @@ import com.example.pdm2324i_gomoku_g37.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UsernameTextFieldView(
+    modifier: Modifier = Modifier,
     value: String = "",
     isError: Boolean = false,
     errorText: String = "",
     onClick: (String) -> Unit = {}
 ) =
     OutlinedTextField(
+        modifier = modifier,
         value = value,
         onValueChange = onClick,
         label = { Text(text = stringResource(R.string.activity_login_sign_up_input_username)) },
@@ -52,6 +54,7 @@ fun UsernameTextFieldView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextFieldView(
+    modifier: Modifier = Modifier,
     value: String = "",
     isError: Boolean = false,
     errorText: String = "",
@@ -61,6 +64,7 @@ fun PasswordTextFieldView(
     onClick: (String) -> Unit
 ) =
     OutlinedTextField(
+        modifier = modifier,
         value = value,
         onValueChange = onClick,
         label = { PasswordLabel(isRepeatPassword) },

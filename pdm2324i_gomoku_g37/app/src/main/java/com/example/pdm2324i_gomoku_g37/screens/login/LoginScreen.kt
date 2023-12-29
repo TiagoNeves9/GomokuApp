@@ -26,6 +26,9 @@ import com.example.pdm2324i_gomoku_g37.domain.UserInfo
 import com.example.pdm2324i_gomoku_g37.domain.exceptionOrNull
 import com.example.pdm2324i_gomoku_g37.domain.idle
 import com.example.pdm2324i_gomoku_g37.helpers.LoginScreenTestTags.LoginScreenTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.LoginScreenTestTags.PasswordInputTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.LoginScreenTestTags.SignUpButtonTestTag
+import com.example.pdm2324i_gomoku_g37.helpers.LoginScreenTestTags.UsernameInputTestTag
 import com.example.pdm2324i_gomoku_g37.screens.components.BUTTON_RADIUS
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomBar
 import com.example.pdm2324i_gomoku_g37.screens.components.CustomContainerView
@@ -85,6 +88,7 @@ fun LoginScreen(
             )
 
             UsernameTextFieldView(
+                modifier = Modifier.testTag(UsernameInputTestTag),
                 value = state.username,
                 isError = state.isUsernameInputError,
                 errorText = state.usernameErrorText,
@@ -92,6 +96,7 @@ fun LoginScreen(
             )
 
             PasswordTextFieldView(
+                modifier = Modifier.testTag(PasswordInputTestTag),
                 value = state.password,
                 isError = state.isPasswordInputError,
                 errorText = state.passwordErrorText,
@@ -119,7 +124,9 @@ fun LoginScreen(
                 ElevatedButton(
                     onClick = onSignUpRequested,
                     shape = RoundedCornerShape(BUTTON_RADIUS),
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 35.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 35.dp)
+                        .testTag(SignUpButtonTestTag)
                 ) {
                     Text(
                         text = stringResource(id = R.string.activity_sign_up_bar_title),
